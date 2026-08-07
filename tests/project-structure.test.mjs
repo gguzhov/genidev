@@ -112,6 +112,19 @@ test("composes the approved navigation and portrait hero", async () => {
   assert.match(app, /hero\.title/);
 });
 
+test("renders the four-problem selector", async () => {
+  for (const path of [
+    "src/components/OptionWheel/OptionWheel.jsx",
+    "src/components/ProblemSelector/ProblemSelector.jsx",
+    "src/styles/sections.css",
+  ]) {
+    assert.equal(await exists(path), true, `Missing ${path}`);
+  }
+
+  const app = await readFile("src/App.jsx", "utf8");
+  assert.match(app, /<ProblemSelector/);
+});
+
 test("keeps navigation and portrait interactions accessible", async () => {
   const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8");
   assert.match(cardNav, /<button/);

@@ -2,8 +2,9 @@ import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
 import LiquidEther from "./components/LiquidEther/LiquidEther";
+import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
-import { hero, identity } from "./content/siteContent";
+import { hero, identity, problems } from "./content/siteContent";
 import useReducedMotion from "./hooks/useReducedMotion";
 
 const navigation = [
@@ -93,6 +94,8 @@ export function App() {
             />
           </div>
         </section>
+
+        <ProblemSelector problems={problems} />
       </main>
     </>
   );

@@ -4,5 +4,6 @@ import "@fontsource-variable/jetbrains-mono";
 import "./styles/tokens.css";
 import "./styles/global.css";
 import "./styles/hero.css";
+import "./styles/sections.css";
 
 createRoot(document.getElementById("root")).render(<App />);
