@@ -131,6 +131,17 @@ test("renders the approved career timeline", async () => {
   assert.match(app, /<CareerTimeline/);
 });
 
+test("ships the project marketplace and local covers", async () => {
+  for (const path of [
+    "src/components/DriftWall/DriftWall.jsx",
+    "src/components/ProjectMarketplace/ProjectMarketplace.jsx",
+    "public/projects/ostrov-cover.webp",
+    "public/projects/ilonmask-cover.webp",
+  ]) assert.equal(await exists(path), true, `Missing ${path}`);
+
+  assert.match(await readFile("src/App.jsx", "utf8"), /<ProjectMarketplace/);
+});
+
 test("keeps navigation and portrait interactions accessible", async () => {
   const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8");
   assert.match(cardNav, /<button/);

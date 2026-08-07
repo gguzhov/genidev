@@ -5,8 +5,10 @@ import CareerTimeline from "./components/CareerTimeline/CareerTimeline";
 import LiquidEther from "./components/LiquidEther/LiquidEther";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
-import { career, hero, identity, problems } from "./content/siteContent";
+import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
+import { career, hero, identity, problems, projects } from "./content/siteContent";
 import useReducedMotion from "./hooks/useReducedMotion";
+import { projectPath } from "./lib/projectRouting";
 
 const navigation = [
   {
@@ -36,6 +38,11 @@ export function App() {
 
   const openContact = () => {
     window.open(hero.cta.href, hero.cta.target, "noopener,noreferrer");
+  };
+
+  const openProject = (slug) => {
+    window.history.pushState({}, "", projectPath(slug));
+    window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
   return (
@@ -98,6 +105,7 @@ export function App() {
 
         <ProblemSelector problems={problems} sectionId="problems" />
         <CareerTimeline items={career} />
+        <ProjectMarketplace projects={projects} onOpenProject={openProject} />
       </main>
     </>
   );
