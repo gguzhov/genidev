@@ -1,5 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { clampIndex, getNextOptionIndex, shouldCaptureWheel } from "./optionWheelState";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  beginPointerInteraction,
+  clampIndex,
+  endPointerInteraction,
+  getNextOptionIndex,
+  movePointerInteraction,
+  shouldCaptureWheel,
+} from "./optionWheelState";
 import "./OptionWheel.css";
 
 export default function OptionWheel({
@@ -22,6 +29,7 @@ export default function OptionWheel({
   const draggedRef = useRef(false);
   const configRef = useRef({});
   const onChangeRef = useRef(onChange);
+  const instanceId = useId();
   const [isDragging, setIsDragging] = useState(false);
 
   onChangeRef.current = onChange;
@@ -164,35 +172,51 @@ export default function OptionWheel({
   };
 
   const handlePointerDown = (event) => {
-    if (!configRef.current.draggable || event.pointerType === "touch") return;
-    dragRef.current = {
-      pointerId: event.pointerId,
-      startY: event.clientY,
-      startTarget: targetRef.current,
-    };
+    if (!configRef.current.draggable) return;
+
+    const currentInteraction = dragRef.current;
+    const nextInteraction = beginPointerInteraction(
+      currentInteraction,
+      event,
+      targetRef.current,
+      (pointerId) => event.currentTarget.setPointerCapture(pointerId),
+    );
+    if (nextInteraction === currentInteraction) return;
+
+    dragRef.current = nextInteraction;
     draggedRef.current = false;
     setIsDragging(true);
   };
 
   const handlePointerMove = (event) => {
-    const drag = dragRef.current;
-    if (!drag) return;
+    const currentInteraction = dragRef.current;
+    if (!currentInteraction || currentInteraction.pointerId !== event.pointerId) return;
 
-    const distance = event.clientY - drag.startY;
-    if (!draggedRef.current && Math.abs(distance) > 4) {
-      draggedRef.current = true;
-      rootRef.current?.setPointerCapture(drag.pointerId);
-    }
-    if (draggedRef.current) {
-      setTarget(drag.startTarget - distance / configRef.current.rowHeight);
+    const nextInteraction = movePointerInteraction(currentInteraction, event);
+    dragRef.current = nextInteraction;
+    draggedRef.current = nextInteraction.moved;
+
+    if (nextInteraction.moved) {
+      const distance = event.clientY - nextInteraction.startY;
+      setTarget(nextInteraction.startTarget - distance / configRef.current.rowHeight);
     }
   };
 
-  const handlePointerEnd = () => {
-    if (!dragRef.current) return;
-    dragRef.current = null;
+  const handlePointerEnd = (event) => {
+    const outcome = endPointerInteraction(dragRef.current, event.pointerId);
+    if (!outcome.handled) return;
+
+    dragRef.current = outcome.interaction;
+    draggedRef.current = outcome.shouldSnap;
     setIsDragging(false);
-    if (draggedRef.current) setTarget(targetRef.current, true);
+    if (outcome.shouldSnap) setTarget(targetRef.current, true);
+
+    if (
+      event.type !== "lostpointercapture" &&
+      event.currentTarget.hasPointerCapture?.(outcome.pointerId)
+    ) {
+      event.currentTarget.releasePointerCapture(outcome.pointerId);
+    }
   };
 
   const handleOptionClick = (index) => {
@@ -200,7 +224,7 @@ export default function OptionWheel({
     setTarget(index, true);
   };
 
-  const activeId = items[selectedIndex] ? `problem-wheel-option-${selectedIndex}` : undefined;
+  const activeId = items[selectedIndex] ? `${instanceId}-option-${selectedIndex}` : undefined;
 
   return (
     <div
@@ -215,10 +239,11 @@ export default function OptionWheel({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerEnd}
       onPointerCancel={handlePointerEnd}
+      onLostPointerCapture={handlePointerEnd}
     >
       {items.map((label, index) => (
         <div
-          id={`problem-wheel-option-${index}`}
+          id={`${instanceId}-option-${index}`}
           key={label}
           ref={(element) => {
             itemRefs.current[index] = element;

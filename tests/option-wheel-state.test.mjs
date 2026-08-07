@@ -38,3 +38,87 @@ test("uses a flatter wheel on tablet and the full curve from 1024px", async () =
   assert.match(styles, /--option-wheel-curve:\s*0\.[0-9]+/);
   assert.match(styles, /@media\s*\(min-width:\s*1024px\)[\s\S]*--option-wheel-curve:\s*1/);
 });
+
+test("captures the initiating pointer immediately and settles a click lifecycle", async () => {
+  const { beginPointerInteraction, endPointerInteraction, movePointerInteraction } =
+    await import("../src/components/OptionWheel/optionWheelState.js");
+  const capturedPointers = [];
+
+  const started = beginPointerInteraction(
+    null,
+    { pointerId: 17, clientY: 120 },
+    1,
+    (pointerId) => capturedPointers.push(pointerId),
+  );
+
+  assert.deepEqual(capturedPointers, [17]);
+  assert.deepEqual(started, {
+    pointerId: 17,
+    startY: 120,
+    startTarget: 1,
+    moved: false,
+  });
+  assert.strictEqual(
+    movePointerInteraction(started, { pointerId: 18, clientY: 180 }),
+    started,
+    "A second pointer must not take over the interaction",
+  );
+
+  const ended = endPointerInteraction(started, 17);
+  assert.deepEqual(ended, {
+    interaction: null,
+    handled: true,
+    pointerId: 17,
+    shouldSnap: false,
+  });
+});
+
+test("cleans up moved pointer interactions once on cancel or lost capture", async () => {
+  const { beginPointerInteraction, endPointerInteraction, movePointerInteraction } =
+    await import("../src/components/OptionWheel/optionWheelState.js");
+
+  for (const endReason of ["pointercancel", "lostpointercapture"]) {
+    const started = beginPointerInteraction(
+      null,
+      { pointerId: 31, clientY: 80 },
+      2,
+      () => {},
+    );
+    const moved = movePointerInteraction(started, { pointerId: 31, clientY: 91 });
+    assert.equal(moved.moved, true, `${endReason} setup must classify a drag`);
+
+    const ended = endPointerInteraction(moved, 31);
+    assert.deepEqual(ended, {
+      interaction: null,
+      handled: true,
+      pointerId: 31,
+      shouldSnap: true,
+    });
+    assert.deepEqual(endPointerInteraction(ended.interaction, 31), {
+      interaction: null,
+      handled: false,
+      pointerId: null,
+      shouldSnap: false,
+    });
+  }
+});
+
+test("routes every production pointer completion event through the same cleanup", async () => {
+  const component = await readFile("src/components/OptionWheel/OptionWheel.jsx", "utf8");
+
+  assert.match(component, /beginPointerInteraction/);
+  assert.match(component, /setPointerCapture/);
+  assert.match(component, /onPointerUp=\{handlePointerEnd\}/);
+  assert.match(component, /onPointerCancel=\{handlePointerEnd\}/);
+  assert.match(component, /onLostPointerCapture=\{handlePointerEnd\}/);
+});
+
+test("derives internal relationship ids instead of reusing fixed DOM ids", async () => {
+  const wheel = await readFile("src/components/OptionWheel/OptionWheel.jsx", "utf8");
+  const selector = await readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8");
+
+  assert.match(wheel, /useId/);
+  assert.doesNotMatch(wheel, /problem-wheel-option-/);
+  assert.match(selector, /useId/);
+  assert.doesNotMatch(selector, /id="problems-title"|id="problem-description"/);
+});

@@ -1,21 +1,38 @@
-import { useState } from "react";
+import { useCallback, useId, useState } from "react";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import OptionWheel from "../OptionWheel/OptionWheel";
+import { transitionSelectedIndex } from "./problemSelectionState";
 import "./ProblemSelector.css";
 
-export default function ProblemSelector({ problems }) {
+export default function ProblemSelector({ problems, sectionId }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const reducedMotion = useReducedMotion();
+  const instanceId = useId();
+  const resolvedSectionId = sectionId ?? `${instanceId}-section`;
+  const headingId = `${instanceId}-heading`;
+  const descriptionId = `${instanceId}-description`;
+  const selectProblem = useCallback(
+    (nextIndex) => {
+      setSelectedIndex((currentIndex) =>
+        transitionSelectedIndex(currentIndex, nextIndex, problems.length),
+      );
+    },
+    [problems.length],
+  );
   const selected = problems[selectedIndex];
 
   if (!selected) return null;
 
   return (
-    <section className="section problem-section" id="problems" aria-labelledby="problems-title">
+    <section
+      className="section problem-section"
+      id={resolvedSectionId}
+      aria-labelledby={headingId}
+    >
       <div className="section__inner">
         <header className="section__heading">
           <p className="section__eyebrow">С чем я могу помочь</p>
-          <h2 id="problems-title">Выберите задачу, которую нужно решить</h2>
+          <h2 id={headingId}>Выберите задачу, которую нужно решить</h2>
           <p>
             Беру на себя путь от разбора ограничений и экономики до работающего цифрового
             решения.
@@ -32,8 +49,8 @@ export default function ProblemSelector({ problems }) {
                 type="button"
                 key={problem.id}
                 aria-pressed={selectedIndex === index}
-                aria-controls="problem-description"
-                onClick={() => setSelectedIndex(index)}
+                aria-controls={descriptionId}
+                onClick={() => selectProblem(index)}
               >
                 <span aria-hidden="true">0{index + 1}</span>
                 {problem.title}
@@ -45,14 +62,14 @@ export default function ProblemSelector({ problems }) {
             <OptionWheel
               items={problems.map((problem) => problem.title)}
               selectedIndex={selectedIndex}
-              onChange={setSelectedIndex}
+              onChange={selectProblem}
               reducedMotion={reducedMotion}
             />
           </div>
 
           <article
             className="problem-selector__description"
-            id="problem-description"
+            id={descriptionId}
             aria-live="polite"
             aria-atomic="true"
           >

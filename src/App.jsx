@@ -95,7 +95,7 @@ export function App() {
           </div>
         </section>
 
-        <ProblemSelector problems={problems} />
+        <ProblemSelector problems={problems} sectionId="problems" />
       </main>
     </>
   );

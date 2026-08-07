@@ -18,4 +18,48 @@ export function shouldCaptureWheel(target, deltaY, count) {
   return deltaY < 0 ? target > 0 : target < count - 1;
 }
 
+export function beginPointerInteraction(
+  currentInteraction,
+  { pointerId, clientY },
+  startTarget,
+  capturePointer,
+) {
+  if (currentInteraction) return currentInteraction;
+
+  capturePointer(pointerId);
+  return {
+    pointerId,
+    startY: clientY,
+    startTarget,
+    moved: false,
+  };
+}
+
+export function movePointerInteraction(interaction, { pointerId, clientY }, threshold = 4) {
+  if (!interaction || interaction.pointerId !== pointerId || interaction.moved) {
+    return interaction;
+  }
+
+  if (Math.abs(clientY - interaction.startY) <= threshold) return interaction;
+  return { ...interaction, moved: true };
+}
+
+export function endPointerInteraction(interaction, pointerId) {
+  if (!interaction || interaction.pointerId !== pointerId) {
+    return {
+      interaction,
+      handled: false,
+      pointerId: null,
+      shouldSnap: false,
+    };
+  }
+
+  return {
+    interaction: null,
+    handled: true,
+    pointerId: interaction.pointerId,
+    shouldSnap: interaction.moved,
+  };
+}
+
 export { clampIndex };
