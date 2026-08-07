@@ -125,6 +125,12 @@ test("renders the four-problem selector", async () => {
   assert.match(app, /<ProblemSelector/);
 });
 
+test("renders the approved career timeline", async () => {
+  assert.equal(await exists("src/components/CareerTimeline/CareerTimeline.jsx"), true);
+  const app = await readFile("src/App.jsx", "utf8");
+  assert.match(app, /<CareerTimeline/);
+});
+
 test("keeps navigation and portrait interactions accessible", async () => {
   const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8");
   assert.match(cardNav, /<button/);

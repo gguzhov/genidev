@@ -1,10 +1,11 @@
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
+import CareerTimeline from "./components/CareerTimeline/CareerTimeline";
 import LiquidEther from "./components/LiquidEther/LiquidEther";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
-import { hero, identity, problems } from "./content/siteContent";
+import { career, hero, identity, problems } from "./content/siteContent";
 import useReducedMotion from "./hooks/useReducedMotion";
 
 const navigation = [
@@ -96,6 +97,7 @@ export function App() {
         </section>
 
         <ProblemSelector problems={problems} sectionId="problems" />
+        <CareerTimeline items={career} />
       </main>
     </>
   );
