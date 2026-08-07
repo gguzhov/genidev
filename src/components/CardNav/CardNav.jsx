@@ -3,9 +3,13 @@ import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { gsap } from "gsap";
 import useReducedMotion from "../../hooks/useReducedMotion";
+import {
+  CLOSED_HEIGHT,
+  getMenuRecreationState,
+  getNavigationCloseOptions,
+} from "./cardNavState";
 import "./CardNav.css";
 
-const CLOSED_HEIGHT = 64;
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -76,14 +80,19 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
     if (!nav) return undefined;
 
     timelineRef.current?.kill();
-    gsap.set(nav, { height: CLOSED_HEIGHT, overflow: "hidden" });
+    const recreationState = getMenuRecreationState(isExpanded, calculateHeight());
 
     if (reducedMotion) {
-      gsap.set(cardsRef.current, { y: 0, opacity: 1 });
+      gsap.set(nav, { height: recreationState.height, overflow: "hidden" });
+      gsap.set(cardsRef.current, {
+        y: recreationState.cardsY,
+        opacity: recreationState.cardsOpacity,
+      });
       timelineRef.current = null;
       return undefined;
     }
 
+    gsap.set(nav, { height: CLOSED_HEIGHT, overflow: "hidden" });
     gsap.set(cardsRef.current, { y: 32, opacity: 0 });
     const timeline = gsap.timeline({ paused: true });
     timeline.to(nav, { height: calculateHeight, duration: 0.38, ease });
@@ -92,13 +101,14 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
       { y: 0, opacity: 1, duration: 0.34, ease, stagger: 0.06 },
       "-=0.16",
     );
+    if (recreationState.timelineProgress === 1) timeline.progress(1);
     timelineRef.current = timeline;
 
     return () => {
       timeline.kill();
       timelineRef.current = null;
     };
-  }, [calculateHeight, ease, items, reducedMotion]);
+  }, [calculateHeight, ease, isExpanded, items, reducedMotion]);
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -149,7 +159,8 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
     };
   }, [closeMenu, isExpanded]);
 
-  const handleNavigation = () => closeMenu({ restoreFocus: false });
+  const handleHeaderNavigation = () => closeMenu(getNavigationCloseOptions("header"));
+  const handlePanelNavigation = () => closeMenu(getNavigationCloseOptions("panel"));
 
   return (
     <header className={`card-nav-container ${className}`.trim()}>
@@ -176,7 +187,7 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
             className="card-nav__brand"
             href="#top"
             aria-label="Геннадий Гужов — к началу страницы"
-            onClick={handleNavigation}
+            onClick={handleHeaderNavigation}
           >
             <img src="/images/gennady-logo.webp" alt="" width="36" height="36" />
             <span>Геннадий Гужов</span>
@@ -187,7 +198,7 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
             href={cta?.href}
             target={cta?.target ?? "_blank"}
             rel={cta?.rel ?? "noreferrer"}
-            onClick={handleNavigation}
+            onClick={handleHeaderNavigation}
           >
             {cta?.label ?? "Решить проблему"}
             <HugeiconsIcon
@@ -223,7 +234,7 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
                     target={link.target}
                     rel={link.rel}
                     tabIndex={isExpanded ? 0 : -1}
-                    onClick={handleNavigation}
+                    onClick={handlePanelNavigation}
                   >
                     <HugeiconsIcon
                       icon={ArrowUpRight01Icon}

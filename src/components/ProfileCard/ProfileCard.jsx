@@ -2,6 +2,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import useReducedMotion from "../../hooks/useReducedMotion";
+import { applyProfileTilt, resetProfileTilt } from "./profileCardMotion";
 import "./ProfileCard.css";
 
 const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
@@ -30,9 +31,24 @@ function ProfileCardComponent({
     return () => media.removeEventListener("change", updatePointer);
   }, []);
 
+  useEffect(() => {
+    if (tiltEnabled) return undefined;
+
+    animationFrameRef.current = resetProfileTilt(
+      wrapperRef.current,
+      animationFrameRef.current,
+      window.cancelAnimationFrame,
+    );
+    return undefined;
+  }, [tiltEnabled]);
+
   useEffect(
     () => () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = resetProfileTilt(
+        wrapperRef.current,
+        animationFrameRef.current,
+        window.cancelAnimationFrame,
+      );
     },
     [],
   );
@@ -41,10 +57,7 @@ function ProfileCardComponent({
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
-    wrapper.style.setProperty("--pointer-x", `${x}%`);
-    wrapper.style.setProperty("--pointer-y", `${y}%`);
-    wrapper.style.setProperty("--rotate-x", `${(50 - y) / 9}deg`);
-    wrapper.style.setProperty("--rotate-y", `${(x - 50) / 11}deg`);
+    applyProfileTilt(wrapper, x, y);
   }, []);
 
   const handlePointerMove = useCallback(
@@ -54,16 +67,23 @@ function ProfileCardComponent({
       const x = ((event.clientX - bounds.left) / bounds.width) * 100;
       const y = ((event.clientY - bounds.top) / bounds.height) * 100;
 
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = requestAnimationFrame(() => setPointerPosition(x, y));
+      if (animationFrameRef.current) window.cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = window.requestAnimationFrame(() => {
+        animationFrameRef.current = null;
+        setPointerPosition(x, y);
+      });
     },
     [setPointerPosition, tiltEnabled],
   );
 
   const handlePointerLeave = useCallback(() => {
     if (!tiltEnabled) return;
-    setPointerPosition(50, 50);
-  }, [setPointerPosition, tiltEnabled]);
+    animationFrameRef.current = resetProfileTilt(
+      wrapperRef.current,
+      animationFrameRef.current,
+      window.cancelAnimationFrame,
+    );
+  }, [tiltEnabled]);
 
   return (
     <div
