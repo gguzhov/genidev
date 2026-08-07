@@ -4,9 +4,11 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { gsap } from "gsap";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import {
+  CARD_NAV_INITIAL_STATE,
   CLOSED_HEIGHT,
   getMenuRecreationState,
   getNavigationCloseOptions,
+  transitionCardNavState,
 } from "./cardNavState";
 import "./CardNav.css";
 
@@ -14,12 +16,15 @@ const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export default function CardNav({ items = [], cta, className = "", ease = "power3.out" }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [menuState, setMenuState] = useState(CARD_NAV_INITIAL_STATE);
   const navRef = useRef(null);
   const triggerRef = useRef(null);
   const cardsRef = useRef([]);
   const timelineRef = useRef(null);
+  const openFrameRef = useRef(null);
+  const lifecycleStateRef = useRef(CARD_NAV_INITIAL_STATE);
   const reducedMotion = useReducedMotion();
+  const { isExpanded, isHamburgerOpen, panelInteractive } = menuState;
 
   const calculateHeight = useCallback(() => {
     const nav = navRef.current;
@@ -29,49 +34,60 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
     return CLOSED_HEIGHT + content.scrollHeight + 12;
   }, []);
 
+  const transitionMenu = useCallback((event) => {
+    const nextState = transitionCardNavState(lifecycleStateRef.current, event);
+    lifecycleStateRef.current = nextState;
+    setMenuState(nextState);
+    return nextState;
+  }, []);
+
   const returnFocus = useCallback(() => {
-    window.requestAnimationFrame(() => triggerRef.current?.focus());
+    triggerRef.current?.focus({ preventScroll: true });
   }, []);
 
   const closeMenu = useCallback(
     ({ restoreFocus = true } = {}) => {
       const nav = navRef.current;
-      if (!nav || !isExpanded) return;
+      if (!nav || !lifecycleStateRef.current.desiredOpen) return;
+
+      transitionMenu("CLOSE");
+      if (openFrameRef.current != null) {
+        window.cancelAnimationFrame(openFrameRef.current);
+        openFrameRef.current = null;
+      }
 
       if (reducedMotion || !timelineRef.current) {
         gsap.set(nav, { height: CLOSED_HEIGHT });
-        setIsExpanded(false);
-        if (restoreFocus) returnFocus();
-        return;
+      } else {
+        timelineRef.current.reverse();
       }
 
-      timelineRef.current.eventCallback("onReverseComplete", () => {
-        setIsExpanded(false);
-        if (restoreFocus) returnFocus();
-      });
-      timelineRef.current.reverse();
+      if (restoreFocus) returnFocus();
     },
-    [isExpanded, reducedMotion, returnFocus],
+    [reducedMotion, returnFocus, transitionMenu],
   );
 
   const openMenu = useCallback(() => {
     const nav = navRef.current;
-    if (!nav || isExpanded) return;
+    if (!nav || lifecycleStateRef.current.desiredOpen) return;
 
-    setIsExpanded(true);
-    window.requestAnimationFrame(() => {
+    transitionMenu("OPEN");
+    openFrameRef.current = window.requestAnimationFrame(() => {
+      openFrameRef.current = null;
+      if (!lifecycleStateRef.current.desiredOpen) return;
+
       if (reducedMotion || !timelineRef.current) {
         gsap.set(nav, { height: calculateHeight() });
         gsap.set(cardsRef.current, { y: 0, opacity: 1 });
         return;
       }
 
-      timelineRef.current.play(0);
+      timelineRef.current.play();
     });
-  }, [calculateHeight, isExpanded, reducedMotion]);
+  }, [calculateHeight, reducedMotion, transitionMenu]);
 
   const toggleMenu = () => {
-    if (isExpanded) closeMenu();
+    if (lifecycleStateRef.current.desiredOpen) closeMenu();
     else openMenu();
   };
 
@@ -80,7 +96,14 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
     if (!nav) return undefined;
 
     timelineRef.current?.kill();
-    const recreationState = getMenuRecreationState(isExpanded, calculateHeight());
+    lifecycleStateRef.current = transitionCardNavState(
+      lifecycleStateRef.current,
+      "TIMELINE_RECREATED",
+    );
+    const recreationState = getMenuRecreationState(
+      lifecycleStateRef.current.desiredOpen,
+      calculateHeight(),
+    );
 
     if (reducedMotion) {
       gsap.set(nav, { height: recreationState.height, overflow: "hidden" });
@@ -108,7 +131,14 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
       timeline.kill();
       timelineRef.current = null;
     };
-  }, [calculateHeight, ease, isExpanded, items, reducedMotion]);
+  }, [calculateHeight, ease, items, reducedMotion]);
+
+  useEffect(
+    () => () => {
+      if (openFrameRef.current != null) window.cancelAnimationFrame(openFrameRef.current);
+    },
+    [],
+  );
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -172,7 +202,7 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
         <div className="card-nav__top">
           <button
             ref={triggerRef}
-            className={`card-nav__menu-button${isExpanded ? " card-nav__menu-button--open" : ""}`}
+            className={`card-nav__menu-button${isHamburgerOpen ? " card-nav__menu-button--open" : ""}`}
             type="button"
             aria-label={isExpanded ? "Закрыть меню" : "Открыть меню"}
             aria-expanded={isExpanded}
@@ -213,7 +243,8 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
         <div
           className="card-nav__content"
           id="card-navigation-panel"
-          aria-hidden={!isExpanded}
+          aria-hidden={!panelInteractive}
+          inert={!panelInteractive ? true : undefined}
         >
           {items.map((item, index) => (
             <section
@@ -233,7 +264,7 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
                     aria-label={link.ariaLabel}
                     target={link.target}
                     rel={link.rel}
-                    tabIndex={isExpanded ? 0 : -1}
+                    tabIndex={panelInteractive ? 0 : -1}
                     onClick={handlePanelNavigation}
                   >
                     <HugeiconsIcon

@@ -23,6 +23,25 @@ test("keeps an expanded CardNav coherent when its timeline is recreated", async 
   });
 });
 
+test("keeps desired CardNav state closed when a timeline is recreated during reverse", async () => {
+  const helperPath = "src/components/CardNav/cardNavState.js";
+  assert.equal(await exists(helperPath), true, `Missing ${helperPath}`);
+
+  const { CARD_NAV_INITIAL_STATE, transitionCardNavState } = await import(`../${helperPath}`);
+  assert.equal(typeof transitionCardNavState, "function", "Missing transitionCardNavState");
+
+  const opened = transitionCardNavState(CARD_NAV_INITIAL_STATE, "OPEN");
+  const closing = transitionCardNavState(opened, "CLOSE");
+  const recreatedDuringReverse = transitionCardNavState(closing, "TIMELINE_RECREATED");
+
+  assert.deepEqual(recreatedDuringReverse, {
+    desiredOpen: false,
+    isExpanded: false,
+    isHamburgerOpen: false,
+    panelInteractive: false,
+  });
+});
+
 test("restores trigger focus only after activating a panel navigation link", async () => {
   const helperPath = "src/components/CardNav/cardNavState.js";
   assert.equal(await exists(helperPath), true, `Missing ${helperPath}`);
