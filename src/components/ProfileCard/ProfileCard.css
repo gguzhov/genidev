@@ -1,0 +1,213 @@
+.profile-card-wrapper {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  position: relative;
+  width: min(100%, 380px);
+  margin-inline: auto;
+  perspective: 900px;
+}
+
+.profile-card__behind {
+  position: absolute;
+  z-index: -1;
+  inset: 8% -8% -5%;
+  border-radius: 36px;
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    var(--blue-a6),
+    var(--blue-a1) 58%,
+    transparent 72%
+  );
+  filter: blur(28px);
+  opacity: 0.68;
+  transition: opacity 240ms ease;
+}
+
+.profile-card {
+  position: relative;
+  display: grid;
+  aspect-ratio: 29 / 36;
+  overflow: hidden;
+  border: 1px solid var(--blue-a7);
+  border-radius: 26px;
+  background: var(--color-surface);
+  box-shadow: 0 28px 80px var(--blue-a4);
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+  transform-style: preserve-3d;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 240ms ease;
+}
+
+.profile-card::before {
+  position: absolute;
+  z-index: 2;
+  inset: 10px;
+  border: 1px solid var(--blue-a4);
+  border-radius: 18px;
+  content: "";
+  pointer-events: none;
+}
+
+.profile-card::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 46%, var(--blue-a1) 64%, var(--blue-a9));
+  content: "";
+  pointer-events: none;
+}
+
+.profile-card-wrapper--tilt:hover .profile-card {
+  box-shadow: 0 34px 90px var(--blue-a5);
+  transition: transform 90ms linear, box-shadow 240ms ease;
+}
+
+.profile-card-wrapper--tilt:hover .profile-card__behind {
+  opacity: 1;
+}
+
+.profile-card__avatar {
+  width: 100%;
+  height: 100%;
+  grid-area: 1 / 1;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.profile-card__markers {
+  position: absolute;
+  z-index: 3;
+  inset: 19px;
+  pointer-events: none;
+}
+
+.profile-card__markers span {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--blue-contrast);
+  opacity: 0.72;
+}
+
+.profile-card__markers span:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.profile-card__markers span:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+
+.profile-card__markers span:nth-child(3) {
+  right: 0;
+  bottom: 0;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+}
+
+.profile-card__markers span:nth-child(4) {
+  bottom: 0;
+  left: 0;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+
+.profile-card__info {
+  position: relative;
+  z-index: 4;
+  align-self: end;
+  display: grid;
+  margin: 10px;
+  padding: 15px;
+  gap: 14px;
+  border: 1px solid var(--blue-a5);
+  border-radius: 17px;
+  background: var(--blue-surface);
+  box-shadow: 0 14px 40px var(--blue-a5);
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+}
+
+.profile-card__identity {
+  min-width: 0;
+}
+
+.profile-card__handle,
+.profile-card__title {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.profile-card__handle {
+  margin-bottom: 6px;
+  font-size: 0.69rem;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+}
+
+.profile-card__identity h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.15rem, 5.5vw, 1.5rem);
+  font-weight: 720;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.profile-card__title {
+  max-width: 34ch;
+  margin-top: 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.38;
+}
+
+.profile-card__contact {
+  display: inline-flex;
+  min-height: 46px;
+  padding-inline: 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 0.76rem;
+  font-weight: 720;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.profile-card__contact:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 430px) {
+  .profile-card__info {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    padding: 17px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile-card-wrapper {
+    width: min(100%, 420px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .profile-card,
+  .profile-card__behind,
+  .profile-card__contact {
+    transition: none;
+  }
+}

@@ -54,9 +54,10 @@ test("uses the approved identity and component paths", async () => {
   assert.equal(await exists("src/components/LiquidEther/LiquidEther.css"), true);
 
   const app = await readFile("src/App.jsx", "utf8");
+  const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8").catch(() => "");
   assert.match(app, /Геннадий Гужов/);
   assert.doesNotMatch(app, /Георгий Гужов/);
-  assert.match(app, /src="\/logo\.svg"/);
+  assert.match(cardNav, /src="\/images\/gennady-logo\.webp"/);
   assert.match(app, /components\/LiquidEther\/LiquidEther/);
 
   const html = await readFile("index.html", "utf8");
@@ -94,4 +95,37 @@ test("keeps portfolio content and route state in focused modules", async () => {
   for (const path of ["src/content/siteContent.js", "src/lib/projectRouting.js"]) {
     assert.equal(await exists(path), true, `Missing ${path}`);
   }
+});
+
+test("composes the approved navigation and portrait hero", async () => {
+  for (const path of [
+    "src/components/CardNav/CardNav.jsx",
+    "src/components/ProfileCard/ProfileCard.jsx",
+    "src/hooks/useReducedMotion.js",
+  ]) {
+    assert.equal(await exists(path), true, `Missing ${path}`);
+  }
+
+  const app = await readFile("src/App.jsx", "utf8");
+  assert.match(app, /<CardNav/);
+  assert.match(app, /<ProfileCard/);
+  assert.match(app, /hero\.title/);
+});
+
+test("keeps navigation and portrait interactions accessible", async () => {
+  const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8");
+  assert.match(cardNav, /<button/);
+  assert.match(cardNav, /aria-expanded=/);
+  assert.match(cardNav, /aria-controls=/);
+  assert.match(cardNav, /Escape/);
+  assert.match(cardNav, /useReducedMotion/);
+  assert.doesNotMatch(cardNav, /react-icons/);
+
+  const profileCard = await readFile("src/components/ProfileCard/ProfileCard.jsx", "utf8");
+  assert.match(profileCard, /<img/);
+  assert.match(profileCard, /alt=\{name\}/);
+  assert.match(profileCard, /Решить проблему/);
+  assert.match(profileCard, /hover: hover/);
+  assert.match(profileCard, /pointer: fine/);
+  assert.doesNotMatch(profileCard, /DeviceOrientation|DeviceMotion|deviceorientation/);
 });

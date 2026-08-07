@@ -1,0 +1,244 @@
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { gsap } from "gsap";
+import useReducedMotion from "../../hooks/useReducedMotion";
+import "./CardNav.css";
+
+const CLOSED_HEIGHT = 64;
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+export default function CardNav({ items = [], cta, className = "", ease = "power3.out" }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const navRef = useRef(null);
+  const triggerRef = useRef(null);
+  const cardsRef = useRef([]);
+  const timelineRef = useRef(null);
+  const reducedMotion = useReducedMotion();
+
+  const calculateHeight = useCallback(() => {
+    const nav = navRef.current;
+    const content = nav?.querySelector(".card-nav__content");
+    if (!content) return CLOSED_HEIGHT;
+
+    return CLOSED_HEIGHT + content.scrollHeight + 12;
+  }, []);
+
+  const returnFocus = useCallback(() => {
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }, []);
+
+  const closeMenu = useCallback(
+    ({ restoreFocus = true } = {}) => {
+      const nav = navRef.current;
+      if (!nav || !isExpanded) return;
+
+      if (reducedMotion || !timelineRef.current) {
+        gsap.set(nav, { height: CLOSED_HEIGHT });
+        setIsExpanded(false);
+        if (restoreFocus) returnFocus();
+        return;
+      }
+
+      timelineRef.current.eventCallback("onReverseComplete", () => {
+        setIsExpanded(false);
+        if (restoreFocus) returnFocus();
+      });
+      timelineRef.current.reverse();
+    },
+    [isExpanded, reducedMotion, returnFocus],
+  );
+
+  const openMenu = useCallback(() => {
+    const nav = navRef.current;
+    if (!nav || isExpanded) return;
+
+    setIsExpanded(true);
+    window.requestAnimationFrame(() => {
+      if (reducedMotion || !timelineRef.current) {
+        gsap.set(nav, { height: calculateHeight() });
+        gsap.set(cardsRef.current, { y: 0, opacity: 1 });
+        return;
+      }
+
+      timelineRef.current.play(0);
+    });
+  }, [calculateHeight, isExpanded, reducedMotion]);
+
+  const toggleMenu = () => {
+    if (isExpanded) closeMenu();
+    else openMenu();
+  };
+
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return undefined;
+
+    timelineRef.current?.kill();
+    gsap.set(nav, { height: CLOSED_HEIGHT, overflow: "hidden" });
+
+    if (reducedMotion) {
+      gsap.set(cardsRef.current, { y: 0, opacity: 1 });
+      timelineRef.current = null;
+      return undefined;
+    }
+
+    gsap.set(cardsRef.current, { y: 32, opacity: 0 });
+    const timeline = gsap.timeline({ paused: true });
+    timeline.to(nav, { height: calculateHeight, duration: 0.38, ease });
+    timeline.to(
+      cardsRef.current,
+      { y: 0, opacity: 1, duration: 0.34, ease, stagger: 0.06 },
+      "-=0.16",
+    );
+    timelineRef.current = timeline;
+
+    return () => {
+      timeline.kill();
+      timelineRef.current = null;
+    };
+  }, [calculateHeight, ease, items, reducedMotion]);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      if (!isExpanded || !navRef.current) return;
+      gsap.set(navRef.current, { height: calculateHeight() });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [calculateHeight, isExpanded]);
+
+  useEffect(() => {
+    if (!isExpanded) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!navRef.current?.contains(event.target)) closeMenu();
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu();
+        return;
+      }
+
+      if (event.key !== "Tab" || !navRef.current) return;
+      const focusable = [...navRef.current.querySelectorAll(FOCUSABLE_SELECTOR)].filter(
+        (element) => !element.hasAttribute("hidden") && element.getAttribute("aria-hidden") !== "true",
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeMenu, isExpanded]);
+
+  const handleNavigation = () => closeMenu({ restoreFocus: false });
+
+  return (
+    <header className={`card-nav-container ${className}`.trim()}>
+      <nav
+        ref={navRef}
+        className={`card-nav${isExpanded ? " card-nav--open" : ""}`}
+        aria-label="Основная навигация"
+      >
+        <div className="card-nav__top">
+          <button
+            ref={triggerRef}
+            className={`card-nav__menu-button${isExpanded ? " card-nav__menu-button--open" : ""}`}
+            type="button"
+            aria-label={isExpanded ? "Закрыть меню" : "Открыть меню"}
+            aria-expanded={isExpanded}
+            aria-controls="card-navigation-panel"
+            onClick={toggleMenu}
+          >
+            <span />
+            <span />
+          </button>
+
+          <a
+            className="card-nav__brand"
+            href="#top"
+            aria-label="Геннадий Гужов — к началу страницы"
+            onClick={handleNavigation}
+          >
+            <img src="/images/gennady-logo.webp" alt="" width="36" height="36" />
+            <span>Геннадий Гужов</span>
+          </a>
+
+          <a
+            className="card-nav__cta"
+            href={cta?.href}
+            target={cta?.target ?? "_blank"}
+            rel={cta?.rel ?? "noreferrer"}
+            onClick={handleNavigation}
+          >
+            {cta?.label ?? "Решить проблему"}
+            <HugeiconsIcon
+              icon={ArrowUpRight01Icon}
+              size={18}
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+          </a>
+        </div>
+
+        <div
+          className="card-nav__content"
+          id="card-navigation-panel"
+          aria-hidden={!isExpanded}
+        >
+          {items.map((item, index) => (
+            <section
+              className="card-nav__card"
+              key={item.label}
+              ref={(element) => {
+                cardsRef.current[index] = element;
+              }}
+            >
+              <p className="card-nav__label">{item.label}</p>
+              <div className="card-nav__links">
+                {item.links?.map((link) => (
+                  <a
+                    className="card-nav__link"
+                    href={link.href}
+                    key={`${link.href}-${link.label}`}
+                    aria-label={link.ariaLabel}
+                    target={link.target}
+                    rel={link.rel}
+                    tabIndex={isExpanded ? 0 : -1}
+                    onClick={handleNavigation}
+                  >
+                    <HugeiconsIcon
+                      icon={ArrowUpRight01Icon}
+                      size={18}
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </nav>
+    </header>
+  );
+}
