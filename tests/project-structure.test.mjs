@@ -42,6 +42,14 @@ test("loads JetBrains Mono locally and uses split styles", async () => {
 
 test("uses the approved identity and component paths", async () => {
   assert.equal(await exists("public/logo.svg"), true);
+  for (const path of [
+    "public/images/gennady-profile.webp",
+    "public/images/gennady-logo.webp",
+    "public/favicon-32.png",
+    "public/favicon-180.png",
+  ]) {
+    assert.equal(await exists(path), true, `Missing ${path}`);
+  }
   assert.equal(await exists("src/components/LiquidEther/LiquidEther.jsx"), true);
   assert.equal(await exists("src/components/LiquidEther/LiquidEther.css"), true);
 
@@ -52,7 +60,9 @@ test("uses the approved identity and component paths", async () => {
   assert.match(app, /components\/LiquidEther\/LiquidEther/);
 
   const html = await readFile("index.html", "utf8");
-  assert.match(html, /rel="icon"[^>]+href="\/logo\.svg"/);
+  assert.match(html, /href="\/favicon-32\.png"/);
+  assert.match(html, /rel="apple-touch-icon"/);
+  assert.match(html, /разработчик цифровых и AI-продуктов/i);
   assert.match(html, /Геннадий Гужов/);
   assert.doesNotMatch(html, /Георгий Гужов/);
 });
