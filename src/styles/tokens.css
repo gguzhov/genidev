@@ -1,0 +1,85 @@
+:root,
+.light,
+.light-theme {
+  --blue-1: #eeeff1;
+  --blue-2: #e7eaf1;
+  --blue-3: #dce2f0;
+  --blue-4: #ccd9f4;
+  --blue-5: #bbcdf6;
+  --blue-6: #a7bff6;
+  --blue-7: #8fabef;
+  --blue-8: #6e90e7;
+  --blue-9: #152863;
+  --blue-10: #273d7a;
+  --blue-11: #324f9f;
+  --blue-12: #182b67;
+  --blue-a1: #275ac005;
+  --blue-a2: #0949dd0c;
+  --blue-a3: #0949dd18;
+  --blue-a4: #0053ff28;
+  --blue-a5: #417bff4f;
+  --blue-a6: #004eff4f;
+  --blue-a7: #0246eb69;
+  --blue-a8: #0240de8c;
+  --blue-a9: #001555e9;
+  --blue-a10: #001a63d6;
+  --blue-a11: #01268acb;
+  --blue-a12: #001558e6;
+  --blue-contrast: #fff;
+  --blue-surface: #e5e9f1cc;
+  --blue-indicator: #152863;
+  --blue-track: #152863;
+
+  --color-canvas: var(--blue-1);
+  --color-surface: var(--blue-2);
+  --color-surface-raised: var(--blue-contrast);
+  --color-border: var(--blue-4);
+  --color-text: var(--blue-12);
+  --color-text-muted: var(--blue-11);
+  --color-accent: var(--blue-9);
+  --color-accent-hover: var(--blue-10);
+  --color-on-accent: var(--blue-contrast);
+  --color-focus: var(--blue-8);
+  --font-primary: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Consolas, monospace;
+  color: var(--color-text);
+  background: var(--color-canvas);
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  @media (color-gamut: p3) {
+    :root,
+    .light,
+    .light-theme {
+      --blue-1: oklch(95.2% 0.0023 266.4);
+      --blue-2: oklch(93.7% 0.01 266.4);
+      --blue-3: oklch(91.3% 0.0202 266.4);
+      --blue-4: oklch(88.4% 0.0402 266.4);
+      --blue-5: oklch(84.9% 0.0605 266.4);
+      --blue-6: oklch(80.6% 0.0827 266.4);
+      --blue-7: oklch(74.7% 0.1025 266.4);
+      --blue-8: oklch(66.7% 0.1353 266.4);
+      --blue-9: oklch(30.1% 0.1073 266.4);
+      --blue-10: oklch(37.6% 0.1073 266.4);
+      --blue-11: oklch(44.9% 0.1353 266.4);
+      --blue-12: oklch(31.3% 0.1073 266.4);
+      --blue-a1: color(display-p3 0.0275 0.2588 0.7216 / 0.017);
+      --blue-a2: color(display-p3 0.0157 0.2039 0.7647 / 0.042);
+      --blue-a3: color(display-p3 0.0039 0.2314 0.8157 / 0.087);
+      --blue-a4: color(display-p3 0.0039 0.2941 0.949 / 0.149);
+      --blue-a5: color(display-p3 0.0039 0.2588 0.949 / 0.215);
+      --blue-a6: color(display-p3 0.0039 0.2471 0.9373 / 0.29);
+      --blue-a7: color(display-p3 0.0039 0.2235 0.8706 / 0.389);
+      --blue-a8: color(display-p3 0 0.2 0.8196 / 0.517);
+      --blue-a9: color(display-p3 0 0.0667 0.3059 / 0.897);
+      --blue-a10: color(display-p3 0 0.0784 0.3529 / 0.819);
+      --blue-a11: color(display-p3 0 0.1137 0.502 / 0.769);
+      --blue-a12: color(display-p3 0 0.0667 0.3137 / 0.885);
+      --blue-surface: color(display-p3 0.902 0.9137 0.9412 / 0.8);
+      --blue-indicator: oklch(30.1% 0.1073 266.4);
+      --blue-track: oklch(30.1% 0.1073 266.4);
+    }
+  }
+}
