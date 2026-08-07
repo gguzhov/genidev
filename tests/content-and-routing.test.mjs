@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { career, hero, problems, projects } from "../src/content/siteContent.js";
+import { career, contact, hero, problems, projects } from "../src/content/siteContent.js";
 import { projectPath, projectSlugFromPath } from "../src/lib/projectRouting.js";
 
 test("publishes the approved positioning and four business problems", () => {
@@ -10,6 +10,10 @@ test("publishes the approved positioning and four business problems", () => {
   );
   assert.equal(hero.cta.label, "Решить проблему");
   assert.equal(hero.cta.href, "https://t.me/gguzhov");
+  assert.equal(hero.cta.target, "_blank");
+  assert.equal(hero.cta.rel, "noreferrer");
+  assert.equal(contact.target, "_blank");
+  assert.equal(contact.rel, "noreferrer");
   assert.deepEqual(problems.map(({ id }) => id), ["launch", "automate", "ai", "growth"]);
 });
 
