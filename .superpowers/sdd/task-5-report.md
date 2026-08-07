@@ -35,3 +35,22 @@
 - Контент не скрывается через `display: none` или `visibility: hidden`; reduced motion также снимает transition/transform.
 - Используются существующие цветовые токены; зависимостей не добавлено.
 - `vite build` сообщает существующее предупреждение о chunk размером свыше 500 kB (822.86 kB); задача карьерной линии не меняет стратегию разделения кода.
+
+## Cleanup race fix
+
+### RED
+
+- Добавлен regression-тест `ignores queued observer callbacks after cleanup`: он сохраняет callback `IntersectionObserver`, вызывает cleanup, затем доставляет сохранённый callback.
+- До исправления тест падал: callback вызывал `onReveal` со stale index `[0]` после cleanup.
+
+### GREEN
+
+- `observeCareerItems` получил локальный lifecycle guard `active`.
+- Cleanup сначала деактивирует callback, затем вызывает `disconnect()`, поэтому late callback после смены `items` или unmount не может вызвать `setVisibleItems`.
+
+### Проверки
+
+- `node --test tests/career-timeline-state.test.mjs` — 5/5 PASS.
+- `npm test` — 34/34 PASS.
+- `npm run build` — PASS.
+- `git diff --check` — PASS.

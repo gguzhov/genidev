@@ -3,8 +3,11 @@ export function shouldRevealAll({ reducedMotion, observerAvailable }) {
 }
 
 export function observeCareerItems({ items, Observer, onReveal }) {
+  let active = true;
   const observer = new Observer(
     (entries) => {
+      if (!active) return;
+
       const revealedIndexes = entries
         .filter((entry) => entry.isIntersecting)
         .map((entry) => Number(entry.target.dataset.careerIndex));
@@ -21,5 +24,8 @@ export function observeCareerItems({ items, Observer, onReveal }) {
     if (item) observer.observe(item);
   });
 
-  return () => observer.disconnect();
+  return () => {
+    active = false;
+    observer.disconnect();
+  };
 }

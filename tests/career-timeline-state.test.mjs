@@ -66,3 +66,33 @@ test("disconnects the career observer after registering visible events", () => {
   cleanup();
   assert.equal(disconnected, true);
 });
+
+test("ignores queued observer callbacks after cleanup", () => {
+  assert.ok(stateModule, "career timeline reveal state module should exist");
+  let callback;
+  const revealed = [];
+  const item = { dataset: { careerIndex: "0" } };
+
+  class QueuedCareerObserver {
+    constructor(nextCallback) {
+      callback = nextCallback;
+    }
+
+    observe() {}
+
+    unobserve() {}
+
+    disconnect() {}
+  }
+
+  const cleanup = stateModule.observeCareerItems({
+    items: [item],
+    Observer: QueuedCareerObserver,
+    onReveal: (indexes) => revealed.push(...indexes),
+  });
+
+  cleanup();
+  callback([{ isIntersecting: true, target: item }]);
+
+  assert.deepEqual(revealed, []);
+});
