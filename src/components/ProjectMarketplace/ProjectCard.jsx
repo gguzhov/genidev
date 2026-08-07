@@ -8,15 +8,16 @@ export default function ProjectCard({
   tabIndex = decorative ? -1 : 0,
 }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const Element = decorative ? "div" : "button";
 
   return (
-    <button
+    <Element
       className={`project-card project-card--${variant}${imageFailed ? " has-image-fallback" : ""}`}
-      type="button"
-      aria-label={`Открыть кейс «${project.title}»`}
+      type={decorative ? undefined : "button"}
+      aria-label={decorative ? undefined : `Открыть кейс «${project.title}»`}
       aria-hidden={decorative ? "true" : undefined}
       tabIndex={tabIndex}
-      onClick={() => onOpenProject(project.slug)}
+      onClick={decorative ? undefined : () => onOpenProject(project.slug)}
     >
       <span className="project-card__media" aria-hidden="true">
         {!imageFailed && (
@@ -44,6 +45,6 @@ export default function ProjectCard({
           ))}
         </span>
       </span>
-    </button>
+    </Element>
   );
 }

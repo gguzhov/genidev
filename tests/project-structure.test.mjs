@@ -142,6 +142,19 @@ test("ships the project marketplace and local covers", async () => {
   assert.match(await readFile("src/App.jsx", "utf8"), /<ProjectMarketplace/);
 });
 
+test("keeps desktop project controls stable while visual tracks remain decorative", async () => {
+  const driftWall = await readFile("src/components/DriftWall/DriftWall.jsx", "utf8");
+  const driftCss = await readFile("src/components/DriftWall/DriftWall.css", "utf8");
+
+  assert.match(driftWall, /drift-wall__semantic-layer/);
+  assert.match(driftWall, /semanticProjects\.map/);
+  assert.match(driftWall, /observeViewportVisibility/);
+  assert.match(driftWall, /--dw-tile-height/);
+  assert.match(driftWall, /--dw-tile-gap/);
+  assert.match(driftCss, /var\(--dw-tile-height\)/);
+  assert.match(driftCss, /var\(--dw-tile-gap\)/);
+});
+
 test("keeps navigation and portrait interactions accessible", async () => {
   const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8");
   assert.match(cardNav, /<button/);

@@ -96,3 +96,29 @@ IlonMask gallery оставлена пустой. Публичный `https://il
 
 - Vite сообщает существующее предупреждение о JS chunk >500 kB; build успешен.
 - IlonMask gallery намеренно пуста из-за недоступности безопасного публичного источника.
+
+## Follow-up после code review
+
+Исправлены два Important и два Minor замечания:
+
+- Единственные semantic controls вынесены из движущихся треков в стабильный `drift-wall__semantic-layer`. В нём находится ровно одна нативная кнопка на проект; слой не входит в transform/mask visual plane. Все 32 визуальные плитки рендерятся декоративными `div` с `aria-hidden="true"` и `tabIndex={-1}`.
+- IntersectionObserver использует строгие `{ rootMargin: "0px", threshold: 0 }`. Если API отсутствует, `observeViewportVisibility` делает только немедленную и event-bound проверку `getBoundingClientRect()` на `scroll`/`resize`, после чего cleanup удаляет оба listener; постоянный цикл не запускается.
+- Решения запуска/отмены rAF централизованы в `getAnimationFrameAction`; cleanup отменяет запланированный frame, а `shouldAnimateDriftWall` запрещает scheduling вне viewport, при `document.hidden` и reduced motion.
+- Единый `DRIFT_WALL_LAYOUT` и props `tileHeight`/`tileGap` одновременно формируют wrap segment в JS и CSS variables `--dw-tile-height`/`--dw-tile-gap`, поэтому CSS и modulo period используют одну геометрию.
+
+### Follow-up RED / GREEN
+
+- RED 1: focused suite завершился `SyntaxError`, потому что production module ещё не экспортировал `DRIFT_WALL_LAYOUT` и новые lifecycle/presentation helpers.
+- GREEN 1: после production helpers `tests/marketplace-state.test.mjs` прошёл 10/10.
+- RED 2: structural integration test упал на отсутствии `drift-wall__semantic-layer` в `DriftWall.jsx`.
+- GREEN 2: после подключения helpers, stable layer и CSS variables focused suites прошли 21/21.
+- Финальный `npm test`: 46/46 PASS.
+- Финальный `npm run build`: PASS; сохранилось только предупреждение Vite о chunk >500 kB.
+- `git diff --check`: PASS.
+
+### Follow-up QA
+
+- CDP desktop-проверка подтвердила ровно 2 нативные project button и 32 декоративные плитки.
+- Программный keyboard focus остаётся на stable overlay control, `:focus-visible` активен, computed outline — 3 px, доступное имя — `Открыть кейс «Остров Здоровья»`.
+- Reduced motion повторно показывает static grid: DriftWall отсутствует, доступны 2 project card.
+- Headless-проверка точного движения/паузы через scroll не использована как доказательство: глобальный `scroll-behavior: smooth` не успел завершить перемещение секции в ограниченном CDP окне. Строгая граница viewport, fallback lifecycle и rAF gate/cancel подтверждены production-level unit tests без browser timing assumptions.

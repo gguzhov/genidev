@@ -1,14 +1,26 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProjectCard from "../ProjectMarketplace/ProjectCard";
-import { buildWallColumns, getNextTrackOffset, shouldAnimateDriftWall } from "./driftWallState";
+import {
+  DRIFT_WALL_LAYOUT,
+  buildWallPresentation,
+  getAnimationFrameAction,
+  getNextTrackOffset,
+  getTrackSegmentHeight,
+  observeViewportVisibility,
+  shouldAnimateDriftWall,
+} from "./driftWallState";
 import "./DriftWall.css";
 
 const COLUMN_COUNT = 4;
 const TRACK_COPIES = 4;
-const TILE_HEIGHT = 310;
-const TILE_GAP = 20;
 
-export default function DriftWall({ projects, onOpenProject, reducedMotion = false }) {
+export default function DriftWall({
+  projects,
+  onOpenProject,
+  reducedMotion = false,
+  tileHeight = DRIFT_WALL_LAYOUT.tileHeight,
+  tileGap = DRIFT_WALL_LAYOUT.tileGap,
+}) {
   const containerRef = useRef(null);
   const planeRef = useRef(null);
   const trackRefs = useRef([]);
@@ -22,28 +34,22 @@ export default function DriftWall({ projects, onOpenProject, reducedMotion = fal
     typeof document === "undefined" ? false : document.hidden,
   );
 
-  const columns = useMemo(
-    () => buildWallColumns(projects, { columns: COLUMN_COUNT, copies: TRACK_COPIES }),
+  const { columns, semanticProjects } = useMemo(
+    () => buildWallPresentation(projects, { columns: COLUMN_COUNT, copies: TRACK_COPIES }),
     [projects],
   );
-  const copyHeight = projects.length * (TILE_HEIGHT + TILE_GAP);
+  const copyHeight = getTrackSegmentHeight(projects.length, { tileHeight, tileGap });
   const animationActive = shouldAnimateDriftWall({ isVisible, documentHidden, reducedMotion });
+  const wallStyle = {
+    "--dw-tile-height": `${tileHeight}px`,
+    "--dw-tile-gap": `${tileGap}px`,
+  };
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
 
-    if (typeof IntersectionObserver === "undefined") {
-      setIsVisible(true);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { rootMargin: "120px 0px", threshold: 0.01 },
-    );
-    observer.observe(container);
-    return () => observer.disconnect();
+    return observeViewportVisibility({ element: container, onChange: setIsVisible });
   }, []);
 
   useEffect(() => {
@@ -59,7 +65,10 @@ export default function DriftWall({ projects, onOpenProject, reducedMotion = fal
   }, [columns, copyHeight]);
 
   useEffect(() => {
-    if (!animationActive || !copyHeight) return undefined;
+    const active = animationActive && copyHeight > 0;
+    if (getAnimationFrameAction({ active, frameId: rafRef.current }) !== "schedule") {
+      return undefined;
+    }
 
     const animate = (timestamp) => {
       if (lastTimestampRef.current === null) lastTimestampRef.current = timestamp;
@@ -98,7 +107,11 @@ export default function DriftWall({ projects, onOpenProject, reducedMotion = fal
 
     rafRef.current = requestAnimationFrame(animate);
     return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      if (
+        getAnimationFrameAction({ active: false, frameId: rafRef.current }) === "cancel"
+      ) {
+        cancelAnimationFrame(rafRef.current);
+      }
       rafRef.current = null;
       lastTimestampRef.current = null;
     };
@@ -121,32 +134,47 @@ export default function DriftWall({ projects, onOpenProject, reducedMotion = fal
     <div
       className="drift-wall"
       ref={containerRef}
+      style={wallStyle}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPointer}
+      role="group"
       aria-label="Проекты в движущейся витрине"
     >
-      <div className="drift-wall__plane" ref={planeRef}>
-        {columns.map((column, columnIndex) => (
-          <div className="drift-wall__column" key={column.key}>
-            <div
-              className="drift-wall__track"
-              ref={(element) => {
-                trackRefs.current[columnIndex] = element;
-              }}
-            >
-              {column.tiles.map(({ project, decorative, tabIndex, key }) => (
-                <div className="drift-wall__tile" key={key}>
-                  <ProjectCard
-                    project={project}
-                    onOpenProject={onOpenProject}
-                    decorative={decorative}
-                    tabIndex={tabIndex}
-                    variant="wall"
-                  />
-                </div>
-              ))}
+      <div className="drift-wall__visual" aria-hidden="true">
+        <div className="drift-wall__plane" ref={planeRef}>
+          {columns.map((column, columnIndex) => (
+            <div className="drift-wall__column" key={column.key}>
+              <div
+                className="drift-wall__track"
+                ref={(element) => {
+                  trackRefs.current[columnIndex] = element;
+                }}
+              >
+                {column.tiles.map(({ project, decorative, tabIndex, key }) => (
+                  <div className="drift-wall__tile" key={key}>
+                    <ProjectCard
+                      project={project}
+                      onOpenProject={onOpenProject}
+                      decorative={decorative}
+                      tabIndex={tabIndex}
+                      variant="wall"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="drift-wall__semantic-layer" aria-label="Открыть кейс проекта">
+        {semanticProjects.map((project) => (
+          <ProjectCard
+            project={project}
+            onOpenProject={onOpenProject}
+            variant="wall-control"
+            key={project.slug}
+          />
         ))}
       </div>
     </div>
