@@ -79,3 +79,9 @@ test("uses the approved calm motion contract", async () => {
   assert.match(heroCss, /@keyframes hero-reveal/);
   assert.match(heroCss, /prefers-reduced-motion:\s*reduce/);
 });
+
+test("keeps portfolio content and route state in focused modules", async () => {
+  for (const path of ["src/content/siteContent.js", "src/lib/projectRouting.js"]) {
+    assert.equal(await exists(path), true, `Missing ${path}`);
+  }
+});
