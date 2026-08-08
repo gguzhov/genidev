@@ -142,6 +142,20 @@ test("ships the project marketplace and local covers", async () => {
   assert.match(await readFile("src/App.jsx", "utf8"), /<ProjectMarketplace/);
 });
 
+test("implements route-backed project cases", async () => {
+  for (const path of [
+    "src/hooks/useProjectRoute.js",
+    "src/components/ProjectCase/ProjectCase.jsx",
+  ]) assert.equal(await exists(path), true, `Missing ${path}`);
+
+  const app = await readFile("src/App.jsx", "utf8");
+  assert.match(app, /useProjectRoute/);
+  assert.match(app, /<ProjectCase/);
+
+  const projectCaseCss = await readFile("src/components/ProjectCase/ProjectCase.css", "utf8");
+  assert.doesNotMatch(projectCaseCss, /min-height:\s*16rem/);
+});
+
 test("keeps desktop project controls stable while visual tracks remain decorative", async () => {
   const driftWall = await readFile("src/components/DriftWall/DriftWall.jsx", "utf8");
   const driftCss = await readFile("src/components/DriftWall/DriftWall.css", "utf8");

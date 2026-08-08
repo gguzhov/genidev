@@ -38,6 +38,9 @@ test("ships complete project cases without a role field", () => {
 test("maps project routes in both directions", () => {
   assert.equal(projectPath("ostrov-zdoroviya"), "/projects/ostrov-zdoroviya");
   assert.equal(projectSlugFromPath("/projects/ilonmask-vpn"), "ilonmask-vpn");
+  assert.equal(projectSlugFromPath("/projects/ostrov-zdoroviya/"), "ostrov-zdoroviya");
+  assert.equal(projectSlugFromPath("/projects/%20"), null);
+  assert.equal(projectSlugFromPath("/not-projects/ostrov-zdoroviya"), null);
   assert.equal(projectSlugFromPath("/projects/unknown/extra"), null);
   assert.equal(projectSlugFromPath("/"), null);
 });
