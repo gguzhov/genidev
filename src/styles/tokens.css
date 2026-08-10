@@ -44,6 +44,9 @@
   --font-primary: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Consolas, monospace;
   --layout-max: 1280px;
   --layout-gutter: 16px;
+  --radius-control: 12px;
+  --radius-surface: 18px;
+  --radius-feature: 24px;
   --motion-fast: 160ms;
   --motion-state: 280ms;
   --motion-reveal: 500ms;

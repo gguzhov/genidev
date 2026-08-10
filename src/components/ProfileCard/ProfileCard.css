@@ -22,7 +22,7 @@
   );
   filter: blur(28px);
   opacity: 0.68;
-  transition: opacity 240ms ease;
+  transition: opacity var(--motion-state) var(--motion-ease);
 }
 
 .profile-card {
@@ -31,12 +31,13 @@
   aspect-ratio: 29 / 36;
   overflow: hidden;
   border: 1px solid var(--blue-a7);
-  border-radius: 26px;
+  border-radius: var(--radius-feature);
   background: var(--color-surface);
-  box-shadow: 0 28px 80px var(--blue-a4);
+  box-shadow: 0 20px 60px var(--blue-a3);
   transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
   transform-style: preserve-3d;
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 240ms ease;
+  transition: transform var(--motion-state) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
 }
 
 .profile-card::before {
@@ -44,7 +45,7 @@
   z-index: 2;
   inset: 10px;
   border: 1px solid var(--blue-a4);
-  border-radius: 18px;
+  border-radius: var(--radius-surface);
   content: "";
   pointer-events: none;
 }
@@ -59,8 +60,9 @@
 }
 
 .profile-card-wrapper--tilt:hover .profile-card {
-  box-shadow: 0 34px 90px var(--blue-a5);
-  transition: transform 90ms linear, box-shadow 240ms ease;
+  box-shadow: 0 24px 68px var(--blue-a4);
+  transition: transform var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
 }
 
 .profile-card-wrapper--tilt:hover .profile-card__behind {
@@ -127,9 +129,8 @@
   padding: 15px;
   gap: 14px;
   border: 1px solid var(--blue-a5);
-  border-radius: 17px;
+  border-radius: var(--radius-surface);
   background: var(--blue-surface);
-  box-shadow: 0 14px 40px var(--blue-a5);
   backdrop-filter: blur(18px) saturate(115%);
   -webkit-backdrop-filter: blur(18px) saturate(115%);
 }
@@ -176,13 +177,14 @@
   justify-content: center;
   gap: 8px;
   border: 0;
-  border-radius: 11px;
+  border-radius: var(--radius-control);
   background: var(--color-accent);
   color: var(--color-on-accent);
   font-size: 0.76rem;
   font-weight: 720;
   cursor: pointer;
-  transition: background 180ms ease, transform 180ms ease;
+  transition: background var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
 }
 
 .profile-card__contact:hover {

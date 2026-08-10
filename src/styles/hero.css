@@ -69,7 +69,7 @@
   justify-content: center;
   gap: 10px;
   border: 1px solid transparent;
-  border-radius: 13px;
+  border-radius: var(--radius-control);
   font-size: 0.9rem;
   font-weight: 720;
   transition: color var(--motion-fast) var(--motion-ease),

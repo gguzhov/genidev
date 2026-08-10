@@ -118,10 +118,10 @@ export default function CardNav({ items = [], cta, className = "", ease = "power
     gsap.set(nav, { height: CLOSED_HEIGHT, overflow: "hidden" });
     gsap.set(cardsRef.current, { y: 32, opacity: 0 });
     const timeline = gsap.timeline({ paused: true });
-    timeline.to(nav, { height: calculateHeight, duration: 0.38, ease });
+    timeline.to(nav, { height: calculateHeight, duration: 0.28, ease });
     timeline.to(
       cardsRef.current,
-      { y: 0, opacity: 1, duration: 0.34, ease, stagger: 0.06 },
+      { y: 0, opacity: 1, duration: 0.28, ease, stagger: 0.06 },
       "-=0.16",
     );
     if (recreationState.timelineProgress === 1) timeline.progress(1);

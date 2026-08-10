@@ -4,13 +4,12 @@
 }
 
 .final-contact__inner {
-  width: min(calc(100% - 32px), 1280px);
+  width: min(calc(100% - var(--layout-gutter) * 2), var(--layout-max));
   border: 1px solid var(--color-border);
-  border-radius: 28px;
+  border-radius: var(--radius-feature);
   margin-inline: auto;
   padding: 32px 24px;
   background: var(--color-surface-raised);
-  box-shadow: 0 24px 80px var(--blue-a3);
 }
 
 .final-contact h2 {
@@ -49,7 +48,6 @@
 
 @media (min-width: 430px) {
   .final-contact__inner {
-    width: min(calc(100% - 48px), 1280px);
     padding: 42px 36px;
   }
 }
@@ -60,7 +58,6 @@
   }
 
   .final-contact__inner {
-    width: min(calc(100% - 64px), 1280px);
     padding: 64px;
   }
 
@@ -79,7 +76,6 @@
   }
 
   .final-contact__inner {
-    width: min(calc(100% - 80px), 1280px);
     padding: 80px;
   }
 }

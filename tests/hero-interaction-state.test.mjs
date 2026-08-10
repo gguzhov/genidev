@@ -79,3 +79,22 @@ test("cancels pending portrait motion and returns every tilt variable to neutral
     "--rotate-y": "0deg",
   });
 });
+
+test("keeps portrait tilt within a restrained one-and-a-half degree range", async () => {
+  const { applyProfileTilt } = await import(
+    "../src/components/ProfileCard/profileCardMotion.js"
+  );
+  const properties = new Map();
+  const element = {
+    style: {
+      setProperty(name, value) {
+        properties.set(name, value);
+      },
+    },
+  };
+
+  applyProfileTilt(element, 100, 0);
+
+  assert.equal(properties.get("--rotate-x"), "1.5deg");
+  assert.equal(properties.get("--rotate-y"), "1.5deg");
+});

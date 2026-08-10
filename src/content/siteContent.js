@@ -268,7 +268,7 @@ export const projects = [
 ];
 
 export const contact = {
-  title: "Есть бизнес-задача, которую нужно превратить в работающую систему?",
+  title: "Есть задача, которую пора превратить в систему?",
   handle: "@gguzhov",
   href: "https://t.me/gguzhov",
   target: "_blank",

@@ -32,7 +32,7 @@
   background: var(--color-accent);
   transform: scaleY(var(--career-progress));
   transform-origin: top;
-  transition: transform 700ms var(--motion-ease);
+  transition: transform var(--motion-reveal) var(--motion-ease);
 }
 
 .career-timeline__event {
