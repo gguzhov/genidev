@@ -2,10 +2,18 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [appSource, contentSource, problemSelectorSource] = await Promise.all([
+const [
+  appSource,
+  contentSource,
+  problemSelectorSource,
+  careerComponentSource,
+  careerCssSource,
+] = await Promise.all([
   readFile("src/App.jsx", "utf8"),
   readFile("src/content/siteContent.js", "utf8"),
   readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8"),
+  readFile("src/components/CareerTimeline/CareerTimeline.jsx", "utf8"),
+  readFile("src/components/CareerTimeline/CareerTimeline.css", "utf8"),
 ]);
 
 test("hero presents identity first and explains the complete work sequence", () => {
@@ -26,4 +34,13 @@ test("problem selector uses a direct task rail and never mounts OptionWheel", ()
   assert.match(problemSelectorSource, /aria-pressed=\{selectedIndex === index\}/);
   assert.match(problemSelectorSource, /role="region"/);
   assert.doesNotMatch(problemSelectorSource, /role="tab(?:list|panel)?"/);
+});
+
+test("career keeps every event readable and renders separate proof metrics", () => {
+  assert.match(contentSource, /metrics:/);
+  assert.match(careerComponentSource, /career-timeline__metrics/);
+  assert.doesNotMatch(
+    careerCssSource,
+    /career-timeline--revealing[^{]*\{[^}]*opacity:\s*0/s,
+  );
 });

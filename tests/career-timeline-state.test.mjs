@@ -3,32 +3,32 @@ import assert from "node:assert/strict";
 
 const stateModule = await import("../src/components/CareerTimeline/careerTimelineState.js").catch(() => null);
 
-test("reveals every career event without IntersectionObserver", () => {
-  assert.ok(stateModule, "career timeline reveal state module should exist");
+test("completes the decorative progress without IntersectionObserver", () => {
+  assert.ok(stateModule, "career timeline progress state module should exist");
   assert.equal(
-    stateModule.shouldRevealAll({ reducedMotion: false, observerAvailable: false }),
+    stateModule.shouldCompleteProgress({ reducedMotion: false, observerAvailable: false }),
     true,
   );
 });
 
-test("reveals every career event when reduced motion is preferred", () => {
-  assert.ok(stateModule, "career timeline reveal state module should exist");
+test("completes the decorative progress when reduced motion is preferred", () => {
+  assert.ok(stateModule, "career timeline progress state module should exist");
   assert.equal(
-    stateModule.shouldRevealAll({ reducedMotion: true, observerAvailable: true }),
+    stateModule.shouldCompleteProgress({ reducedMotion: true, observerAvailable: true }),
     true,
   );
 });
 
-test("uses per-item reveal only when motion and observer are available", () => {
-  assert.ok(stateModule, "career timeline reveal state module should exist");
+test("uses progressive decoration only when motion and observer are available", () => {
+  assert.ok(stateModule, "career timeline progress state module should exist");
   assert.equal(
-    stateModule.shouldRevealAll({ reducedMotion: false, observerAvailable: true }),
+    stateModule.shouldCompleteProgress({ reducedMotion: false, observerAvailable: true }),
     false,
   );
 });
 
-test("disconnects the career observer after registering visible events", () => {
-  assert.ok(stateModule, "career timeline reveal state module should exist");
+test("disconnects the career observer after registering reached milestones", () => {
+  assert.ok(stateModule, "career timeline progress state module should exist");
   const observed = [];
   let callback;
   let disconnected = false;
@@ -54,10 +54,10 @@ test("disconnects the career observer after registering visible events", () => {
     }
   }
 
-  const cleanup = stateModule.observeCareerItems({
+  const cleanup = stateModule.observeCareerProgress({
     items: [first, second],
     Observer: CareerObserver,
-    onReveal: (indexes) => assert.deepEqual(indexes, [1]),
+    onProgress: (indexes) => assert.deepEqual(indexes, [1]),
   });
 
   assert.deepEqual(observed, [first, second]);
@@ -67,10 +67,10 @@ test("disconnects the career observer after registering visible events", () => {
   assert.equal(disconnected, true);
 });
 
-test("ignores queued observer callbacks after cleanup", () => {
-  assert.ok(stateModule, "career timeline reveal state module should exist");
+test("ignores queued progress callbacks after cleanup", () => {
+  assert.ok(stateModule, "career timeline progress state module should exist");
   let callback;
-  const revealed = [];
+  const reached = [];
   const item = { dataset: { careerIndex: "0" } };
 
   class QueuedCareerObserver {
@@ -85,14 +85,14 @@ test("ignores queued observer callbacks after cleanup", () => {
     disconnect() {}
   }
 
-  const cleanup = stateModule.observeCareerItems({
+  const cleanup = stateModule.observeCareerProgress({
     items: [item],
     Observer: QueuedCareerObserver,
-    onReveal: (indexes) => revealed.push(...indexes),
+    onProgress: (indexes) => reached.push(...indexes),
   });
 
   cleanup();
   callback([{ isIntersecting: true, target: item }]);
 
-  assert.deepEqual(revealed, []);
+  assert.deepEqual(reached, []);
 });

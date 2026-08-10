@@ -1,20 +1,20 @@
-export function shouldRevealAll({ reducedMotion, observerAvailable }) {
+export function shouldCompleteProgress({ reducedMotion, observerAvailable }) {
   return reducedMotion || !observerAvailable;
 }
 
-export function observeCareerItems({ items, Observer, onReveal }) {
+export function observeCareerProgress({ items, Observer, onProgress }) {
   let active = true;
   const observer = new Observer(
     (entries) => {
       if (!active) return;
 
-      const revealedIndexes = entries
+      const reachedIndexes = entries
         .filter((entry) => entry.isIntersecting)
         .map((entry) => Number(entry.target.dataset.careerIndex));
 
-      if (revealedIndexes.length) {
-        onReveal(revealedIndexes);
-        revealedIndexes.forEach((index) => observer.unobserve(items[index]));
+      if (reachedIndexes.length) {
+        onProgress(reachedIndexes);
+        reachedIndexes.forEach((index) => observer.unobserve(items[index]));
       }
     },
     { threshold: 0.2 },

@@ -1,48 +1,54 @@
 import { useEffect, useRef, useState } from "react";
 import useReducedMotion from "../../hooks/useReducedMotion";
-import { observeCareerItems, shouldRevealAll } from "./careerTimelineState";
+import {
+  observeCareerProgress,
+  shouldCompleteProgress,
+} from "./careerTimelineState";
 import "./CareerTimeline.css";
 
 export default function CareerTimeline({ items }) {
   const reducedMotion = useReducedMotion();
   const itemRefs = useRef([]);
-  const [isRevealEnhanced, setIsRevealEnhanced] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(() => new Set());
+  const [reachedItems, setReachedItems] = useState(() => new Set());
 
   useEffect(() => {
     const observerAvailable = typeof IntersectionObserver !== "undefined";
 
-    if (shouldRevealAll({ reducedMotion, observerAvailable })) {
-      setIsRevealEnhanced(false);
-      setVisibleItems(new Set(items.map((_, index) => index)));
+    if (shouldCompleteProgress({ reducedMotion, observerAvailable })) {
+      setReachedItems(new Set(items.map((_, index) => index)));
       return undefined;
     }
 
-    setIsRevealEnhanced(true);
-    setVisibleItems(new Set());
+    setReachedItems(new Set());
 
-    return observeCareerItems({
+    return observeCareerProgress({
       items: itemRefs.current,
       Observer: IntersectionObserver,
-      onReveal: (revealedIndexes) => {
-        setVisibleItems((current) => new Set([...current, ...revealedIndexes]));
+      onProgress: (reachedIndexes) => {
+        setReachedItems((current) => new Set([...current, ...reachedIndexes]));
       },
     });
   }, [items, reducedMotion]);
+
+  const furthestReached = reachedItems.size ? Math.max(...reachedItems) : -1;
+  const progress = items.length ? (furthestReached + 1) / items.length : 0;
 
   return (
     <section className="section career-section" id="career" aria-labelledby="career-title">
       <div className="section__inner">
         <div className="section__heading">
           <p className="section__eyebrow">Путь</p>
-          <h2 id="career-title">Как развивалась моя практика</h2>
+          <h2 id="career-title">От экономики — к продуктам и AI</h2>
           <p>От проверки спроса и экономики — к продуктовым, аналитическим и AI-системам.</p>
         </div>
 
-        <ol className={`career-timeline${isRevealEnhanced ? " career-timeline--revealing" : ""}`}>
+        <ol
+          className="career-timeline"
+          style={{ "--career-progress": progress }}
+        >
           {items.map((item, index) => (
             <li
-              className={`career-timeline__event${visibleItems.has(index) ? " is-visible" : ""}`}
+              className={`career-timeline__event${reachedItems.has(index) ? " is-reached" : ""}`}
               data-career-index={index}
               key={`${item.year}-${item.title}`}
               ref={(element) => {
@@ -53,7 +59,17 @@ export default function CareerTimeline({ items }) {
               <article className="career-timeline__entry">
                 <p className="career-timeline__year">{item.year}</p>
                 <h3>{item.title}</h3>
-                <p>{item.body}</p>
+                <p className="career-timeline__body">{item.body}</p>
+                {item.metrics?.length ? (
+                  <ul
+                    className="career-timeline__metrics"
+                    aria-label={`Подтверждённые результаты: ${item.title}`}
+                  >
+                    {item.metrics.map((metric) => (
+                      <li key={metric}>{metric}</li>
+                    ))}
+                  </ul>
+                ) : null}
               </article>
             </li>
           ))}
