@@ -20,6 +20,7 @@ function ProfileCardComponent({
   const frameRef = useRef(null);
   const animationFrameRef = useRef(null);
   const boundsRef = useRef(null);
+  const boundsDirtyRef = useRef(true);
   const latestPointerRef = useRef(null);
   const reducedMotion = useReducedMotion();
   const tiltEnabled = enableTilt && hasFinePointer && !reducedMotion;
@@ -46,6 +47,11 @@ function ProfileCardComponent({
 
   const cacheBounds = useCallback(() => {
     boundsRef.current = frameRef.current?.getBoundingClientRect() ?? null;
+    boundsDirtyRef.current = false;
+  }, []);
+
+  const invalidateBounds = useCallback(() => {
+    boundsDirtyRef.current = true;
   }, []);
 
   useEffect(() => {
@@ -53,8 +59,12 @@ function ProfileCardComponent({
 
     cacheBounds();
     window.addEventListener("resize", cacheBounds);
-    return () => window.removeEventListener("resize", cacheBounds);
-  }, [cacheBounds, tiltEnabled]);
+    window.addEventListener("scroll", invalidateBounds, { passive: true });
+    return () => {
+      window.removeEventListener("resize", cacheBounds);
+      window.removeEventListener("scroll", invalidateBounds);
+    };
+  }, [cacheBounds, invalidateBounds, tiltEnabled]);
 
   useEffect(
     () => () => {
@@ -80,6 +90,7 @@ function ProfileCardComponent({
 
       animationFrameRef.current = window.requestAnimationFrame(() => {
         animationFrameRef.current = null;
+        if (boundsDirtyRef.current) cacheBounds();
         const bounds = boundsRef.current;
         const pointer = latestPointerRef.current;
         const wrapper = wrapperRef.current;
@@ -90,7 +101,7 @@ function ProfileCardComponent({
         applyProfileTilt(wrapper, x, y);
       });
     },
-    [tiltEnabled],
+    [cacheBounds, tiltEnabled],
   );
 
   const handlePointerLeave = useCallback(() => {

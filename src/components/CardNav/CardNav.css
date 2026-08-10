@@ -15,7 +15,6 @@
   border-radius: var(--radius-surface);
   background: var(--color-surface-raised);
   box-shadow: 0 12px 36px var(--blue-a3);
-  will-change: height;
 }
 
 .card-nav__top {
