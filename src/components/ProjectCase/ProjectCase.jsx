@@ -1,7 +1,10 @@
 import { ArrowUpRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useRef, useState } from "react";
-import { getFocusWrapIndex } from "./projectCaseFocus";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  getFocusWrapIndex,
+  shouldResetProjectCaseScroll,
+} from "./projectCaseFocus";
 import "./ProjectCase.css";
 
 const FOCUSABLE_SELECTOR =
@@ -13,12 +16,25 @@ function Paragraphs({ text }) {
 
 export default function ProjectCase({ project, projects, onClose, onOpenProject }) {
   const dialogRef = useRef(null);
+  const surfaceRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const previousProjectSlugRef = useRef(null);
   const [coverFailed, setCoverFailed] = useState(false);
   const otherProjects = projects.filter(({ slug }) => slug !== project.slug);
 
   useEffect(() => {
     setCoverFailed(false);
+  }, [project.slug]);
+
+  useLayoutEffect(() => {
+    if (
+      surfaceRef.current &&
+      shouldResetProjectCaseScroll(previousProjectSlugRef.current, project.slug)
+    ) {
+      surfaceRef.current.scrollTop = 0;
+    }
+
+    previousProjectSlugRef.current = project.slug;
     closeButtonRef.current?.focus({ preventScroll: true });
   }, [project.slug]);
 
@@ -57,7 +73,7 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <article className="project-case__surface">
+      <article className="project-case__surface" ref={surfaceRef}>
         <div className="project-case__topbar">
           <button
             className="project-case__close"

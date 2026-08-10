@@ -34,6 +34,7 @@
   --color-surface: var(--blue-2);
   --color-surface-raised: var(--blue-contrast);
   --color-border: var(--blue-4);
+  --color-border-strong: var(--blue-7);
   --color-text: var(--blue-12);
   --color-text-muted: var(--blue-11);
   --color-accent: var(--blue-9);

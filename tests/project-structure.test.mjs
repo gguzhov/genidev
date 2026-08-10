@@ -154,6 +154,18 @@ test("implements route-backed project cases", async () => {
 
   const projectCaseCss = await readFile("src/components/ProjectCase/ProjectCase.css", "utf8");
   assert.doesNotMatch(projectCaseCss, /min-height:\s*16rem/);
+
+  const projectCase = await readFile("src/components/ProjectCase/ProjectCase.jsx", "utf8");
+  assert.match(projectCase, /useLayoutEffect/);
+  assert.match(projectCase, /ref=\{surfaceRef\}/);
+  assert.match(projectCase, /shouldResetProjectCaseScroll/);
+
+  const projectRoute = await readFile("src/hooks/useProjectRoute.js", "utf8");
+  assert.match(projectRoute, /transitionProjectRouteLifecycle/);
+  assert.match(projectRoute, /CLOSE_PENDING_TIMEOUT_MS/);
+
+  const tokens = await readFile("src/styles/tokens.css", "utf8");
+  assert.match(tokens, /--color-border-strong:\s*var\(--blue-7\)/);
 });
 
 test("keeps desktop project controls stable while visual tracks remain decorative", async () => {

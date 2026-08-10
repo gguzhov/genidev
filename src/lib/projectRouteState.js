@@ -2,6 +2,32 @@ import { projectPath, projectSlugFromPath } from "./projectRouting.js";
 
 const PROJECT_ROUTE_STATE_KEY = "__genidevProjectRoute";
 
+export function createProjectRouteLifecycle() {
+  return { phase: "open" };
+}
+
+export function transitionProjectRouteLifecycle(state, event) {
+  if (event === "CLOSE") {
+    if (state.phase === "close-pending") {
+      return { state, shouldNavigateBack: false };
+    }
+
+    return {
+      state: { phase: "close-pending" },
+      shouldNavigateBack: true,
+    };
+  }
+
+  if (["POPSTATE", "OPEN", "DIRECT_REPLACE", "TIMEOUT"].includes(event)) {
+    return {
+      state: createProjectRouteLifecycle(),
+      shouldNavigateBack: false,
+    };
+  }
+
+  return { state, shouldNavigateBack: false };
+}
+
 function objectState(historyState) {
   return historyState && typeof historyState === "object" && !Array.isArray(historyState)
     ? historyState

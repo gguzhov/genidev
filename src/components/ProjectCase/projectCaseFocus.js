@@ -17,3 +17,7 @@ export function getFocusWrapIndex({ activeIndex, focusableCount, shiftKey }) {
 
   return null;
 }
+
+export function shouldResetProjectCaseScroll(previousSlug, nextSlug) {
+  return Boolean(nextSlug) && previousSlug !== nextSlug;
+}
