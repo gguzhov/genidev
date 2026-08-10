@@ -253,12 +253,15 @@ test("keeps landing landmarks, section navigation and floating-header offsets co
 test("keeps the landing h1 unique when a project dialog is present", async () => {
   const app = await readFile("src/App.jsx", "utf8");
   const projectCase = await readFile("src/components/ProjectCase/ProjectCase.jsx", "utf8");
+  const projectCaseCss = await readFile("src/components/ProjectCase/ProjectCase.css", "utf8");
 
   assert.equal((app.match(/<h1(?:\s|>)/g) ?? []).length, 1);
   assert.match(app, /<h1 id="hero-title">/);
   assert.doesNotMatch(projectCase, /<h1(?:\s|>)/);
-  assert.match(projectCase, /<h2 id="project-title">/);
+  assert.match(projectCase, /<h2 className="project-case__title" id="project-title">/);
   assert.match(projectCase, /aria-labelledby="project-title"/);
+  assert.match(projectCaseCss, /\.project-case__title\s*\{/);
+  assert.doesNotMatch(projectCaseCss, /\.project-case__intro h1\s*\{/);
 });
 
 test("keeps decorative wall tiles noninteractive regardless of stylesheet order", async () => {

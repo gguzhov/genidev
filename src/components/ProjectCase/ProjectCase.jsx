@@ -89,7 +89,7 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
         <header className="project-case__hero">
           <div className="project-case__intro">
             <p className="project-case__eyebrow">{project.category}</p>
-            <h2 id="project-title">{project.title}</h2>
+            <h2 className="project-case__title" id="project-title">{project.title}</h2>
             <p className="project-case__duration">{project.duration}</p>
             <p className="project-case__summary">{project.summary}</p>
           </div>

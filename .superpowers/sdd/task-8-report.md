@@ -2,7 +2,7 @@
 
 Дата: 2026-08-10
 Статус: DONE
-Commit: `5f72220`
+Commit chain: `5f72220` → `d5b64be` → subsequent typography fix
 
 ## RED / GREEN
 
@@ -99,3 +99,15 @@ Direct preview routes `/projects/ostrov-zdoroviya` и `/projects/ilonmask-vpn` �
 ### Browser computed-style check
 
 Попытка запустить bounded Chrome check для default/hover/active decorative card и pointer/focus semantic button сделана через подключённый Chrome control на production preview `http://127.0.0.1:4173/`. Результат: **NOT RUN** — Chrome browser channel в текущей среде недоступен (`Browser is not available: chrome`), поэтому computed-style результат не подменялся статическим предположением. До повторной проверки в Chrome корректность каскада покрыта contract-тестом specificity/order; ручная browser QA требуется при доступном Chrome channel.
+
+## Typography regression fix — RED / GREEN
+
+### RED
+
+Contract заголовка диалога расширен: `<h2>` обязан иметь stable class `project-case__title`, CSS обязан содержать selector этого класса и не должен сохранять stale `.project-case__intro h1`. Targeted run: 15/16 PASS, 1/16 FAIL по ожидаемой причине — после семантической замены `h1` на `h2` прежний selector больше не применял typography.
+
+### GREEN
+
+- `ProjectCase` использует `<h2 className="project-case__title" id="project-title">`.
+- Правило `.project-case__intro h1` заменено на `.project-case__title`; clamp size, margin, line-height, max-width и tracking сохранены без изменения значений.
+- Targeted run: 16/16 PASS; `npm test`: 62/62 PASS; `npm run build`: PASS; `git diff --check`: PASS.
