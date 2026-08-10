@@ -250,18 +250,61 @@ test("keeps landing landmarks, section navigation and floating-header offsets co
   assert.match(sectionsCss, /scroll-margin-top:\s*\d+px/);
 });
 
-test("removes pointer and hover affordances from decorative wall tiles", async () => {
-  const driftCss = await readFile("src/components/DriftWall/DriftWall.css", "utf8");
+test("keeps the landing h1 unique when a project dialog is present", async () => {
+  const app = await readFile("src/App.jsx", "utf8");
+  const projectCase = await readFile("src/components/ProjectCase/ProjectCase.jsx", "utf8");
 
-  assert.match(driftCss, /\.project-card--wall\s*\{[^}]*pointer-events:\s*none;/s);
-  assert.match(driftCss, /\.project-card--wall\s*\{[^}]*cursor:\s*default;/s);
+  assert.equal((app.match(/<h1(?:\s|>)/g) ?? []).length, 1);
+  assert.match(app, /<h1 id="hero-title">/);
+  assert.doesNotMatch(projectCase, /<h1(?:\s|>)/);
+  assert.match(projectCase, /<h2 id="project-title">/);
+  assert.match(projectCase, /aria-labelledby="project-title"/);
+});
+
+test("keeps decorative wall tiles noninteractive regardless of stylesheet order", async () => {
+  const driftCss = await readFile("src/components/DriftWall/DriftWall.css", "utf8");
+  const marketplaceCss = await readFile(
+    "src/components/ProjectMarketplace/ProjectMarketplace.css",
+    "utf8",
+  );
+  const classPseudoSpecificity = (selector) =>
+    (selector.match(/\.[\w-]+|:[\w-]+/g) ?? []).length;
+
+  const interactiveSelectors = [
+    ".project-card:hover",
+    ".project-card:active",
+    ".project-card:hover .project-card__media img",
+  ];
+  const decorativeSelectors = [
+    ".drift-wall .project-card--wall:hover",
+    ".drift-wall .project-card--wall:active",
+    ".drift-wall .project-card--wall:hover .project-card__media img",
+  ];
+
+  for (const selector of interactiveSelectors) {
+    assert.ok(marketplaceCss.includes(selector), `Missing shared interaction ${selector}`);
+  }
+  for (let index = 0; index < decorativeSelectors.length; index += 1) {
+    assert.ok(driftCss.includes(decorativeSelectors[index]));
+    assert.ok(
+      classPseudoSpecificity(decorativeSelectors[index]) >
+        classPseudoSpecificity(interactiveSelectors[index]),
+      `${decorativeSelectors[index]} must override shared card interaction without relying on CSS order`,
+    );
+  }
+
+  assert.match(driftCss, /\.drift-wall \.project-card--wall\s*\{[^}]*pointer-events:\s*none;/s);
+  assert.match(driftCss, /\.drift-wall \.project-card--wall\s*\{[^}]*cursor:\s*default;/s);
   assert.match(
     driftCss,
-    /\.project-card--wall:hover\s*\{[^}]*transform:\s*none;[^}]*box-shadow:\s*0 16px 46px var\(--blue-a3\);/s,
+    /\.drift-wall \.project-card--wall:hover\s*\{[^}]*transform:\s*none;[^}]*box-shadow:\s*0 16px 46px var\(--blue-a3\);/s,
   );
-  assert.match(driftCss, /\.project-card--wall:active\s*\{[^}]*transform:\s*none;/s);
+  assert.match(driftCss, /\.drift-wall \.project-card--wall:active\s*\{[^}]*transform:\s*none;/s);
   assert.match(
     driftCss,
-    /\.project-card--wall:hover \.project-card__media img\s*\{[^}]*transform:\s*none;/s,
+    /\.drift-wall \.project-card--wall:hover \.project-card__media img\s*\{[^}]*transform:\s*none;/s,
   );
+  assert.match(driftCss, /\.drift-wall__semantic-layer\s*\{[^}]*z-index:\s*3;/s);
+  assert.match(driftCss, /\.drift-wall__semantic-layer\s*\{[^}]*pointer-events:\s*auto;/s);
+  assert.doesNotMatch(driftCss, /\.drift-wall \.project-card--wall-control\s*\{[^}]*pointer-events:\s*none;/s);
 });

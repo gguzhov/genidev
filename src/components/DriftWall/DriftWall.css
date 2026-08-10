@@ -50,7 +50,7 @@
   min-height: 0;
 }
 
-.project-card--wall {
+.drift-wall .project-card--wall {
   height: var(--dw-tile-height);
   border-radius: 18px;
   box-shadow: 0 16px 46px var(--blue-a3);
@@ -58,17 +58,17 @@
   pointer-events: none;
 }
 
-.project-card--wall:hover {
+.drift-wall .project-card--wall:hover {
   transform: none;
   border-color: var(--color-border);
   box-shadow: 0 16px 46px var(--blue-a3);
 }
 
-.project-card--wall:active {
+.drift-wall .project-card--wall:active {
   transform: none;
 }
 
-.project-card--wall:hover .project-card__media img {
+.drift-wall .project-card--wall:hover .project-card__media img {
   transform: none;
 }
 
@@ -127,6 +127,7 @@
   background: var(--blue-surface);
   box-shadow: 0 18px 60px var(--blue-a4);
   backdrop-filter: blur(18px);
+  pointer-events: auto;
 }
 
 .project-card--wall-control {
