@@ -20,11 +20,15 @@ test("uses one bounded selectedIndex transition for mobile and desktop input", a
   assert.equal(transitionSelectedIndex(2, 1, 0), 0);
 });
 
-test("connects four direct task tabs to one explanatory panel", () => {
-  assert.match(componentSource, /aria-selected=\{selectedIndex === index\}/);
-  assert.match(componentSource, /tabIndex=\{selectedIndex === index \? 0 : -1\}/);
+test("connects pressed task buttons to one independently labelled result region", () => {
+  assert.match(componentSource, /role="group"/);
+  assert.match(componentSource, /aria-pressed=\{selectedIndex === index\}/);
   assert.match(componentSource, /aria-controls=\{panelId\}/);
-  assert.match(componentSource, /aria-labelledby=\{selectedTabId\}/);
+  assert.match(componentSource, /role="region"/);
+  assert.match(componentSource, /aria-labelledby=\{panelHeadingId\}/);
+  assert.match(componentSource, /<h3 id=\{panelHeadingId\}>/);
+  assert.doesNotMatch(componentSource, /role="tab(?:list|panel)?"/);
+  assert.doesNotMatch(componentSource, /aria-selected|tabIndex=/);
   assert.match(componentSource, /onKeyDown=/);
   for (const key of ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"]) {
     assert.match(componentSource, new RegExp(key));

@@ -22,7 +22,8 @@ test("hero presents identity first and explains the complete work sequence", () 
 test("problem selector uses a direct task rail and never mounts OptionWheel", () => {
   assert.doesNotMatch(problemSelectorSource, /OptionWheel/);
   assert.doesNotMatch(problemSelectorSource, /onWheel|addEventListener\(["']wheel/);
-  assert.match(problemSelectorSource, /role="tablist"/);
-  assert.match(problemSelectorSource, /role="tab"/);
-  assert.match(problemSelectorSource, /role="tabpanel"/);
+  assert.match(problemSelectorSource, /role="group"/);
+  assert.match(problemSelectorSource, /aria-pressed=\{selectedIndex === index\}/);
+  assert.match(problemSelectorSource, /role="region"/);
+  assert.doesNotMatch(problemSelectorSource, /role="tab(?:list|panel)?"/);
 });

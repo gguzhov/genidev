@@ -11,11 +11,12 @@ const DIRECTION_KEYS = {
 
 export default function ProblemSelector({ problems, sectionId }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const tabRefs = useRef([]);
+  const buttonRefs = useRef([]);
   const instanceId = useId();
   const resolvedSectionId = sectionId ?? `${instanceId}-section`;
   const headingId = `${instanceId}-heading`;
   const panelId = `${instanceId}-panel`;
+  const panelHeadingId = `${instanceId}-panel-heading`;
   const selectProblem = useCallback(
     (nextIndex) => {
       setSelectedIndex((currentIndex) =>
@@ -28,7 +29,6 @@ export default function ProblemSelector({ problems, sectionId }) {
 
   if (!selected) return null;
 
-  const selectedTabId = `${instanceId}-tab-${selected.id}`;
   const handleTabKeyDown = (event, index) => {
     let nextIndex;
 
@@ -41,7 +41,7 @@ export default function ProblemSelector({ problems, sectionId }) {
 
     event.preventDefault();
     selectProblem(nextIndex);
-    tabRefs.current[nextIndex]?.focus();
+    buttonRefs.current[nextIndex]?.focus();
   };
 
   return (
@@ -58,10 +58,9 @@ export default function ProblemSelector({ problems, sectionId }) {
         </header>
 
         <div className="problem-selector">
-          <div className="problem-selector__rail" role="tablist" aria-label="Бизнес-задачи">
+          <div className="problem-selector__rail" role="group" aria-label="Бизнес-задачи">
             {problems.map((problem, index) => {
               const isSelected = selectedIndex === index;
-              const tabId = `${instanceId}-tab-${problem.id}`;
 
               return (
                 <button
@@ -69,15 +68,12 @@ export default function ProblemSelector({ problems, sectionId }) {
                     isSelected ? " problem-selector__tab--selected" : ""
                   }`}
                   type="button"
-                  role="tab"
-                  id={tabId}
                   key={problem.id}
                   ref={(element) => {
-                    tabRefs.current[index] = element;
+                    buttonRefs.current[index] = element;
                   }}
-                  aria-selected={selectedIndex === index}
+                  aria-pressed={selectedIndex === index}
                   aria-controls={panelId}
-                  tabIndex={selectedIndex === index ? 0 : -1}
                   onClick={() => selectProblem(index)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                 >
@@ -94,13 +90,13 @@ export default function ProblemSelector({ problems, sectionId }) {
             className="problem-selector__panel"
             id={panelId}
             key={selected.id}
-            role="tabpanel"
-            aria-labelledby={selectedTabId}
+            role="region"
+            aria-labelledby={panelHeadingId}
             aria-live="polite"
             aria-atomic="true"
           >
             <p className="problem-selector__index">0{selectedIndex + 1} / 0{problems.length}</p>
-            <h3>{selected.title}</h3>
+            <h3 id={panelHeadingId}>{selected.title}</h3>
 
             <div className="problem-selector__actions">
               <p className="problem-selector__label">Что делаю</p>
