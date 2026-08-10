@@ -3,12 +3,11 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
 import CareerTimeline from "./components/CareerTimeline/CareerTimeline";
 import FinalContact from "./components/FinalContact/FinalContact";
-import LiquidEther from "./components/LiquidEther/LiquidEther";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
 import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
-import { ETHER_COLORS, shouldRenderHeroEther } from "./content/heroVisualConfig";
+import WorkSequence from "./components/WorkSequence/WorkSequence";
 import { career, contact, hero, identity, problems, projects } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
 import useReducedMotion from "./hooks/useReducedMotion";
@@ -39,7 +38,6 @@ const navigation = [
 
 export function App() {
   const reducedMotion = useReducedMotion();
-  const renderHeroEther = shouldRenderHeroEther(reducedMotion);
   const { activeProject, openProject, closeProject } = useProjectRoute(projects);
 
   const openContact = () => {
@@ -51,35 +49,14 @@ export function App() {
       <CardNav items={navigation} cta={hero.cta} />
       <main>
         <section className="hero" id="top" aria-labelledby="hero-title">
-          <div className="hero__visual" aria-hidden="true">
-            {renderHeroEther && (
-              <LiquidEther
-                className="hero__ether"
-                colors={ETHER_COLORS}
-                mouseForce={12}
-                cursorSize={150}
-                isViscous
-                viscous={40}
-                iterationsViscous={36}
-                iterationsPoisson={28}
-                resolution={0.5}
-                autoDemo
-                autoSpeed={0.24}
-                autoIntensity={0.95}
-                takeoverDuration={0.45}
-                autoResumeDelay={3200}
-                autoRampDuration={1.4}
-              />
-            )}
-          </div>
-
           <div className="hero__inner">
             <div className="hero__copy">
-              <p className="hero__identity">{identity}</p>
               <h1 id="hero-title">
-                <span className="hero__title-line">{hero.title}</span>
+                <span className="hero__title-line">{identity}</span>
               </h1>
-              <p className="hero__intro">{hero.description}</p>
+              <p className="hero__promise">{hero.promise}</p>
+              <p className="hero__description">{hero.description}</p>
+              <WorkSequence items={hero.sequence} reducedMotion={reducedMotion} />
               <a
                 className="button button--primary"
                 href={hero.cta.href}

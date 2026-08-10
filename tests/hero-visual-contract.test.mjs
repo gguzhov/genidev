@@ -1,37 +1,26 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const HERO_VISUAL_CONFIG_PATH = "src/content/heroVisualConfig.js";
-
-test("mounts the hero WebGL only while motion is allowed", async () => {
+test("replaces the continuous hero WebGL with the bounded work sequence", async () => {
   const app = await readFile("src/App.jsx", "utf8");
 
-  assert.match(app, /shouldRenderHeroEther\(reducedMotion\)/);
-  assert.match(app, /\{renderHeroEther\s*&&\s*\(\s*<LiquidEther/);
-  assert.doesNotMatch(app, /autoDemo=\{!reducedMotion\}/);
+  assert.match(app, /<WorkSequence items=\{hero\.sequence\} reducedMotion=\{reducedMotion\}/);
+  assert.doesNotMatch(app, /LiquidEther/);
+  assert.doesNotMatch(app, /shouldRenderHeroEther/);
 });
 
-test("uses one frozen module-level LiquidEther palette across App rerenders", async () => {
-  assert.equal(
-    await access(HERO_VISUAL_CONFIG_PATH).then(
-      () => true,
-      () => false,
-    ),
-    true,
-    `Missing ${HERO_VISUAL_CONFIG_PATH}`,
-  );
+test("animates the sequence once and renders it statically for reduced motion", async () => {
+  const [component, styles] = await Promise.all([
+    readFile("src/components/WorkSequence/WorkSequence.jsx", "utf8"),
+    readFile("src/components/WorkSequence/WorkSequence.css", "utf8"),
+  ]);
 
-  const firstImport = await import(`../${HERO_VISUAL_CONFIG_PATH}`);
-  const secondImport = await import(`../${HERO_VISUAL_CONFIG_PATH}`);
-  const app = await readFile("src/App.jsx", "utf8");
-
-  assert.strictEqual(firstImport.ETHER_COLORS, secondImport.ETHER_COLORS);
-  assert.equal(Object.isFrozen(firstImport.ETHER_COLORS), true);
-  assert.deepEqual(firstImport.ETHER_COLORS, ["#e7eaf1", "#ccd9f4", "#8fabef"]);
-  assert.equal(firstImport.shouldRenderHeroEther(false), true);
-  assert.equal(firstImport.shouldRenderHeroEther(true), false);
-  assert.match(app, /import \{ ETHER_COLORS, shouldRenderHeroEther \}/);
-  assert.match(app, /colors=\{ETHER_COLORS\}/);
-  assert.doesNotMatch(app, /colors=\{\[/);
+  assert.match(component, /"--sequence-index": index/);
+  assert.match(component, /work-sequence--static/);
+  assert.match(styles, /var\(--sequence-index\)/);
+  assert.match(styles, /@keyframes work-sequence-reveal/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(styles, /\.work-sequence--static/);
+  assert.doesNotMatch(styles, /animation-iteration-count:\s*infinite/);
 });

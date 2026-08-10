@@ -44,8 +44,8 @@ export function renderNoscriptFallback(content = defaultContent) {
 </style>
 <main class="noscript-site">
   <header>
-    <p>${escapeHtml(identity)}</p>
-    <h1>${escapeHtml(hero.title)}</h1>
+    <h1>${escapeHtml(identity)}</h1>
+    ${hero.promise ? `<p>${escapeHtml(hero.promise)}</p>` : ""}
     <p>${escapeHtml(hero.description)}</p>
     ${renderLink(hero.cta)}
   </header>

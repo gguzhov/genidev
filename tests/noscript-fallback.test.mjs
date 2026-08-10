@@ -20,6 +20,8 @@ test("renders all essential landing content from the shared content contract", a
 
   assert.match(html, new RegExp(identity));
   assert.match(html, new RegExp(hero.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.equal(html.split(identity).length - 1, 1);
+  assert.match(html, new RegExp(hero.promise));
   assert.equal((html.match(/data-noscript-problem/g) ?? []).length, problems.length);
   assert.equal((html.match(/data-noscript-career/g) ?? []).length, career.length);
   assert.equal((html.match(/data-noscript-project/g) ?? []).length, projects.length);

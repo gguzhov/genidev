@@ -6,8 +6,19 @@ import { projectPath, projectSlugFromPath } from "../src/lib/projectRouting.js";
 test("publishes the approved positioning and four business problems", () => {
   assert.equal(
     hero.title,
-    "Превращаю сложные бизнес-задачи в эффективные цифровые продукты и заменяю человека на AI.",
+    "Геннадий Гужов — разработчик цифровых и AI-продуктов.",
   );
+  assert.equal(
+    hero.promise,
+    "Превращаю бизнес-задачи в работающие цифровые продукты и автоматизированные процессы.",
+  );
+  assert.deepEqual(hero.sequence, [
+    "Экономика",
+    "Пользовательский путь",
+    "Разработка",
+    "AI",
+    "Запуск и метрики",
+  ]);
   assert.equal(hero.cta.label, "Решить проблему");
   assert.equal(hero.cta.href, "https://t.me/gguzhov");
   assert.equal(hero.cta.target, "_blank");

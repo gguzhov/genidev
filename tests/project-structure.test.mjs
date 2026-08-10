@@ -58,7 +58,8 @@ test("uses the approved identity and component paths", async () => {
   assert.match(app, /Геннадий Гужов/);
   assert.doesNotMatch(app, /Георгий Гужов/);
   assert.match(cardNav, /src="\/images\/gennady-logo\.webp"/);
-  assert.match(app, /components\/LiquidEther\/LiquidEther/);
+  assert.match(app, /components\/WorkSequence\/WorkSequence/);
+  assert.doesNotMatch(app, /components\/LiquidEther\/LiquidEther/);
 
   const html = await readFile("index.html", "utf8");
   assert.match(html, /href="\/favicon-32\.png"/);
@@ -70,25 +71,16 @@ test("uses the approved identity and component paths", async () => {
 
 test("uses the approved calm motion contract", async () => {
   const app = await readFile("src/App.jsx", "utf8");
-  for (const contract of [
-    "autoDemo",
-    "mouseForce={12}",
-    "cursorSize={150}",
-    "viscous={40}",
-    "iterationsViscous={36}",
-    "autoSpeed={0.24}",
-    "autoIntensity={0.95}",
-    "takeoverDuration={0.45}",
-    "autoResumeDelay={3200}",
-    "autoRampDuration={1.4}",
-  ]) {
-    assert.ok(app.includes(contract), `Missing motion contract ${contract}`);
-  }
+  assert.match(app, /<WorkSequence items=\{hero\.sequence\} reducedMotion=\{reducedMotion\}/);
+  assert.doesNotMatch(app, /<LiquidEther/);
 
   assert.match(app, /hero__title-line/);
   const heroCss = await readFile("src/styles/hero.css", "utf8");
+  const sequenceCss = await readFile("src/components/WorkSequence/WorkSequence.css", "utf8");
   assert.match(heroCss, /@keyframes hero-reveal/);
   assert.match(heroCss, /prefers-reduced-motion:\s*reduce/);
+  assert.match(sequenceCss, /--sequence-delay/);
+  assert.match(sequenceCss, /prefers-reduced-motion:\s*reduce/);
 });
 
 test("keeps portfolio content and route state in focused modules", async () => {
@@ -109,7 +101,7 @@ test("composes the approved navigation and portrait hero", async () => {
   const app = await readFile("src/App.jsx", "utf8");
   assert.match(app, /<CardNav/);
   assert.match(app, /<ProfileCard/);
-  assert.match(app, /hero\.title/);
+  assert.match(app, /hero__title-line">\{identity\}/);
 });
 
 test("renders the four-problem selector", async () => {

@@ -42,11 +42,41 @@
   --color-on-accent: var(--blue-contrast);
   --color-focus: var(--blue-8);
   --font-primary: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Consolas, monospace;
+  --layout-max: 1280px;
+  --layout-gutter: 16px;
+  --motion-fast: 160ms;
+  --motion-state: 280ms;
+  --motion-reveal: 500ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   color: var(--color-text);
   background: var(--color-canvas);
   font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 430px) {
+  :root,
+  .light,
+  .light-theme {
+    --layout-gutter: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root,
+  .light,
+  .light-theme {
+    --layout-gutter: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root,
+  .light,
+  .light-theme {
+    --layout-gutter: 40px;
+  }
 }
 
 @supports (color: color(display-p3 1 1 1)) {

@@ -1,0 +1,127 @@
+.work-sequence {
+  display: grid;
+  margin: 28px 0 0;
+  padding: 0;
+  gap: 0;
+  list-style: none;
+}
+
+.work-sequence__item {
+  --sequence-delay: calc(260ms + var(--sequence-index) * 90ms);
+  position: relative;
+  display: grid;
+  min-height: 42px;
+  padding: 0 0 14px 42px;
+  align-items: start;
+  animation: work-sequence-reveal var(--motion-reveal) var(--motion-ease) both;
+  animation-delay: var(--sequence-delay);
+}
+
+.work-sequence__item:not(:last-child)::before {
+  position: absolute;
+  top: 22px;
+  bottom: -1px;
+  left: 15px;
+  width: 1px;
+  background: var(--color-border-strong);
+  content: "";
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: work-sequence-line var(--motion-reveal) var(--motion-ease) forwards;
+  animation-delay: calc(var(--sequence-delay) + 80ms);
+}
+
+.work-sequence__marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 31px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-canvas);
+  color: var(--color-text-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.work-sequence__label {
+  padding-top: 3px;
+  color: var(--color-text);
+  font-size: 0.77rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.work-sequence--static .work-sequence__item,
+.work-sequence--static .work-sequence__item::before {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes work-sequence-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes work-sequence-line {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (min-width: 768px) {
+  .work-sequence {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-top: 34px;
+  }
+
+  .work-sequence__item {
+    min-width: 0;
+    min-height: 74px;
+    padding: 37px 14px 0 0;
+  }
+
+  .work-sequence__item:not(:last-child)::before {
+    top: 12px;
+    right: 0;
+    bottom: auto;
+    left: 31px;
+    width: auto;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .work-sequence__label {
+    padding-top: 0;
+    padding-right: 8px;
+    font-size: 0.7rem;
+  }
+
+  @keyframes work-sequence-line {
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-sequence__item,
+  .work-sequence__item::before {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
