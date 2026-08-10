@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { hero, problems } from "../src/content/siteContent.js";
+import { hero, identity, problems } from "../src/content/siteContent.js";
 
 test("publishes the six-stage business path", () => {
+  assert.equal(identity, "Геннадий Гужов");
+  assert.equal(hero.title, "Разрабатываю цифровые и AI-продукты.");
+  assert.equal("description" in hero, false);
   assert.deepEqual(hero.sequence, [
     "Проблема",
     "Решение",
@@ -12,6 +15,18 @@ test("publishes the six-stage business path", () => {
     "Запуск",
     "Аналитика",
   ]);
+});
+
+test("uses the product title without a redundant hero paragraph", async () => {
+  const [app, fallbackSource] = await Promise.all([
+    readFile("src/App.jsx", "utf8"),
+    readFile("src/content/renderNoscriptFallback.js", "utf8"),
+  ]);
+
+  assert.match(app, /hero__title-line">\{hero\.title\}/);
+  assert.doesNotMatch(app, /hero\.description|\{identity\}/);
+  assert.match(fallbackSource, /<h1>\$\{escapeHtml\(hero\.title\)\}<\/h1>/);
+  assert.match(fallbackSource, /hero\.description \?/);
 });
 
 test("connects four professional actions to four outcomes", () => {

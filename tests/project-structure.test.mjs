@@ -101,7 +101,7 @@ test("composes the approved navigation and portrait hero", async () => {
   const app = await readFile("src/App.jsx", "utf8");
   assert.match(app, /<CardNav/);
   assert.match(app, /<ProfileCard/);
-  assert.match(app, /hero__title-line">\{identity\}/);
+  assert.match(app, /hero__title-line">\{hero\.title\}/);
 });
 
 test("renders the four-problem selector", async () => {

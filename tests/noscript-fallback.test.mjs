@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
-import { career, hero, identity, problems, projects } from "../src/content/siteContent.js";
+import { career, hero, problems, projects } from "../src/content/siteContent.js";
 
 const RENDERER_PATH = "src/content/renderNoscriptFallback.js";
 
@@ -18,9 +18,8 @@ test("renders all essential landing content from the shared content contract", a
   const { renderNoscriptFallback } = await import(`../${RENDERER_PATH}`);
   const html = renderNoscriptFallback();
 
-  assert.match(html, new RegExp(identity));
   assert.match(html, new RegExp(hero.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.equal(html.split(identity).length - 1, 1);
+  assert.doesNotMatch(html, /Геннадий Гужов/);
   assert.match(html, new RegExp(hero.promise));
   assert.equal((html.match(/data-noscript-problem/g) ?? []).length, problems.length);
   assert.equal((html.match(/data-noscript-career/g) ?? []).length, career.length);
@@ -66,7 +65,6 @@ test("renders the shared hero sequence as a semantic no-JS list", async () => {
 test("escapes no-JS text and external-link attributes", async () => {
   const { renderNoscriptFallback } = await import(`../${RENDERER_PATH}`);
   const html = renderNoscriptFallback({
-    identity: "Identity <script>&",
     hero: {
       title: "Title <strong>",
       description: "Description & detail",
@@ -91,7 +89,8 @@ test("escapes no-JS text and external-link attributes", async () => {
   });
 
   assert.doesNotMatch(html, /<script>|<strong>|<unsafe>|<now>/);
-  assert.match(html, /Identity &lt;script&gt;&amp;/);
+  assert.match(html, /Title &lt;strong&gt;/);
+  assert.match(html, /Description &amp; detail/);
   assert.match(html, /href="https:\/\/example\.com\/\?q=&quot;x&quot;&amp;next=&lt;unsafe&gt;"/);
   assert.match(html, /target="&quot;&gt;&lt;script&gt;"/);
   assert.match(html, /rel="external&amp;safe"/);

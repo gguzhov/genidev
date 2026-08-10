@@ -36,14 +36,15 @@ const [
   readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
 ]);
 
-test("hero presents identity first and explains the complete work sequence", () => {
-  assert.match(contentSource, /title:\s*"Геннадий Гужов — разработчик цифровых и AI-продуктов\."/);
+test("hero presents the approved product title and complete work sequence", () => {
+  assert.match(contentSource, /title:\s*"Разрабатываю цифровые и AI-продукты\."/);
   assert.match(
     contentSource,
     /Превращаю бизнес-задачи в работающие цифровые продукты и автоматизированные процессы/,
   );
   assert.match(appSource, /<WorkSequence/);
-  assert.match(appSource, /hero__title-line">\{identity\}/);
+  assert.match(appSource, /hero__title-line">\{hero\.title\}/);
+  assert.doesNotMatch(appSource, /hero\.description|\{identity\}/);
   assert.doesNotMatch(appSource, /<LiquidEther/);
 });
 

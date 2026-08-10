@@ -2,13 +2,11 @@ import {
   career as siteCareer,
   contact as siteContact,
   hero as siteHero,
-  identity as siteIdentity,
   problems as siteProblems,
   projects as siteProjects,
 } from "./siteContent.js";
 
 const defaultContent = {
-  identity: siteIdentity,
   hero: siteHero,
   problems: siteProblems,
   career: siteCareer,
@@ -32,7 +30,7 @@ const renderLink = ({ href, target, rel, label }) =>
 const renderItems = (items) => items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
 export function renderNoscriptFallback(content = defaultContent) {
-  const { identity, hero, problems, career, projects, contact } = content;
+  const { hero, problems, career, projects, contact } = content;
 
   return `<style>
   .noscript-site{width:min(calc(100% - 32px),1120px);margin:0 auto;padding:104px 0 64px;color:var(--color-text,#182b67);font:16px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
@@ -45,9 +43,9 @@ export function renderNoscriptFallback(content = defaultContent) {
 </style>
 <main class="noscript-site">
   <header>
-    <h1>${escapeHtml(identity)}</h1>
+    <h1>${escapeHtml(hero.title)}</h1>
     ${hero.promise ? `<p>${escapeHtml(hero.promise)}</p>` : ""}
-    <p>${escapeHtml(hero.description)}</p>
+    ${hero.description ? `<p>${escapeHtml(hero.description)}</p>` : ""}
     ${
       hero.sequence?.length
         ? `<ol class="noscript-site__sequence" aria-label="Этапы комплексной работы">${renderItems(hero.sequence)}</ol>`

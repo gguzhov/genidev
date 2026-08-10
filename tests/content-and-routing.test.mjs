@@ -6,8 +6,9 @@ import { projectPath, projectSlugFromPath } from "../src/lib/projectRouting.js";
 test("publishes the approved positioning and four business problems", () => {
   assert.equal(
     hero.title,
-    "Геннадий Гужов — разработчик цифровых и AI-продуктов.",
+    "Разрабатываю цифровые и AI-продукты.",
   );
+  assert.equal("description" in hero, false);
   assert.equal(
     hero.promise,
     "Превращаю бизнес-задачи в работающие цифровые продукты и автоматизированные процессы.",

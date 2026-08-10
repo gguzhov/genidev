@@ -8,7 +8,7 @@ import ProfileCard from "./components/ProfileCard/ProfileCard";
 import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
 import WorkSequence from "./components/WorkSequence/WorkSequence";
-import { career, contact, hero, identity, problems, projects } from "./content/siteContent";
+import { career, contact, hero, problems, projects } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
 import useReducedMotion from "./hooks/useReducedMotion";
 
@@ -52,10 +52,9 @@ export function App() {
           <div className="hero__inner">
             <div className="hero__copy">
               <h1 id="hero-title">
-                <span className="hero__title-line">{identity}</span>
+                <span className="hero__title-line">{hero.title}</span>
               </h1>
               <p className="hero__promise">{hero.promise}</p>
-              <p className="hero__description">{hero.description}</p>
               <a
                 className="button button--primary"
                 href={hero.cta.href}
