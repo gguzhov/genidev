@@ -296,4 +296,3 @@ git diff --check
 git add <only relevant implementation, tests, docs and evidence>
 git commit -m "ui: завершить премиальные итерации лендинга"
 ```
-
