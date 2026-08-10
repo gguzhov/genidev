@@ -193,7 +193,7 @@ test("keeps navigation and portrait interactions accessible", async () => {
   const profileCard = await readFile("src/components/ProfileCard/ProfileCard.jsx", "utf8");
   assert.match(profileCard, /<img/);
   assert.match(profileCard, /alt=\{name\}/);
-  assert.match(profileCard, /Решить проблему/);
+  assert.match(profileCard, /Связаться/);
   assert.match(profileCard, /hover: hover/);
   assert.match(profileCard, /pointer: fine/);
   assert.doesNotMatch(profileCard, /DeviceOrientation|DeviceMotion|deviceorientation/);

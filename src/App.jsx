@@ -75,8 +75,6 @@ export function App() {
             <ProfileCard
               avatarUrl="/images/gennady-profile.webp"
               name="Геннадий Гужов"
-              title="Разработчик цифровых и AI-продуктов"
-              handle="gguzhov"
               onContactClick={openContact}
             />
 

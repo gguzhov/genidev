@@ -47,18 +47,18 @@ test("orders the mobile hero as copy, CTA, portrait, then work sequence", () => 
   );
 });
 
-test("keeps the work sequence vertical until the left hero column can fit five labels", () => {
+test("keeps the work sequence vertical until the left hero column can fit six labels", () => {
   assert.doesNotMatch(sequenceCss, /@media \(min-width:\s*768px\)/);
   assert.match(
     sequenceCss,
-    /@media \(min-width:\s*1024px\)[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/,
+    /@media \(min-width:\s*1024px\)[\s\S]*grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/,
   );
 });
 
-test("stacks ProfileCard media and information without an internal overflow row", () => {
+test("keeps the ProfileCard action in a single unobstructed overlay", () => {
   assert.match(profileCss, /\.profile-card__avatar\s*\{[^}]*grid-area:\s*1\s*\/\s*1/s);
-  assert.match(profileCss, /\.profile-card__info\s*\{[^}]*grid-area:\s*1\s*\/\s*1/s);
-  assert.match(profileCss, /\.profile-card__info\s*\{[^}]*align-self:\s*end/s);
+  assert.match(profileCss, /\.profile-card__action-layer\s*\{[^}]*bottom:\s*16px/s);
+  assert.match(profileCss, /\.profile-card__contact\s*\{[^}]*min-height:\s*48px/s);
 });
 
 test("caches portrait bounds outside pointermove and coalesces updates into one RAF", () => {
@@ -77,11 +77,11 @@ test("caches portrait bounds outside pointermove and coalesces updates into one 
 test("uses the exact approved task and marketplace copy", () => {
   assert.match(
     contentSource,
-    /Автоматизирую повторяемые операции там, где это повышает скорость, качество или снижает себестоимость\./,
+    /Выбираю операции, где AI даёт практический эффект\./,
   );
   assert.match(
     contentSource,
-    /Первая версия продукта, готовая к проверке на реальных пользователях\./,
+    /Проверенная продуктовая гипотеза\./,
   );
   assert.match(contentSource, /duration:\s*"1 неделя до запуска"/);
   assert.match(
@@ -111,12 +111,12 @@ test("keeps the desktop task selector compact and removes card-like action pills
   );
   assert.match(
     problemCss,
-    /\.problem-selector__capabilities\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s,
+    /\.problem-selector__actions-list\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s,
   );
-  assert.match(problemCss, /\.problem-selector__capabilities li\s*\{[^}]*border-bottom:/s);
+  assert.match(problemCss, /\.problem-selector__actions-list li\s*\{[^}]*border-bottom:/s);
   assert.doesNotMatch(
     problemCss,
-    /\.problem-selector__capabilities li\s*\{[^}]*border-radius:\s*999px/s,
+    /\.problem-selector__actions-list li\s*\{[^}]*border-radius:\s*999px/s,
   );
 });
 

@@ -10,8 +10,6 @@ const FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
 function ProfileCardComponent({
   avatarUrl,
   name,
-  title,
-  handle,
   onContactClick,
   enableTilt = true,
 }) {
@@ -122,7 +120,6 @@ function ProfileCardComponent({
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      <div className="profile-card__behind" aria-hidden="true" />
       <article ref={frameRef} className="profile-card" aria-label={`Профиль ${name}`}>
         <div className="profile-card__markers" aria-hidden="true">
           <span />
@@ -139,20 +136,15 @@ function ProfileCardComponent({
           loading="eager"
           fetchPriority="high"
         />
-        <div className="profile-card__info">
-          <div className="profile-card__identity">
-            <p className="profile-card__handle">@{handle}</p>
-            <h2>{name}</h2>
-            <p className="profile-card__title">{title}</p>
-          </div>
-          <button className="profile-card__contact" type="button" onClick={onContactClick}>
-            Решить проблему
-            <HugeiconsIcon
-              icon={ArrowUpRight01Icon}
-              size={18}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
+        <div className="profile-card__action-layer">
+          <button
+            className="profile-card__contact"
+            type="button"
+            aria-label={`Связаться с ${name}`}
+            onClick={onContactClick}
+          >
+            Связаться
+            <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
           </button>
         </div>
       </article>

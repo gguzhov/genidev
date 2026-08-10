@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { problems } from "../src/content/siteContent.js";
 
-const [componentSource, stylesSource, contentSource] = await Promise.all([
+const [componentSource, stylesSource] = await Promise.all([
   readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8"),
   readFile("src/components/ProblemSelector/ProblemSelector.css", "utf8"),
-  readFile("src/content/siteContent.js", "utf8"),
 ]);
 
 test("uses one bounded selectedIndex transition for mobile and desktop input", async () => {
@@ -54,16 +54,15 @@ test("keeps the live region mounted while keyed inner content transitions", () =
   );
 });
 
-test("explains each task through actions and a result with the approved section copy", () => {
+test("explains each task through actions and outcomes without a redundant section lead", () => {
   assert.match(componentSource, /От запуска продукта до AI-автоматизации/);
-  assert.match(
-    componentSource,
-    /Разбираю задачу, считаю эффект и довожу решение до запуска/,
-  );
-  assert.match(componentSource, />Что делаю</);
   assert.match(componentSource, />Действия</);
-  assert.match(componentSource, />Результат</);
-  assert.equal((contentSource.match(/capabilities:\s*\[/g) ?? []).length, 4);
+  assert.match(componentSource, /К чему приводит/);
+  assert.doesNotMatch(componentSource, /Разбираю задачу, считаю эффект/);
+  for (const problem of problems) {
+    assert.equal(problem.actions.length, 4);
+    assert.equal(problem.outcomes.length, 4);
+  }
 });
 
 test("uses a mobile snap rail, a vertical desktop rail and restrained state motion", () => {

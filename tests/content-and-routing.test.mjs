@@ -13,11 +13,12 @@ test("publishes the approved positioning and four business problems", () => {
     "Превращаю бизнес-задачи в работающие цифровые продукты и автоматизированные процессы.",
   );
   assert.deepEqual(hero.sequence, [
+    "Проблема",
+    "Решение",
     "Экономика",
-    "Пользовательский путь",
     "Разработка",
-    "AI",
-    "Запуск и метрики",
+    "Запуск",
+    "Аналитика",
   ]);
   assert.equal(hero.cta.label, "Решить проблему");
   assert.equal(hero.cta.href, "https://t.me/gguzhov");

@@ -28,11 +28,13 @@ test("renders all essential landing content from the shared content contract", a
 
   for (const problem of problems) {
     assert.ok(html.includes(problem.title));
-    assert.ok(html.includes(problem.description));
+    for (const action of problem.actions) assert.ok(html.includes(action));
+    for (const outcome of problem.outcomes) assert.ok(html.includes(outcome));
   }
   for (const event of career) {
     assert.ok(html.includes(event.year));
     assert.ok(html.includes(event.title));
+    for (const metric of event.metrics ?? []) assert.ok(html.includes(metric));
   }
   for (const project of projects) {
     assert.ok(html.includes(project.title));

@@ -62,9 +62,10 @@ export function renderNoscriptFallback(content = defaultContent) {
         .map(
           (problem) => `<article data-noscript-problem>
         <h3>${escapeHtml(problem.title)}</h3>
-        <p>${escapeHtml(problem.description)}</p>
-        <p><strong>Результат:</strong> ${escapeHtml(problem.result)}</p>
-        <ul>${renderItems(problem.capabilities)}</ul>
+        <p><strong>Действия</strong></p>
+        <ul>${renderItems(problem.actions)}</ul>
+        <p><strong>К чему приводит</strong></p>
+        <ul>${renderItems(problem.outcomes)}</ul>
       </article>`,
         )
         .join("")}
@@ -79,6 +80,13 @@ export function renderNoscriptFallback(content = defaultContent) {
         <p><strong>${escapeHtml(event.year)}</strong></p>
         <h3>${escapeHtml(event.title)}</h3>
         <p>${escapeHtml(event.body)}</p>
+        ${
+          event.metrics?.length
+            ? `<ul aria-label="Подтверждённые результаты: ${escapeHtml(event.title)}">${renderItems(
+                event.metrics,
+              )}</ul>`
+            : ""
+        }
       </article>`,
         )
         .join("")}

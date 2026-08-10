@@ -54,7 +54,6 @@ export default function ProblemSelector({ problems, sectionId }) {
         <header className="section__heading">
           <p className="section__eyebrow">С чем я могу помочь</p>
           <h2 id={headingId}>От запуска продукта до AI-автоматизации</h2>
-          <p>Разбираю задачу, считаю эффект и довожу решение до запуска.</p>
         </header>
 
         <div className="problem-selector">
@@ -108,22 +107,26 @@ export default function ProblemSelector({ problems, sectionId }) {
               <h3 id={panelHeadingId}>{selected.title}</h3>
 
               <div className="problem-selector__actions">
-                <p className="problem-selector__label">Что делаю</p>
-                <p className="problem-selector__lead">{selected.description}</p>
-                <p className="problem-selector__label problem-selector__label--actions">Действия</p>
+                <p className="problem-selector__label">Действия</p>
                 <ul
-                  className="problem-selector__capabilities"
+                  className="problem-selector__actions-list"
                   aria-label={`Действия для задачи «${selected.title}»`}
                 >
-                  {selected.capabilities.map((capability) => (
-                    <li key={capability}>{capability}</li>
+                  {selected.actions.map((action) => (
+                    <li key={action}>{action}</li>
                   ))}
                 </ul>
-              </div>
-
-              <div className="problem-selector__outcome">
-                <p className="problem-selector__label">Результат</p>
-                <p>{selected.result}</p>
+                <p className="problem-selector__label problem-selector__label--outcomes">
+                  К чему приводит
+                </p>
+                <ul
+                  className="problem-selector__outcomes"
+                  aria-label={`Результаты задачи «${selected.title}»`}
+                >
+                  {selected.outcomes.map((outcome) => (
+                    <li key={outcome}>{outcome}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </article>

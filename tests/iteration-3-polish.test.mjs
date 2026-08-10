@@ -23,19 +23,13 @@ test("keeps the sticky CTA hidden until 560px and preserves the compact header g
   assert.doesNotMatch(wideMobileBlock, /\.card-nav__cta/);
 });
 
-test("switches ProfileCard info columns from the card width instead of viewport width", () => {
+test("keeps the compact ProfileCard action sized within the card", () => {
   assert.match(
     profileCss,
     /\.profile-card-wrapper\s*\{[^}]*container:\s*profile-card\s*\/\s*inline-size/s,
   );
-  assert.match(
-    profileCss,
-    /@container\s+profile-card\s*\(min-width:\s*3(?:4|5|6)\dpx\)[\s\S]*\.profile-card__info\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto/s,
-  );
-  assert.doesNotMatch(
-    profileCss,
-    /@media \(min-width:\s*430px\)[\s\S]*\.profile-card__info\s*\{[^}]*grid-template-columns/s,
-  );
+  assert.match(profileCss, /\.profile-card__action-layer\s*\{[^}]*right:\s*16px/s);
+  assert.match(profileCss, /\.profile-card__contact\s*\{[^}]*width:\s*100%/s);
 });
 
 test("does not run backdrop filtering behind the opaque CardNav", () => {
