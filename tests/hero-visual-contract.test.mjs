@@ -24,3 +24,13 @@ test("animates the sequence once and renders it statically for reduced motion", 
   assert.match(styles, /\.work-sequence--static/);
   assert.doesNotMatch(styles, /animation-iteration-count:\s*infinite/);
 });
+
+test("uses the approved reveal token for the profile", async () => {
+  const styles = await readFile("src/styles/hero.css", "utf8");
+
+  assert.match(styles, /--reveal-duration:\s*var\(--motion-reveal\)/);
+  assert.doesNotMatch(
+    styles,
+    /\.profile-card-wrapper\s*\{[^}]*--reveal-duration:\s*620ms/s,
+  );
+});

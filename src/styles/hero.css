@@ -136,7 +136,7 @@
 
 .profile-card-wrapper {
   --reveal-offset: 18px;
-  --reveal-duration: 620ms;
+  --reveal-duration: var(--motion-reveal);
   animation-delay: 180ms;
 }
 

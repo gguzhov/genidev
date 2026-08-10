@@ -50,3 +50,30 @@
 - `.npmrc`, `tmp/`, plan/spec и чужие untracked-материалы не затрагивались.
 - На `768px` hero остаётся одноколоночным и становится двухколоночным с `1024px`; это соответствует текущей границе desktop-композиции и сохраняет читаемость длинного H1.
 - Блокирующих visual concerns нет.
+
+## Review fixes — Important findings
+
+Исправлены только два подтверждённых замечания ревью:
+
+- no-JS hero теперь выводит `hero.sequence` из общего `siteContent` как семантический `<ol aria-label="Этапы комплексной работы">`; список не дублируется вручную и сохраняет экранирование элементов;
+- длительность reveal портрета переведена с локальных `620ms` на утверждённый `var(--motion-reveal)`.
+
+Утверждённое описание hero сохранено дословно: «Комплексно подхожу к задаче: считаю экономику, проектирую пользовательский путь, разрабатываю, запускаю и улучшаю продукт.»
+
+### TDD review-fix: RED
+
+`node --test tests/noscript-fallback.test.mjs tests/hero-visual-contract.test.mjs`
+
+- FAIL: `5/7`, два ожидаемых падения;
+- `renders the shared hero sequence as a semantic no-JS list` — отсутствовал semantic `<ol>`;
+- `uses the approved reveal token for the profile` — в profile block оставался `--reveal-duration: 620ms`.
+
+### TDD review-fix: GREEN и regression
+
+- `node --test tests/noscript-fallback.test.mjs tests/hero-visual-contract.test.mjs` — PASS, `7/7`;
+- `node --test tests/premium-landing-contract.test.mjs tests/noscript-fallback.test.mjs tests/hero-visual-contract.test.mjs` — PASS, `8/8`;
+- `npm test` — PASS, `72/72`;
+- `npm run build` — PASS, Vite production bundle и Sites artifacts собраны;
+- `git diff --check` — PASS.
+
+Новых visual concerns нет: изменения no-JS семантики и длительности существующего reveal не меняют responsive-композицию hero.

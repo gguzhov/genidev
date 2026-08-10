@@ -45,6 +45,22 @@ test("renders all essential landing content from the shared content contract", a
   assert.match(html, /rel="noreferrer"/);
 });
 
+test("renders the shared hero sequence as a semantic no-JS list", async () => {
+  const { renderNoscriptFallback } = await import(`../${RENDERER_PATH}`);
+  const html = renderNoscriptFallback();
+  const sequenceStart = html.indexOf(
+    '<ol class="noscript-site__sequence" aria-label="Этапы комплексной работы">',
+  );
+  const sequenceEnd = html.indexOf("</ol>", sequenceStart);
+
+  assert.ok(sequenceStart >= 0, "Missing semantic hero sequence");
+  assert.ok(sequenceEnd > sequenceStart, "Hero sequence list is not closed");
+
+  const sequenceHtml = html.slice(sequenceStart, sequenceEnd);
+  assert.equal((sequenceHtml.match(/<li>/g) ?? []).length, hero.sequence.length);
+  for (const item of hero.sequence) assert.ok(sequenceHtml.includes(item));
+});
+
 test("escapes no-JS text and external-link attributes", async () => {
   const { renderNoscriptFallback } = await import(`../${RENDERER_PATH}`);
   const html = renderNoscriptFallback({
