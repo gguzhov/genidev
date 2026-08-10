@@ -71,7 +71,7 @@ test("uses the approved identity and component paths", async () => {
 test("uses the approved calm motion contract", async () => {
   const app = await readFile("src/App.jsx", "utf8");
   for (const contract of [
-    "autoDemo={!reducedMotion}",
+    "autoDemo",
     "mouseForce={12}",
     "cursorSize={150}",
     "viscous={40}",

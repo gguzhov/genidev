@@ -4,8 +4,8 @@ import {
   clampIndex,
   endPointerInteraction,
   getNextOptionIndex,
+  getWheelInteraction,
   movePointerInteraction,
-  shouldCaptureWheel,
 } from "./optionWheelState";
 import "./OptionWheel.css";
 
@@ -130,13 +130,21 @@ export default function OptionWheel({
 
     const handleWheel = (event) => {
       const { count, rowHeight } = configRef.current;
-      const delta = event.deltaMode === 1 ? event.deltaY * 24 : event.deltaY;
+      const rootHeight = element.clientHeight || element.getBoundingClientRect().height;
+      const pageHeight = rootHeight || window.innerHeight || rowHeight;
+      const interaction = getWheelInteraction({
+        target: targetRef.current,
+        deltaY: event.deltaY,
+        deltaMode: event.deltaMode,
+        count,
+        rowHeight,
+        pageHeight,
+      });
 
-      if (!shouldCaptureWheel(targetRef.current, delta, count)) return;
+      if (!interaction.capture) return;
       event.preventDefault();
 
-      const step = Math.max(-1, Math.min(1, delta / rowHeight));
-      setTarget(targetRef.current + step);
+      setTarget(interaction.nextTarget);
       if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
       settleTimerRef.current = setTimeout(() => setTarget(targetRef.current, true), 120);
     };

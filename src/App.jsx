@@ -8,6 +8,7 @@ import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
 import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
+import { ETHER_COLORS, shouldRenderHeroEther } from "./content/heroVisualConfig";
 import { career, contact, hero, identity, problems, projects } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
 import useReducedMotion from "./hooks/useReducedMotion";
@@ -38,6 +39,7 @@ const navigation = [
 
 export function App() {
   const reducedMotion = useReducedMotion();
+  const renderHeroEther = shouldRenderHeroEther(reducedMotion);
   const { activeProject, openProject, closeProject } = useProjectRoute(projects);
 
   const openContact = () => {
@@ -50,23 +52,25 @@ export function App() {
       <main>
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero__visual" aria-hidden="true">
-            <LiquidEther
-              className="hero__ether"
-              colors={["#e7eaf1", "#ccd9f4", "#8fabef"]}
-              mouseForce={12}
-              cursorSize={150}
-              isViscous
-              viscous={40}
-              iterationsViscous={36}
-              iterationsPoisson={28}
-              resolution={0.5}
-              autoDemo={!reducedMotion}
-              autoSpeed={0.24}
-              autoIntensity={0.95}
-              takeoverDuration={0.45}
-              autoResumeDelay={3200}
-              autoRampDuration={1.4}
-            />
+            {renderHeroEther && (
+              <LiquidEther
+                className="hero__ether"
+                colors={ETHER_COLORS}
+                mouseForce={12}
+                cursorSize={150}
+                isViscous
+                viscous={40}
+                iterationsViscous={36}
+                iterationsPoisson={28}
+                resolution={0.5}
+                autoDemo
+                autoSpeed={0.24}
+                autoIntensity={0.95}
+                takeoverDuration={0.45}
+                autoResumeDelay={3200}
+                autoRampDuration={1.4}
+              />
+            )}
           </div>
 
           <div className="hero__inner">

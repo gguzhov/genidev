@@ -18,6 +18,32 @@ export function shouldCaptureWheel(target, deltaY, count) {
   return deltaY < 0 ? target > 0 : target < count - 1;
 }
 
+export function normalizeWheelDelta(deltaY, deltaMode, pageHeight) {
+  if (deltaMode === 1) return deltaY * 24;
+  if (deltaMode === 2) return deltaY * Math.max(pageHeight, 1);
+  return deltaY;
+}
+
+export function getWheelInteraction({
+  target,
+  deltaY,
+  deltaMode,
+  count,
+  rowHeight,
+  pageHeight,
+}) {
+  const delta = normalizeWheelDelta(deltaY, deltaMode, pageHeight);
+  if (!shouldCaptureWheel(target, delta, count)) {
+    return { capture: false, nextTarget: target };
+  }
+
+  const step = Math.max(-1, Math.min(1, delta / rowHeight));
+  return {
+    capture: true,
+    nextTarget: clampIndex(target + step, count),
+  };
+}
+
 export function beginPointerInteraction(
   currentInteraction,
   { pointerId, clientY },

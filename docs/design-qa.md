@@ -9,6 +9,7 @@
 - Viewport height: 900 CSS px; проверенные ширины: 375, 430, 768, 1024, 1280 и 1440 CSS px.
 - Финальный headless capture выполнен с `--use-angle=swiftshader-webgl --enable-unsafe-swiftshader`, поскольку нативный headless GPU path писал служебные SharedImage diagnostics.
 - До и после browser QA выполнены `npm test` и `npm run build`.
+- Финальные lifecycle-проверки воспроизводятся командой `node scripts/verify-final-fixes-cdp.mjs http://127.0.0.1:9227 http://127.0.0.1:4173` против production preview.
 
 ## Итог
 
@@ -46,7 +47,16 @@
 - ProfileCard остаётся с нейтральным transform до и после pointer event;
 - все career events видимы без reveal-анимации;
 - DriftWall заменяется static project grid;
-- hero entrance сведён глобальным motion contract к `0.01 ms`, информация остаётся доступной.
+- hero entrance отключён, информация остаётся доступной на статичном фоне из токенов проекта.
+
+Runtime-переключение preference также проверено через CDP: при `no-preference` в hero находится ровно один canvas, при переходе в `reduce` компонент размонтируется, canvas удаляется из DOM, а при возврате в `no-preference` создаётся ровно один новый canvas. Один и тот же canvas node сохраняется при открытии кейса, переключении между двумя кейсами и закрытии popup — обычные rerender страницы не пересоздают WebGL-контекст.
+
+## Без JavaScript
+
+- PASS: production `index.html` содержит семантический `<noscript>`, сгенерированный Vite-плагином напрямую из `src/content/siteContent.js`.
+- PASS: при отключённом JavaScript видимы идентичность и hero CTA, все 4 бизнес-задачи, все 5 событий карьерного пути, обе карточки проектов со всеми ключевыми метриками и Telegram-контакт.
+- PASS: Telegram-ссылки сохраняют `href="https://t.me/gguzhov"`, `target="_blank"` и `rel="noreferrer"`; React root остаётся пустым, fallback имеет ненулевую высоту и не скрыт стилями.
+- PASS: renderer экранирует текст и значения внешних HTML-атрибутов; production build дополнительно проверен прямым чтением `dist/client/index.html`.
 
 ## Routes и assets
 
@@ -74,6 +84,6 @@
 ## Ограничения и follow-up
 
 - Проверка выполнена в desktop headless Chrome с эмуляцией viewport/touch/media. Физический iPhone/iPad, настоящий notch/safe-area, экранная клавиатура и Safari не проверялись; соответствующие CSS `env(safe-area-inset-*)` присутствуют, но физическая safe-area не заявляется как протестированная.
-- Vite продолжает выводить известное non-blocking предупреждение о главном чанке около 855 kB (gzip около 241 kB). Безопасный split потребовал бы менять загрузку Three/LiquidEther над первым экраном; это оставлено performance follow-up, чтобы не ухудшать hero UX в финальном polish.
+- Vite продолжает выводить известное non-blocking предупреждение о главном чанке 855.26 kB (gzip 240.70 kB). Безопасный split потребовал бы менять загрузку Three/LiquidEther над первым экраном; это оставлено performance follow-up, чтобы не ухудшать hero UX в финальном polish.
 
 final result: passed

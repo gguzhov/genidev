@@ -30,6 +30,56 @@ test("captures wheel movement only while another option exists in that direction
   assert.equal(shouldCaptureWheel(1, 0, 4), false);
 });
 
+test("turns one page-mode wheel tick into meaningful bounded movement", async () => {
+  const { getWheelInteraction, normalizeWheelDelta } = await import(
+    "../src/components/OptionWheel/optionWheelState.js"
+  );
+
+  assert.equal(normalizeWheelDelta(12, 0, 410), 12);
+  assert.equal(normalizeWheelDelta(2, 1, 410), 48);
+  assert.equal(normalizeWheelDelta(1, 2, 410), 410);
+  assert.deepEqual(
+    getWheelInteraction({
+      target: 1,
+      deltaY: 1,
+      deltaMode: 2,
+      count: 4,
+      rowHeight: 68,
+      pageHeight: 410,
+    }),
+    { capture: true, nextTarget: 2 },
+  );
+});
+
+test("releases page-mode wheel scrolling at the matching boundary", async () => {
+  const { getWheelInteraction } = await import(
+    "../src/components/OptionWheel/optionWheelState.js"
+  );
+
+  assert.deepEqual(
+    getWheelInteraction({
+      target: 3,
+      deltaY: 1,
+      deltaMode: 2,
+      count: 4,
+      rowHeight: 68,
+      pageHeight: 410,
+    }),
+    { capture: false, nextTarget: 3 },
+  );
+  assert.deepEqual(
+    getWheelInteraction({
+      target: 0,
+      deltaY: -1,
+      deltaMode: 2,
+      count: 4,
+      rowHeight: 68,
+      pageHeight: 410,
+    }),
+    { capture: false, nextTarget: 0 },
+  );
+});
+
 test("uses a flatter wheel on tablet and the full curve from 1024px", async () => {
   const component = await readFile("src/components/OptionWheel/OptionWheel.jsx", "utf8");
   const styles = await readFile("src/components/OptionWheel/OptionWheel.css", "utf8");

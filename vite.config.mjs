@@ -1,5 +1,19 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { renderNoscriptFallback } from "./src/content/renderNoscriptFallback.js";
+
+export function createNoscriptFallbackPlugin() {
+  return {
+    name: "noscript-content-fallback",
+    transformIndexHtml(html) {
+      if (html.includes('id="noscript-fallback"')) return html;
+
+      const root = '<div id="root"></div>';
+      const fallback = `<noscript id="noscript-fallback">${renderNoscriptFallback()}</noscript>`;
+      return html.replace(root, `${fallback}\n    ${root}`);
+    },
+  };
+}
 
 export default defineConfig({
   build: {
@@ -15,5 +29,5 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
-  plugins: [react()],
+  plugins: [react(), createNoscriptFallbackPlugin()],
 });
