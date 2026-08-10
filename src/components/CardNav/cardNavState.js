@@ -10,19 +10,27 @@ export const CARD_NAV_INITIAL_STATE = Object.freeze({
   isExpanded: false,
   isHamburgerOpen: false,
   panelInteractive: false,
+  contentVisible: false,
 });
 
 export function transitionCardNavState(state, event) {
-  if (event !== "OPEN" && event !== "CLOSE" && event !== "TIMELINE_RECREATED") {
+  if (
+    event !== "OPEN" &&
+    event !== "CLOSE" &&
+    event !== "CLOSE_FINISHED" &&
+    event !== "TIMELINE_RECREATED"
+  ) {
     return state;
   }
 
   const desiredOpen = event === "OPEN" || (event === "TIMELINE_RECREATED" && state.desiredOpen);
+  const contentVisible = desiredOpen || (event === "CLOSE" && state.desiredOpen);
   return {
     desiredOpen,
     isExpanded: desiredOpen,
     isHamburgerOpen: desiredOpen,
     panelInteractive: desiredOpen,
+    contentVisible,
   };
 }
 

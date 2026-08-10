@@ -28,7 +28,7 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
   const openFrameRef = useRef(null);
   const lifecycleStateRef = useRef(CARD_NAV_INITIAL_STATE);
   const reducedMotion = useReducedMotion();
-  const { isExpanded, isHamburgerOpen, panelInteractive } = menuState;
+  const { isExpanded, isHamburgerOpen, panelInteractive, contentVisible } = menuState;
 
   const calculateHeight = useCallback(() => {
     const nav = navRef.current;
@@ -62,6 +62,8 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
 
       if (reducedMotion || !timelineRef.current) {
         gsap.set(nav, { height: CLOSED_HEIGHT });
+        gsap.set(cardsRef.current, { y: 32, opacity: 0 });
+        transitionMenu("CLOSE_FINISHED");
       } else {
         timelineRef.current.reverse();
       }
@@ -122,11 +124,14 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
     gsap.set(nav, { height: CLOSED_HEIGHT, overflow: "hidden" });
     gsap.set(cardsRef.current, { y: 32, opacity: 0 });
     const timeline = gsap.timeline({ paused: true });
+    timeline.eventCallback("onReverseComplete", () => {
+      if (!lifecycleStateRef.current.desiredOpen) transitionMenu("CLOSE_FINISHED");
+    });
     timeline.to(nav, { height: calculateHeight, duration: 0.28, ease });
     timeline.to(
       cardsRef.current,
-      { y: 0, opacity: 1, duration: 0.28, ease, stagger: 0.06 },
-      "-=0.16",
+      { y: 0, opacity: 1, duration: 0.16, ease, stagger: 0.04 },
+      0,
     );
     if (recreationState.timelineProgress === 1) timeline.progress(1);
     timelineRef.current = timeline;
@@ -135,7 +140,7 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
       timeline.kill();
       timelineRef.current = null;
     };
-  }, [calculateHeight, ease, items, reducedMotion]);
+  }, [calculateHeight, ease, items, reducedMotion, transitionMenu]);
 
   useEffect(
     () => () => {
@@ -200,7 +205,9 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
     <header className={`card-nav-container ${className}`.trim()}>
       <nav
         ref={navRef}
-        className={`card-nav${isExpanded ? " card-nav--open" : ""}`}
+        className={`card-nav${isExpanded ? " card-nav--open" : ""}${
+          contentVisible ? " card-nav--content-visible" : ""
+        }`}
         aria-label="Основная навигация"
       >
         <div className="card-nav__top">

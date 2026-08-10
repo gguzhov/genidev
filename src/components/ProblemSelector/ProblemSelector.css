@@ -55,7 +55,7 @@
 
 .problem-selector__tab-index {
   color: var(--color-text-muted);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
 }
 
 .problem-selector__tab--selected {
@@ -80,7 +80,18 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-surface);
   background: var(--color-surface-raised);
-  box-shadow: 0 18px 52px var(--blue-a3);
+}
+
+.problem-selector__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .problem-selector__panel-content {
@@ -91,7 +102,7 @@
 .problem-selector__label {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 720;
   letter-spacing: 0.08em;
   line-height: 1.4;
@@ -135,23 +146,22 @@
 }
 
 .problem-selector__capabilities {
-  display: flex;
+  display: grid;
   margin: 10px 0 0;
   padding: 0;
-  flex-wrap: wrap;
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
   list-style: none;
 }
 
 .problem-selector__capabilities li {
-  padding: 7px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
+  min-width: 0;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-border);
   color: var(--color-text-muted);
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   font-weight: 650;
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 @keyframes problem-panel-enter {
@@ -177,10 +187,10 @@
 
 @media (min-width: 768px) {
   .problem-selector {
-    min-height: 430px;
+    min-height: 304px;
     grid-template-columns: minmax(280px, 0.82fr) minmax(360px, 1.18fr);
     align-items: stretch;
-    gap: 34px;
+    gap: 24px;
   }
 
   .problem-selector__rail {
@@ -194,8 +204,8 @@
 
   .problem-selector__tab {
     width: 100%;
-    min-height: 76px;
-    flex: 1 1 0;
+    min-height: 70px;
+    flex: 0 0 70px;
     padding-inline: 20px;
     font-size: 0.84rem;
     scroll-snap-align: none;
@@ -219,7 +229,7 @@
 
   .problem-selector__panel {
     display: flex;
-    padding: 38px;
+    padding: 32px;
     flex-direction: column;
     justify-content: center;
   }
@@ -231,13 +241,13 @@
 
 @media (min-width: 1024px) {
   .problem-selector {
-    min-height: 470px;
+    min-height: 304px;
     grid-template-columns: minmax(360px, 0.9fr) minmax(430px, 1.1fr);
-    gap: clamp(48px, 7vw, 88px);
+    gap: 32px;
   }
 
   .problem-selector__panel {
-    padding: clamp(42px, 5vw, 64px);
+    padding: clamp(34px, 4vw, 48px);
   }
 }
 

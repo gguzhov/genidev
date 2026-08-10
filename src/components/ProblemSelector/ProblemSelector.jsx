@@ -86,13 +86,20 @@ export default function ProblemSelector({ problems, sectionId }) {
             })}
           </div>
 
+          <p
+            className="problem-selector__status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {selected.title}
+          </p>
+
           <article
             className="problem-selector__panel"
             id={panelId}
             role="region"
             aria-labelledby={panelHeadingId}
-            aria-live="polite"
-            aria-atomic="true"
           >
             <div className="problem-selector__panel-content" key={selected.id}>
               <p className="problem-selector__index">

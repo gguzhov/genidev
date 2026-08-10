@@ -21,12 +21,20 @@
   display: grid;
   width: min(calc(100% - var(--layout-gutter) * 2), var(--layout-max));
   margin-inline: auto;
-  gap: clamp(44px, 12vw, 72px);
+  gap: 32px;
 }
 
 .hero__copy {
   align-self: center;
   min-width: 0;
+}
+
+.hero__sequence {
+  min-width: 0;
+}
+
+.hero__sequence .work-sequence {
+  margin-top: 0;
 }
 
 .hero h1 {
@@ -157,7 +165,25 @@
   }
 
   .hero__inner {
-    gap: 64px;
+    grid-template-areas:
+      "copy profile"
+      "sequence profile";
+    grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.82fr);
+    align-items: center;
+    gap: 28px 40px;
+  }
+
+  .hero__copy {
+    grid-area: copy;
+  }
+
+  .hero__inner > .profile-card-wrapper {
+    grid-area: profile;
+  }
+
+  .hero__sequence {
+    grid-area: sequence;
+    align-self: start;
   }
 
   .hero h1 {
@@ -187,9 +213,12 @@
   }
 
   .hero__inner {
+    grid-template-areas:
+      "copy profile"
+      "sequence profile";
     grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
     align-items: center;
-    gap: clamp(44px, 5vw, 78px);
+    gap: 30px clamp(44px, 5vw, 78px);
   }
 
   .hero h1 {

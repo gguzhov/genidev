@@ -2,6 +2,11 @@ export function shouldCompleteProgress({ reducedMotion, observerAvailable }) {
   return reducedMotion || !observerAvailable;
 }
 
+export function getContiguousReachedIndexes(furthestReached) {
+  if (!Number.isInteger(furthestReached) || furthestReached < 0) return [];
+  return Array.from({ length: furthestReached + 1 }, (_, index) => index);
+}
+
 export function observeCareerProgress({ items, Observer, onProgress }) {
   let active = true;
   const observer = new Observer(

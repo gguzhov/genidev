@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import {
+  getContiguousReachedIndexes,
   observeCareerProgress,
   shouldCompleteProgress,
 } from "./careerTimelineState";
@@ -25,12 +26,16 @@ export default function CareerTimeline({ items }) {
       items: itemRefs.current,
       Observer: IntersectionObserver,
       onProgress: (reachedIndexes) => {
-        setReachedItems((current) => new Set([...current, ...reachedIndexes]));
+        setReachedItems((current) => {
+          const furthestReached = Math.max(-1, ...current, ...reachedIndexes);
+          return new Set(getContiguousReachedIndexes(furthestReached));
+        });
       },
     });
   }, [items, reducedMotion]);
 
   const furthestReached = reachedItems.size ? Math.max(...reachedItems) : -1;
+  const contiguousReachedItems = new Set(getContiguousReachedIndexes(furthestReached));
   const progress = items.length ? (furthestReached + 1) / items.length : 0;
 
   return (
@@ -48,7 +53,7 @@ export default function CareerTimeline({ items }) {
         >
           {items.map((item, index) => (
             <li
-              className={`career-timeline__event${reachedItems.has(index) ? " is-reached" : ""}`}
+              className={`career-timeline__event${contiguousReachedItems.has(index) ? " is-reached" : ""}`}
               data-career-index={index}
               key={`${item.year}-${item.title}`}
               ref={(element) => {

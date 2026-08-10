@@ -145,7 +145,7 @@
 
   .career-timeline__entry {
     display: grid;
-    grid-template-columns: 150px minmax(0, 1fr);
+    grid-template-columns: 136px minmax(0, 1fr);
     column-gap: 28px;
   }
 
@@ -174,12 +174,12 @@
 
 @media (min-width: 1024px) {
   .career-timeline {
-    margin-left: clamp(80px, 10vw, 150px);
+    margin-left: 48px;
   }
 
   .career-timeline__entry {
-    grid-template-columns: 170px minmax(0, 1fr);
-    column-gap: 40px;
+    grid-template-columns: 136px minmax(0, 1fr);
+    column-gap: 32px;
   }
 }
 

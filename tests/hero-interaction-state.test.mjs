@@ -39,6 +39,7 @@ test("keeps desired CardNav state closed when a timeline is recreated during rev
     isExpanded: false,
     isHamburgerOpen: false,
     panelInteractive: false,
+    contentVisible: false,
   });
 });
 

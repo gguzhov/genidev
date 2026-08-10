@@ -8,7 +8,7 @@ export default function ProjectMarketplace({ projects, onOpenProject }) {
         <header className="section__heading marketplace__heading">
           <p className="section__eyebrow">Реализованные проекты</p>
           <h2 id="projects-title">От задачи до работающего продукта</h2>
-          <p>Проекты, которые я самостоятельно прошёл от бизнес-задачи до запуска.</p>
+          <p>В этих проектах я самостоятельно прошёл путь от бизнес-задачи до запуска.</p>
         </header>
 
         <div className="marketplace__grid">

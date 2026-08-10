@@ -56,7 +56,6 @@ export function App() {
               </h1>
               <p className="hero__promise">{hero.promise}</p>
               <p className="hero__description">{hero.description}</p>
-              <WorkSequence items={hero.sequence} reducedMotion={reducedMotion} />
               <a
                 className="button button--primary"
                 href={hero.cta.href}
@@ -80,6 +79,10 @@ export function App() {
               handle="gguzhov"
               onContactClick={openContact}
             />
+
+            <div className="hero__sequence">
+              <WorkSequence items={hero.sequence} reducedMotion={reducedMotion} />
+            </div>
           </div>
         </section>
 

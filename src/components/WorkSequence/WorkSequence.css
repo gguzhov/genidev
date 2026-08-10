@@ -81,7 +81,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .work-sequence {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     margin-top: 34px;

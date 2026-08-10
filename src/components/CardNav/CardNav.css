@@ -13,7 +13,7 @@
   overflow: hidden;
   border: 1px solid var(--blue-a4);
   border-radius: var(--radius-surface);
-  background: var(--blue-surface);
+  background: var(--color-surface-raised);
   box-shadow: 0 12px 36px var(--blue-a3);
   backdrop-filter: blur(20px) saturate(125%);
   -webkit-backdrop-filter: blur(20px) saturate(125%);
@@ -112,8 +112,11 @@
   pointer-events: none;
 }
 
-.card-nav--open .card-nav__content {
+.card-nav--content-visible .card-nav__content {
   visibility: visible;
+}
+
+.card-nav--open .card-nav__content {
   pointer-events: auto;
 }
 
