@@ -14,7 +14,6 @@ export default function ProjectCard({
     <Element
       className={`project-card project-card--${variant}${imageFailed ? " has-image-fallback" : ""}`}
       type={decorative ? undefined : "button"}
-      aria-label={decorative ? undefined : `Открыть кейс «${project.title}»`}
       aria-hidden={decorative ? "true" : undefined}
       tabIndex={tabIndex}
       onClick={decorative ? undefined : () => onOpenProject(project.slug)}
@@ -38,12 +37,16 @@ export default function ProjectCard({
       <span className="project-card__body">
         <span className="project-card__category">{project.category}</span>
         <strong className="project-card__title">{project.title}</strong>
+        <span className="project-card__summary">{project.summary}</span>
         <span className="project-card__duration">{project.duration}</span>
-        <span className="project-card__metrics">
+        <span className="project-card__metrics" role="list" aria-label="Результаты проекта">
           {project.metrics.map((metric) => (
-            <span key={metric}>{metric}</span>
+            <span role="listitem" key={metric}>
+              {metric}
+            </span>
           ))}
         </span>
+        {!decorative && <span className="project-card__action">Открыть кейс</span>}
       </span>
     </Element>
   );

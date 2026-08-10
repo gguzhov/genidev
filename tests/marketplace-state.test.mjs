@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
@@ -13,10 +14,31 @@ import {
 } from "../src/components/DriftWall/driftWallState.js";
 import { shouldUseStaticMarketplace } from "../src/components/ProjectMarketplace/marketplaceState.js";
 
+const [marketplaceSource, projectCardSource, marketplaceCssSource] = await Promise.all([
+  readFile("src/components/ProjectMarketplace/ProjectMarketplace.jsx", "utf8"),
+  readFile("src/components/ProjectMarketplace/ProjectCard.jsx", "utf8"),
+  readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
+]);
+
 const projects = [
   { slug: "ostrov", title: "Остров" },
   { slug: "ilonmask", title: "IlonMask" },
 ];
+
+test("marketplace renders real projects directly without DriftWall duplication", () => {
+  assert.doesNotMatch(marketplaceSource, /DriftWall/);
+  assert.match(marketplaceSource, /projects\.map/);
+  assert.match(projectCardSource, /project\.summary/);
+});
+
+test("marketplace motion is progressive enhancement for hover and keyboard focus", () => {
+  assert.match(marketplaceCssSource, /@media \(hover: hover\) and \(pointer: fine\)/);
+  assert.match(
+    marketplaceCssSource,
+    /\.project-card:focus-visible \.project-card__media img/,
+  );
+  assert.match(marketplaceCssSource, /@media \(prefers-reduced-motion: reduce\)/);
+});
 
 test("uses a static marketplace for constrained presentation modes", () => {
   assert.equal(
