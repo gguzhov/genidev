@@ -1,5 +1,10 @@
 export const CLOSED_HEIGHT = 64;
 
+export const CARD_NAV_EASE = Object.freeze({
+  css: "cubic-bezier(0.22, 1, 0.36, 1)",
+  gsap: "0.22,1,0.36,1",
+});
+
 export const CARD_NAV_INITIAL_STATE = Object.freeze({
   desiredOpen: false,
   isExpanded: false,

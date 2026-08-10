@@ -2,8 +2,10 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { gsap } from "gsap";
+import { CustomEase } from "gsap/CustomEase";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import {
+  CARD_NAV_EASE,
   CARD_NAV_INITIAL_STATE,
   CLOSED_HEIGHT,
   getMenuRecreationState,
@@ -14,8 +16,10 @@ import "./CardNav.css";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+gsap.registerPlugin(CustomEase);
+const cardNavEase = CustomEase.create("card-nav-ease", CARD_NAV_EASE.gsap);
 
-export default function CardNav({ items = [], cta, className = "", ease = "power3.out" }) {
+export default function CardNav({ items = [], cta, className = "", ease = cardNavEase }) {
   const [menuState, setMenuState] = useState(CARD_NAV_INITIAL_STATE);
   const navRef = useRef(null);
   const triggerRef = useRef(null);

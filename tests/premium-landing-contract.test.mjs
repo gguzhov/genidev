@@ -91,6 +91,24 @@ test("shared radii shape navigation, profile and final CTA surfaces", () => {
   assert.match(marketplaceCssSource, /border-radius:\s*var\(--radius-feature\)/);
 });
 
+test("every CardNav link uses the shared control radius", () => {
+  assert.match(
+    navCssSource,
+    /\.card-nav__link\s*\{[^}]*border-radius:\s*var\(--radius-control\)/s,
+  );
+});
+
+test("both CardNav GSAP animations receive the exact shared easing", () => {
+  assert.match(navComponentSource, /gsap\.registerPlugin\(CustomEase\)/);
+  assert.match(navComponentSource, /CustomEase\.create\([^,]+,\s*CARD_NAV_EASE\.gsap\)/);
+  assert.match(navComponentSource, /ease\s*=\s*cardNavEase/);
+  assert.match(navComponentSource, /timeline\.to\(nav,\s*\{[^}]*ease\s*\}\)/s);
+  assert.match(
+    navComponentSource,
+    /timeline\.to\(\s*cardsRef\.current,\s*\{[^}]*ease[^}]*\}/s,
+  );
+});
+
 test("motion-sensitive surfaces use shared durations and retain reduced-motion fallbacks", () => {
   assert.doesNotMatch(navCssSource, /transition:[^;]*\b180ms\b/s);
   assert.doesNotMatch(profileCssSource, /transition:[^;]*\b(?:90|180|240|420)ms\b/s);

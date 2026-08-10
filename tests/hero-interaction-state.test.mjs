@@ -51,6 +51,17 @@ test("restores trigger focus only after activating a panel navigation link", asy
   assert.deepEqual(getNavigationCloseOptions("header"), { restoreFocus: false });
 });
 
+test("shares the exact design-system easing with CardNav GSAP motion", async () => {
+  const { CARD_NAV_EASE } = await import(
+    "../src/components/CardNav/cardNavState.js"
+  );
+
+  assert.deepEqual(CARD_NAV_EASE, {
+    css: "cubic-bezier(0.22, 1, 0.36, 1)",
+    gsap: "0.22,1,0.36,1",
+  });
+});
+
 test("cancels pending portrait motion and returns every tilt variable to neutral", async () => {
   const helperPath = "src/components/ProfileCard/profileCardMotion.js";
   assert.equal(await exists(helperPath), true, `Missing ${helperPath}`);

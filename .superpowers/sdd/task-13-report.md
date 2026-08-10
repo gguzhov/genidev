@@ -1,6 +1,6 @@
 # Task 13 — отчёт
 
-Статус: **DONE_WITH_CONCERNS**
+Статус: **DONE**
 
 ## Результат
 
@@ -70,7 +70,17 @@ npm run build
 - шрифт — локальный JetBrains Mono Variable, muted-text фактически рендерится через `--blue-11`;
 - `prefers-reduced-motion: reduce` эмулирован через browser protocol: media query совпадает, hero animation `none`, ProfileCard tilt выключен, scroll behavior `auto`, transition duration сведена к `0.01ms`;
 - навигационный переход к `#contact` работает, aria-expanded/aria-hidden/inert корректно меняются при клике;
-- видимый keyboard focus имеет outline `3px solid`.
+- keyboard-реализация проверена по коду и структуре: native `button`, обработчики `Escape`/`Tab`, восстановление фокуса и правило `focus-visible` с outline `3px solid`. Выполненный browser lifecycle `Enter → Tab → Escape` не подтверждён из-за ограничения keyboard API in-app Browser.
+
+## Исправления по code review
+
+- `.card-nav__link` переведён с hardcoded `8px` на точный `var(--radius-control)` (`12px`).
+- CardNav больше не использует `power3.out`: единый экспортированный `CARD_NAV_EASE` хранит CSS-кривую `cubic-bezier(0.22, 1, 0.36, 1)` и её GSAP-представление `0.22,1,0.36,1`.
+- `CustomEase` зарегистрирован в GSAP, один экземпляр `cardNavEase` передаётся обеим анимациям timeline.
+- Review RED: **12 passed, 3 failed** — отсутствовали точный link radius, exported easing и его применение в компоненте.
+- Отдельный safety RED для регистрации plugin: **8 passed, 1 failed**.
+- Review GREEN: **15 passed, 0 failed**.
+- После review полный набор: **88 passed, 0 failed**; production build — **PASS** (69 модулей).
 
 ## Изменённые файлы
 
@@ -94,5 +104,5 @@ npm run build
 
 ## Ограничения и concerns
 
-- In-app Browser в этой сессии не доставил `Enter/Tab/Escape` до сфокусированной native-кнопки через high-level keyboard API, хотя pointer-сценарий, DOM/ARIA-состояния и видимый focus были проверены. Keyboard lifecycle CardNav дополнительно покрыт проходящими unit/contract-тестами; ручное native-keyboard подтверждение в браузере остаётся единственной непроверенной частью QA.
+- In-app Browser в этой сессии не доставил `Enter/Tab/Escape` до сфокусированной native-кнопки через high-level keyboard API. Поэтому keyboard-проверка описана только как code/structural validation; выполненный lifecycle в браузере не заявляется.
 - Существующие untracked-файлы (`.npmrc`, `tmp/`, `docs/design-evidence/...`, `docs/superpowers/...`) не изменялись и не будут добавлены в commit.
