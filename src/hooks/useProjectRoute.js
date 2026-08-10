@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  createProjectRouteLifecycle,
-  planProjectClose,
-  planProjectOpen,
-  resolveProjectRoute,
-  transitionProjectRouteLifecycle,
-} from "../lib/projectRouteState";
-
-const CLOSE_PENDING_TIMEOUT_MS = 1200;
+import { createProjectRouteController } from "../lib/projectRouteController";
+import { resolveProjectRoute } from "../lib/projectRouteState";
 
 function createSessionId() {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -22,8 +15,10 @@ export default function useProjectRoute(projects) {
   const sessionIdRef = useRef(null);
   const returnFocusRef = useRef(null);
   const previousActiveSlugRef = useRef(null);
-  const routeLifecycleRef = useRef(createProjectRouteLifecycle());
-  const closePendingTimerRef = useRef(null);
+  const controllerRef = useRef(null);
+  const slugsRef = useRef(slugs);
+
+  slugsRef.current = slugs;
 
   if (!sessionIdRef.current) {
     sessionIdRef.current = createSessionId();
@@ -42,30 +37,33 @@ export default function useProjectRoute(projects) {
 
   const [activeSlug, setActiveSlug] = useState(readActiveSlug);
 
-  const clearClosePendingTimer = useCallback(() => {
-    if (closePendingTimerRef.current !== null) {
-      window.clearTimeout(closePendingTimerRef.current);
-      closePendingTimerRef.current = null;
-    }
-  }, []);
-
-  const sendRouteLifecycleEvent = useCallback((event) => {
-    const transition = transitionProjectRouteLifecycle(routeLifecycleRef.current, event);
-    routeLifecycleRef.current = transition.state;
-    return transition;
-  }, []);
-
   useEffect(() => {
-    const handlePopState = () => {
-      clearClosePendingTimer();
-      sendRouteLifecycleEvent("POPSTATE");
-      setActiveSlug(readActiveSlug());
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [clearClosePendingTimer, readActiveSlug, sendRouteLifecycleEvent]);
+    const controller = createProjectRouteController({
+      getRouteSnapshot: () => ({
+        pathname: window.location.pathname,
+        historyState: window.history.state,
+      }),
+      getSlugs: () => slugsRef.current,
+      history: window.history,
+      subscribePopState: (listener) => {
+        window.addEventListener("popstate", listener);
+        return () => window.removeEventListener("popstate", listener);
+      },
+      sessionId: sessionIdRef.current,
+      onActiveSlugChange: setActiveSlug,
+      onBeforeOpen: (routeBeforeOpen) => {
+        if (!routeBeforeOpen.slug && document.activeElement instanceof HTMLElement) {
+          returnFocusRef.current = document.activeElement;
+        }
+      },
+    });
+    controllerRef.current = controller;
 
-  useEffect(() => clearClosePendingTimer, [clearClosePendingTimer]);
+    return () => {
+      controller.dispose();
+      if (controllerRef.current === controller) controllerRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (!activeSlug) {
@@ -98,65 +96,9 @@ export default function useProjectRoute(projects) {
     };
   }, [activeSlug]);
 
-  const openProject = useCallback(
-    (slug) => {
-      const routeBeforeOpen = resolveProjectRoute({
-        pathname: window.location.pathname,
-        historyState: window.history.state,
-        slugs,
-        sessionId: sessionIdRef.current,
-      });
-      const transition = planProjectOpen({
-        pathname: window.location.pathname,
-        historyState: window.history.state,
-        slug,
-        slugs,
-        sessionId: sessionIdRef.current,
-      });
+  const openProject = useCallback((slug) => controllerRef.current?.openProject(slug), []);
 
-      if (!transition) return;
-
-      clearClosePendingTimer();
-      sendRouteLifecycleEvent("OPEN");
-
-      if (!routeBeforeOpen.slug && document.activeElement instanceof HTMLElement) {
-        returnFocusRef.current = document.activeElement;
-      }
-
-      window.history[`${transition.method}State`](transition.state, "", transition.pathname);
-      setActiveSlug(slug);
-    },
-    [clearClosePendingTimer, sendRouteLifecycleEvent, slugs],
-  );
-
-  const closeProject = useCallback(() => {
-    const transition = planProjectClose({
-      pathname: window.location.pathname,
-      historyState: window.history.state,
-      slugs,
-      sessionId: sessionIdRef.current,
-    });
-
-    if (!transition) return;
-
-    if (transition.method === "back") {
-      const lifecycleTransition = sendRouteLifecycleEvent("CLOSE");
-      if (!lifecycleTransition.shouldNavigateBack) return;
-
-      window.history.back();
-      clearClosePendingTimer();
-      closePendingTimerRef.current = window.setTimeout(() => {
-        closePendingTimerRef.current = null;
-        sendRouteLifecycleEvent("TIMEOUT");
-      }, CLOSE_PENDING_TIMEOUT_MS);
-      return;
-    }
-
-    clearClosePendingTimer();
-    sendRouteLifecycleEvent("DIRECT_REPLACE");
-    window.history.replaceState(transition.state, "", transition.pathname);
-    setActiveSlug(null);
-  }, [clearClosePendingTimer, sendRouteLifecycleEvent, slugs]);
+  const closeProject = useCallback(() => controllerRef.current?.closeProject(), []);
 
   return {
     activeProject: projects.find(({ slug }) => slug === activeSlug) ?? null,

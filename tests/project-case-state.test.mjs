@@ -1,12 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  createProjectRouteLifecycle,
   planProjectClose,
   planProjectOpen,
   resolveProjectRoute,
-  transitionProjectRouteLifecycle,
 } from "../src/lib/projectRouteState.js";
+import { createProjectRouteController } from "../src/lib/projectRouteController.js";
 import {
   getFocusWrapIndex,
   shouldResetProjectCaseScroll,
@@ -14,6 +13,39 @@ import {
 
 const slugs = ["ostrov-zdoroviya", "ilonmask-vpn"];
 const sessionId = "current-spa-session";
+
+function createFakeRouteEnvironment(initialSnapshot) {
+  let snapshot = initialSnapshot;
+  const historyCalls = [];
+  const popStateListeners = new Set();
+
+  return {
+    getRouteSnapshot: () => snapshot,
+    history: {
+      back() {
+        historyCalls.push({ method: "back" });
+      },
+      pushState(state, _unused, pathname) {
+        historyCalls.push({ method: "push", pathname, state });
+        snapshot = { pathname, historyState: state };
+      },
+      replaceState(state, _unused, pathname) {
+        historyCalls.push({ method: "replace", pathname, state });
+        snapshot = { pathname, historyState: state };
+      },
+    },
+    subscribePopState(listener) {
+      popStateListeners.add(listener);
+      return () => popStateListeners.delete(listener);
+    },
+    dispatchPopState(nextSnapshot) {
+      snapshot = nextSnapshot;
+      for (const listener of popStateListeners) listener();
+    },
+    historyCalls,
+    listenerCount: () => popStateListeners.size,
+  };
+}
 
 test("direct project entry resolves only a known project and stays direct", () => {
   assert.deepEqual(
@@ -175,33 +207,106 @@ test("project switch resets the case surface while the same project preserves it
   );
 });
 
-test("OPEN → CLOSE_PENDING ignores repeated CLOSE until POPSTATE", () => {
-  let lifecycle = createProjectRouteLifecycle();
+test("production controller holds CLOSE_PENDING until POPSTATE", () => {
+  const opened = planProjectOpen({
+    pathname: "/",
+    historyState: null,
+    slug: "ostrov-zdoroviya",
+    slugs,
+    sessionId,
+  });
+  const environment = createFakeRouteEnvironment({
+    pathname: opened.pathname,
+    historyState: opened.state,
+  });
+  const activeSlugs = [];
+  const controller = createProjectRouteController({
+    ...environment,
+    getSlugs: () => slugs,
+    sessionId,
+    onActiveSlugChange: (slug) => activeSlugs.push(slug),
+  });
 
-  const firstClose = transitionProjectRouteLifecycle(lifecycle, "CLOSE");
-  lifecycle = firstClose.state;
-  assert.deepEqual(lifecycle, { phase: "close-pending" });
-  assert.equal(firstClose.shouldNavigateBack, true);
+  assert.equal(controller.closeProject(), true);
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    assert.equal(controller.closeProject(), false);
+  }
+  assert.equal(controller.isClosePending(), true);
+  assert.deepEqual(environment.historyCalls, [{ method: "back" }]);
 
-  const repeatedClose = transitionProjectRouteLifecycle(lifecycle, "CLOSE");
-  lifecycle = repeatedClose.state;
-  assert.deepEqual(lifecycle, { phase: "close-pending" });
-  assert.equal(repeatedClose.shouldNavigateBack, false);
+  assert.equal(controller.openProject("ilonmask-vpn"), false);
+  assert.deepEqual(environment.historyCalls, [{ method: "back" }]);
+  assert.deepEqual(activeSlugs, []);
 
-  const popped = transitionProjectRouteLifecycle(lifecycle, "POPSTATE");
-  assert.deepEqual(popped.state, { phase: "open" });
-  assert.equal(popped.shouldNavigateBack, false);
+  environment.dispatchPopState({ pathname: "/", historyState: null });
+  assert.equal(controller.isClosePending(), false);
+  assert.deepEqual(activeSlugs, [null]);
+
+  assert.equal(controller.openProject("ilonmask-vpn"), true);
+  assert.equal(environment.historyCalls.at(-1).method, "push");
+  assert.equal(activeSlugs.at(-1), "ilonmask-vpn");
+  assert.equal(controller.closeProject(), true);
+  assert.equal(
+    environment.historyCalls.filter(({ method }) => method === "back").length,
+    2,
+  );
+
+  controller.dispose();
 });
 
-test("explicit navigation and bounded timeout release a pending close", () => {
-  const pending = transitionProjectRouteLifecycle(
-    createProjectRouteLifecycle(),
-    "CLOSE",
-  ).state;
+test("production controller removes popstate subscription and stops after dispose", () => {
+  const opened = planProjectOpen({
+    pathname: "/",
+    historyState: null,
+    slug: "ostrov-zdoroviya",
+    slugs,
+    sessionId,
+  });
+  const environment = createFakeRouteEnvironment({
+    pathname: opened.pathname,
+    historyState: opened.state,
+  });
+  const activeSlugs = [];
+  const controller = createProjectRouteController({
+    ...environment,
+    getSlugs: () => slugs,
+    sessionId,
+    onActiveSlugChange: (slug) => activeSlugs.push(slug),
+  });
 
-  for (const event of ["OPEN", "DIRECT_REPLACE", "TIMEOUT"]) {
-    const reset = transitionProjectRouteLifecycle(pending, event);
-    assert.deepEqual(reset.state, { phase: "open" });
-    assert.equal(reset.shouldNavigateBack, false);
-  }
+  assert.equal(environment.listenerCount(), 1);
+  assert.equal(controller.closeProject(), true);
+  assert.equal(controller.isClosePending(), true);
+  controller.dispose();
+  assert.equal(environment.listenerCount(), 0);
+  assert.equal(controller.isClosePending(), false);
+  assert.equal(controller.openProject("ostrov-zdoroviya"), false);
+  assert.equal(controller.closeProject(), false);
+  environment.dispatchPopState({ pathname: "/projects/ostrov-zdoroviya", historyState: null });
+  assert.deepEqual(environment.historyCalls, [{ method: "back" }]);
+  assert.deepEqual(activeSlugs, []);
+});
+
+test("production controller closes direct entry synchronously without pending", () => {
+  const environment = createFakeRouteEnvironment({
+    pathname: "/projects/ilonmask-vpn",
+    historyState: null,
+  });
+  const activeSlugs = [];
+  const controller = createProjectRouteController({
+    ...environment,
+    getSlugs: () => slugs,
+    sessionId,
+    onActiveSlugChange: (slug) => activeSlugs.push(slug),
+  });
+
+  assert.equal(controller.closeProject(), true);
+  assert.equal(controller.isClosePending(), false);
+  assert.deepEqual(environment.historyCalls, [
+    { method: "replace", pathname: "/", state: {} },
+  ]);
+  assert.deepEqual(activeSlugs, [null]);
+  assert.equal(controller.openProject("ostrov-zdoroviya"), true);
+
+  controller.dispose();
 });

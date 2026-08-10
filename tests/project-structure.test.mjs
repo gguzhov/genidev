@@ -161,8 +161,16 @@ test("implements route-backed project cases", async () => {
   assert.match(projectCase, /shouldResetProjectCaseScroll/);
 
   const projectRoute = await readFile("src/hooks/useProjectRoute.js", "utf8");
-  assert.match(projectRoute, /transitionProjectRouteLifecycle/);
-  assert.match(projectRoute, /CLOSE_PENDING_TIMEOUT_MS/);
+  assert.match(projectRoute, /createProjectRouteController/);
+  assert.doesNotMatch(projectRoute, /setTimeout|CLOSE_PENDING_TIMEOUT_MS/);
+
+  const projectRouteController = await readFile(
+    "src/lib/projectRouteController.js",
+    "utf8",
+  );
+  assert.match(projectRouteController, /history\.back\(\)/);
+  assert.match(projectRouteController, /subscribePopState/);
+  assert.doesNotMatch(projectRouteController, /setTimeout/);
 
   const tokens = await readFile("src/styles/tokens.css", "utf8");
   assert.match(tokens, /--color-border-strong:\s*var\(--blue-7\)/);
