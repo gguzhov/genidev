@@ -60,6 +60,12 @@
   transition: transform var(--motion-state) var(--motion-ease);
 }
 
+.project-card--cover-browser-chrome .project-card__media img {
+  height: 116%;
+  align-self: end;
+  object-position: center bottom;
+}
+
 .project-card:focus-visible .project-card__media img {
   transform: scale(1.025);
 }

@@ -6,6 +6,7 @@
   position: relative;
   width: min(100%, 380px);
   margin-inline: auto;
+  container: profile-card / inline-size;
   perspective: 900px;
 }
 
@@ -193,7 +194,7 @@
   transform: translateY(-1px);
 }
 
-@media (min-width: 430px) {
+@container profile-card (min-width: 350px) {
   .profile-card__info {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;

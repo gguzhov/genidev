@@ -12,7 +12,9 @@ export default function ProjectCard({
 
   return (
     <Element
-      className={`project-card project-card--${variant}${imageFailed ? " has-image-fallback" : ""}`}
+      className={`project-card project-card--${variant}${
+        project.coverCrop ? ` project-card--cover-${project.coverCrop}` : ""
+      }${imageFailed ? " has-image-fallback" : ""}`}
       type={decorative ? undefined : "button"}
       aria-hidden={decorative ? "true" : undefined}
       tabIndex={tabIndex}

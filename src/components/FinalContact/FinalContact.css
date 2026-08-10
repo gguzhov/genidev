@@ -79,3 +79,7 @@
     padding: 80px;
   }
 }
+
+.marketplace + .final-contact {
+  padding-top: 0;
+}
