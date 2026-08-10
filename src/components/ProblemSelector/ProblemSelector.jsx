@@ -1,16 +1,21 @@
-import { useCallback, useId, useState } from "react";
-import useReducedMotion from "../../hooks/useReducedMotion";
-import OptionWheel from "../OptionWheel/OptionWheel";
+import { useCallback, useId, useRef, useState } from "react";
 import { transitionSelectedIndex } from "./problemSelectionState";
 import "./ProblemSelector.css";
 
+const DIRECTION_KEYS = {
+  ArrowLeft: -1,
+  ArrowRight: 1,
+  ArrowUp: -1,
+  ArrowDown: 1,
+};
+
 export default function ProblemSelector({ problems, sectionId }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const reducedMotion = useReducedMotion();
+  const tabRefs = useRef([]);
   const instanceId = useId();
   const resolvedSectionId = sectionId ?? `${instanceId}-section`;
   const headingId = `${instanceId}-heading`;
-  const descriptionId = `${instanceId}-description`;
+  const panelId = `${instanceId}-panel`;
   const selectProblem = useCallback(
     (nextIndex) => {
       setSelectedIndex((currentIndex) =>
@@ -23,6 +28,22 @@ export default function ProblemSelector({ problems, sectionId }) {
 
   if (!selected) return null;
 
+  const selectedTabId = `${instanceId}-tab-${selected.id}`;
+  const handleTabKeyDown = (event, index) => {
+    let nextIndex;
+
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = problems.length - 1;
+    if (event.key in DIRECTION_KEYS) {
+      nextIndex = (index + DIRECTION_KEYS[event.key] + problems.length) % problems.length;
+    }
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    selectProblem(nextIndex);
+    tabRefs.current[nextIndex]?.focus();
+  };
+
   return (
     <section
       className="section problem-section"
@@ -32,59 +53,73 @@ export default function ProblemSelector({ problems, sectionId }) {
       <div className="section__inner">
         <header className="section__heading">
           <p className="section__eyebrow">С чем я могу помочь</p>
-          <h2 id={headingId}>Выберите задачу, которую нужно решить</h2>
-          <p>
-            Беру на себя путь от разбора ограничений и экономики до работающего цифрового
-            решения.
-          </p>
+          <h2 id={headingId}>От запуска продукта до AI-автоматизации</h2>
+          <p>Разбираю задачу, считаю эффект и довожу решение до запуска.</p>
         </header>
 
         <div className="problem-selector">
-          <div className="problem-selector__mobile" aria-label="Бизнес-задачи">
-            {problems.map((problem, index) => (
-              <button
-                className={`problem-selector__tab${
-                  selectedIndex === index ? " problem-selector__tab--selected" : ""
-                }`}
-                type="button"
-                key={problem.id}
-                aria-pressed={selectedIndex === index}
-                aria-controls={descriptionId}
-                onClick={() => selectProblem(index)}
-              >
-                <span aria-hidden="true">0{index + 1}</span>
-                {problem.title}
-              </button>
-            ))}
-          </div>
+          <div className="problem-selector__rail" role="tablist" aria-label="Бизнес-задачи">
+            {problems.map((problem, index) => {
+              const isSelected = selectedIndex === index;
+              const tabId = `${instanceId}-tab-${problem.id}`;
 
-          <div className="problem-selector__desktop">
-            <OptionWheel
-              items={problems.map((problem) => problem.title)}
-              selectedIndex={selectedIndex}
-              onChange={selectProblem}
-              reducedMotion={reducedMotion}
-            />
+              return (
+                <button
+                  className={`problem-selector__tab${
+                    isSelected ? " problem-selector__tab--selected" : ""
+                  }`}
+                  type="button"
+                  role="tab"
+                  id={tabId}
+                  key={problem.id}
+                  ref={(element) => {
+                    tabRefs.current[index] = element;
+                  }}
+                  aria-selected={selectedIndex === index}
+                  aria-controls={panelId}
+                  tabIndex={selectedIndex === index ? 0 : -1}
+                  onClick={() => selectProblem(index)}
+                  onKeyDown={(event) => handleTabKeyDown(event, index)}
+                >
+                  <span className="problem-selector__tab-index" aria-hidden="true">
+                    0{index + 1}
+                  </span>
+                  <span>{problem.title}</span>
+                </button>
+              );
+            })}
           </div>
 
           <article
-            className="problem-selector__description"
-            id={descriptionId}
+            className="problem-selector__panel"
+            id={panelId}
+            key={selected.id}
+            role="tabpanel"
+            aria-labelledby={selectedTabId}
             aria-live="polite"
             aria-atomic="true"
           >
             <p className="problem-selector__index">0{selectedIndex + 1} / 0{problems.length}</p>
             <h3>{selected.title}</h3>
-            <p className="problem-selector__lead">{selected.description}</p>
-            <div className="problem-selector__outcome">
-              <p className="problem-selector__label">Ожидаемый результат</p>
-              <p>{selected.outcome ?? selected.result}</p>
+
+            <div className="problem-selector__actions">
+              <p className="problem-selector__label">Что делаю</p>
+              <p className="problem-selector__lead">{selected.description}</p>
+              <p className="problem-selector__label problem-selector__label--actions">Действия</p>
+              <ul
+                className="problem-selector__capabilities"
+                aria-label={`Действия для задачи «${selected.title}»`}
+              >
+                {selected.capabilities.map((capability) => (
+                  <li key={capability}>{capability}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="problem-selector__capabilities" aria-label="Компетенции">
-              {selected.capabilities.map((capability) => (
-                <li key={capability}>{capability}</li>
-              ))}
-            </ul>
+
+            <div className="problem-selector__outcome">
+              <p className="problem-selector__label">Результат</p>
+              <p>{selected.result}</p>
+            </div>
           </article>
         </div>
       </div>
