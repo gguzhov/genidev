@@ -93,13 +93,20 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
             <p className="project-case__duration">{project.duration}</p>
             <p className="project-case__summary">{project.summary}</p>
           </div>
-          <div className={`project-case__cover${coverFailed ? " has-image-fallback" : ""}`}>
+          <div
+            className={`project-case__cover${coverFailed ? " has-image-fallback" : ""}`}
+            style={
+              project.coverWidth && project.coverHeight
+                ? { aspectRatio: `${project.coverWidth} / ${project.coverHeight}` }
+                : undefined
+            }
+          >
             {!coverFailed && (
               <img
                 src={project.cover}
                 alt={`Обложка проекта «${project.title}»`}
-                width="1536"
-                height="1024"
+                width={project.coverWidth ?? 1536}
+                height={project.coverHeight ?? 1024}
                 decoding="async"
                 onError={() => setCoverFailed(true)}
               />

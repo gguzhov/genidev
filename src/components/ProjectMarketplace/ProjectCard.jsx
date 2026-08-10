@@ -25,8 +25,8 @@ export default function ProjectCard({
           <img
             src={project.cover}
             alt=""
-            width="1536"
-            height="1024"
+            width={project.coverWidth ?? 1536}
+            height={project.coverHeight ?? 1024}
             loading="lazy"
             decoding="async"
             draggable="false"

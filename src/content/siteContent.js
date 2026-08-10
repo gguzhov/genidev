@@ -119,6 +119,8 @@ export const projects = [
     duration: "1 месяц до запуска",
     metrics: ["+72% к посещаемости за месяц", "4 целевые записи"],
     cover: "/projects/ostrov/ostrov-home-comet.webp",
+    coverWidth: 1341,
+    coverHeight: 768,
     coverCrop: "browser-chrome",
     url: "https://ostrov-zdoroviya.ru/",
     problem:
@@ -217,6 +219,8 @@ export const projects = [
     duration: "1 неделя до запуска",
     metrics: ["300+ регистраций в месяц", "100+ активных платящих клиентов"],
     cover: "/projects/ilonmask-product-cover.png",
+    coverWidth: 1200,
+    coverHeight: 630,
     url: "https://ilonmask.top/",
     problem:
       "Заказчику было нужно превратить VPN-инфраструктуру в понятный массовый продукт для людей, которые раньше не пользовались VPN.\n\nСама по себе серверная панель — ещё не продукт. Без понятной регистрации, оплаты и пошагового подключения она похожа на сложный прибор без инструкции. Нужно было связать в один сценарий лендинг, авторизацию, оплату, выдачу VPN-доступа, инструкции, уведомления и аналитику.",

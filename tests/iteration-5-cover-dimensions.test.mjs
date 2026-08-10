@@ -1,0 +1,49 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+import { projects } from "../src/content/siteContent.js";
+
+const [cardSource, caseSource, caseCss] = await Promise.all([
+  readFile("src/components/ProjectMarketplace/ProjectCard.jsx", "utf8"),
+  readFile("src/components/ProjectCase/ProjectCase.jsx", "utf8"),
+  readFile("src/components/ProjectCase/ProjectCase.css", "utf8"),
+]);
+
+test("publishes the real intrinsic dimensions for every project cover", () => {
+  const covers = Object.fromEntries(
+    projects.map(({ slug, cover, coverWidth, coverHeight }) => [
+      slug,
+      { cover, coverWidth, coverHeight },
+    ]),
+  );
+
+  assert.deepEqual(covers, {
+    "ostrov-zdoroviya": {
+      cover: "/projects/ostrov/ostrov-home-comet.webp",
+      coverWidth: 1341,
+      coverHeight: 768,
+    },
+    "ilonmask-vpn": {
+      cover: "/projects/ilonmask-product-cover.png",
+      coverWidth: 1200,
+      coverHeight: 630,
+    },
+  });
+});
+
+test("uses truthful intrinsic dimensions in both project image consumers with a fallback", () => {
+  for (const source of [cardSource, caseSource]) {
+    assert.match(source, /width=\{project\.coverWidth \?\? 1536\}/);
+    assert.match(source, /height=\{project\.coverHeight \?\? 1024\}/);
+    assert.doesNotMatch(source, /width="1536"|height="1024"/);
+  }
+});
+
+test("shows the complete ProjectCase cover at its metadata aspect ratio", () => {
+  assert.match(
+    caseSource,
+    /project\.coverWidth && project\.coverHeight[\s\S]*aspectRatio:\s*`\$\{project\.coverWidth\} \/ \$\{project\.coverHeight\}`/,
+  );
+  assert.match(caseCss, /\.project-case__cover\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*2/s);
+  assert.match(caseCss, /\.project-case__cover img\s*\{[^}]*object-fit:\s*contain/s);
+});
