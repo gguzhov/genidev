@@ -9,6 +9,7 @@ DONE
 - `OptionWheel` удалён из композиции `ProblemSelector`; обработчики `wheel` отсутствуют.
 - Один адаптивный rail показывает четыре пронумерованные бизнес-задачи: horizontal scroll-snap на mobile и вертикальный список с `768px`.
 - Rail реализован как именованная группа native buttons: активная задача обозначена через `aria-pressed`, каждая кнопка управляет одной общей region, а region независимо названа собственным видимым H3. Поддерживаются ArrowLeft/Right/Up/Down, Home и End.
+- Live region остаётся смонтированной при выборе другой задачи; `key` и transition принадлежат только внутренней content-обёртке.
 - Копия секции заменена на «От запуска продукта до AI-автоматизации» и «Разбираю задачу, считаю эффект и довожу решение до запуска».
 - Панель явно показывает цепочку «Что делаю → Действия → Результат»; пункты действий в `siteContent.js` переформулированы как конкретные глагольные действия.
 - Движение ограничено active indicator и opacity/translate панели. Длительность — `var(--motion-state)` (280ms); при `prefers-reduced-motion` анимация панели и переход индикатора отключаются.
@@ -100,3 +101,34 @@ DONE
 ### Post-fix browser check
 
 Повторная browser-сессия после build недоступна: in-app Browser discovery вернул пустой список. Runtime AX snapshot не подменялся статическим предположением; итоговая модель покрыта focused structural contract, полным test run и production build. Визуальная композиция и CSS этим semantic-only fix не менялись.
+
+## Review fix 2 — стабильная live region
+
+### Причина
+
+После первого ARIA fix `role="region" aria-live="polite"` всё ещё имел `key={selected.id}`. При каждой смене задачи React размонтировал и создавал region заново, поэтому assistive technologies могли не зарегистрировать обновление уже существующей live region.
+
+Исправление:
+
+- dynamic `key` удалён с outer `<article role="region">`;
+- внутри region добавлен `.problem-selector__panel-content` с `key={selected.id}`;
+- `problem-panel-enter` и reduced-motion override перенесены с outer region на inner wrapper;
+- surface, layout, heading relation и содержимое не изменились.
+
+### RED
+
+Команда:
+
+`node --test tests/premium-landing-contract.test.mjs tests/problem-selector-state.test.mjs`
+
+Результат: exit 1, 7 tests, 6 pass, 1 fail.
+
+Ожидаемое падение `keeps the live region mounted while keyed inner content transitions`: opening tag region содержал `key={selected.id}`, а inner transition wrapper отсутствовал.
+
+### GREEN и regression
+
+- Первый focused run после переноса wrapper: 6/7 PASS, exit 1. Новый stability contract уже прошёл; старый copy source-contract не сопоставил перенесённый на отдельную строку label «Действия». Однострочная разметка label восстановлена без ослабления теста.
+- `node --test tests/premium-landing-contract.test.mjs tests/problem-selector-state.test.mjs` — 7/7 PASS, exit 0.
+- `npm test` — 77/77 PASS, exit 0.
+- `npm run build` — PASS, 71 modules transformed; client JS 318.33 kB (gzip 104.97 kB), CSS 39.90 kB (gzip 10.75 kB).
+- `git diff --check` — PASS, exit 0.

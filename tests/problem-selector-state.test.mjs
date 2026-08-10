@@ -35,6 +35,25 @@ test("connects pressed task buttons to one independently labelled result region"
   }
 });
 
+test("keeps the live region mounted while keyed inner content transitions", () => {
+  const regionOpeningTag = componentSource.match(/<article[\s\S]*?>/)?.[0] ?? "";
+
+  assert.match(regionOpeningTag, /role="region"/);
+  assert.doesNotMatch(regionOpeningTag, /\bkey=/);
+  assert.match(
+    componentSource,
+    /<div\s+className="problem-selector__panel-content"\s+key=\{selected\.id\}/,
+  );
+  assert.match(
+    stylesSource,
+    /\.problem-selector__panel-content\s*\{[^}]*animation:\s*problem-panel-enter/s,
+  );
+  assert.doesNotMatch(
+    stylesSource,
+    /\.problem-selector__panel\s*\{[^}]*animation:\s*problem-panel-enter/s,
+  );
+});
+
 test("explains each task through actions and a result with the approved section copy", () => {
   assert.match(componentSource, /От запуска продукта до AI-автоматизации/);
   assert.match(

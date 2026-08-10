@@ -89,32 +89,35 @@ export default function ProblemSelector({ problems, sectionId }) {
           <article
             className="problem-selector__panel"
             id={panelId}
-            key={selected.id}
             role="region"
             aria-labelledby={panelHeadingId}
             aria-live="polite"
             aria-atomic="true"
           >
-            <p className="problem-selector__index">0{selectedIndex + 1} / 0{problems.length}</p>
-            <h3 id={panelHeadingId}>{selected.title}</h3>
+            <div className="problem-selector__panel-content" key={selected.id}>
+              <p className="problem-selector__index">
+                0{selectedIndex + 1} / 0{problems.length}
+              </p>
+              <h3 id={panelHeadingId}>{selected.title}</h3>
 
-            <div className="problem-selector__actions">
-              <p className="problem-selector__label">Что делаю</p>
-              <p className="problem-selector__lead">{selected.description}</p>
-              <p className="problem-selector__label problem-selector__label--actions">Действия</p>
-              <ul
-                className="problem-selector__capabilities"
-                aria-label={`Действия для задачи «${selected.title}»`}
-              >
-                {selected.capabilities.map((capability) => (
-                  <li key={capability}>{capability}</li>
-                ))}
-              </ul>
-            </div>
+              <div className="problem-selector__actions">
+                <p className="problem-selector__label">Что делаю</p>
+                <p className="problem-selector__lead">{selected.description}</p>
+                <p className="problem-selector__label problem-selector__label--actions">Действия</p>
+                <ul
+                  className="problem-selector__capabilities"
+                  aria-label={`Действия для задачи «${selected.title}»`}
+                >
+                  {selected.capabilities.map((capability) => (
+                    <li key={capability}>{capability}</li>
+                  ))}
+                </ul>
+              </div>
 
-            <div className="problem-selector__outcome">
-              <p className="problem-selector__label">Результат</p>
-              <p>{selected.result}</p>
+              <div className="problem-selector__outcome">
+                <p className="problem-selector__label">Результат</p>
+                <p>{selected.result}</p>
+              </div>
             </div>
           </article>
         </div>
