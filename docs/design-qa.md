@@ -1,86 +1,79 @@
 # Design QA
 
+Дата финальной проверки: 2026-08-10.
+
+## Среда
+
+- Browser: Google Chrome 151.0.7922.108, headless/CDP, device scale factor 1.
+- Backend: Vite 6.4.2 production preview, `npm run preview -- --host 0.0.0.0`.
+- Viewport height: 900 CSS px; проверенные ширины: 375, 430, 768, 1024, 1280 и 1440 CSS px.
+- Финальный headless capture выполнен с `--use-angle=swiftshader-webgl --enable-unsafe-swiftshader`, поскольку нативный headless GPU path писал служебные SharedImage diagnostics.
+- До и после browser QA выполнены `npm test` и `npm run build`.
+
+## Итог
+
+Финальная responsive-приёмка пройдена. На всех шести ширинах `scrollWidth === clientWidth`, menu/hash navigation, Telegram CTA contract, смена задачи, открытие/закрытие project case и внутренний scroll диалога работают. JavaScript exceptions, failed requests и HTTP 4xx/5xx в прогоне отсутствовали.
+
+## Проверка по viewport
+
+| Width | Результат | Проверенный сценарий |
+| --- | --- | --- |
+| 375 px | PASS | Hero copy перед ProfileCard; menu 48×48 px; CTA 343×52 px; scroll-snap problem tabs; одноколоночная timeline; static project grid; dialog close 44×44 px, внутренний scroll без overflow; `Esc`, focus return, Back/Forward; Telegram click перехвачен перед внешней навигацией. |
+| 430 px | PASS | Длинный hero и final CTA не обрезаются; mobile spacing и ProfileCard корректны; menu/CTA, problem change и project dialog прошли; dialog не имеет горизонтального overflow. |
+| 768 px | PASS | Раскрытое меню достигает 193 px и остаётся читаемым; OptionWheel меняет описание; timeline остаётся чистой одноколоночной композицией; static project grid и dialog reflow без overflow. |
+| 1024 px | PASS | Desktop OptionWheel, центральная чередующаяся timeline и компактный DriftWall видимы без cropping; semantic project controls стабильны; dialog scroll/reflow без overflow. |
+| 1280 px | PASS | Двухколоночный hero сбалансирован; центральная timeline выровнена; DriftWall заполняет витрину без случайных краёв; Back/Forward синхронизируют route-backed case. |
+| 1440 px | PASS | Max-width удерживает длину строк и композицию; hero, timeline, DriftWall и final CTA визуально связаны и не растягиваются сверх меры. |
+
+На каждой ширине меню было реально открыто и закрыто через hash-ссылку, выбран второй problem, проверен `https://t.me/gguzhov` с `_blank`/`noreferrer` без перехода за пределы сайта, открыт case «Остров Здоровья» и закрыт через `Esc` с возвратом фокуса. Back/Forward дополнительно проверены на 375 и 1280 px.
+
+## Структура и доступность
+
+- PASS: один `<main>`, один landing `<h1>`, последовательные section `<h2>` и ids `problems`, `career`, `projects`, `contact`.
+- PASS: CardNav содержит ссылки на все четыре ids, закрывается перед hash navigation; sections имеют `scroll-margin-top: 104px`.
+- PASS: keyboard path — menu trigger → `Enter` → panel → `Esc`; focus возвращается в trigger.
+- PASS: OptionWheel реагирует на `ArrowDown` и меняет связанное описание.
+- PASS: project dialog получает начальный focus на close button, `Shift+Tab` замыкает focus trap, `Esc` закрывает, focus возвращается в project card.
+- PASS: `focus-visible` в Chrome — solid outline 3 px.
+- PASS: dialog имеет `aria-labelledby`, body scroll блокируется, case surface прокручивается внутри; изображения кейсов имеют содержательные `alt`.
+- PASS: декоративные DriftWall tiles имеют `aria-hidden`, `pointer-events: none`, default cursor и не получают hover/active transform; в accessibility tree остаются только две semantic project buttons.
+
+## Reduced motion
+
+При эмуляции `prefers-reduced-motion: reduce` на 1024 px:
+
+- LiquidEther canvas не создаётся, autoplay отсутствует;
+- ProfileCard остаётся с нейтральным transform до и после pointer event;
+- все career events видимы без reveal-анимации;
+- DriftWall заменяется static project grid;
+- hero entrance сведён глобальным motion contract к `0.01 ms`, информация остаётся доступной.
+
+## Routes и assets
+
+- `/`, `/projects/ostrov-zdoroviya`, `/projects/ilonmask-vpn` — HTTP 200; обе прямые project routes рендерят правильный dialog title.
+- `/images/gennady-profile.webp`, `/projects/ostrov-cover.webp`, `/projects/ilonmask-cover.webp` — HTTP 200 с `image/webp`.
+- Browser QA: 0 JavaScript errors/exceptions, 0 failed requests, 0 HTTP errors. SwiftShader вывел четыре одинаковых GL Driver performance warnings о `ReadPixels` во время full-page screenshot capture; это headless capture diagnostic, не ошибка приложения.
+
 ## Evidence
 
-- Source visual truth, desktop: `docs/design-evidence/source/reactbits-liquid-ether-desktop-1440x900.png` (actual capture: 1280×720 px).
-- Source visual truth, mobile: `docs/design-evidence/source/reactbits-liquid-ether-mobile-390x844.png` (390×844 px).
-- Implementation, desktop: `docs/design-evidence/implementation/hero-desktop-1280x720.png` (1280×720 px).
-- Implementation, mobile idle: `docs/design-evidence/implementation/hero-mobile-390x844.png` (390×844 px).
-- Implementation, mobile interactive: `docs/design-evidence/implementation/hero-mobile-interactive-390x844.png` (390×844 px).
-- Implementation, mobile menu: `docs/design-evidence/implementation/hero-mobile-menu-open-390x844.png` (390×844 px).
-- Final identity and motion, desktop: `docs/design-evidence/implementation/hero-identity-motion-desktop-1280x720.png` (1280×720 px).
-- Final identity and motion, mobile: `docs/design-evidence/implementation/hero-identity-motion-mobile-390x844.png` (390×844 px).
-- Side-by-side desktop comparison: `docs/design-evidence/comparison-desktop-1280x720.png`.
-- Side-by-side mobile comparison: `docs/design-evidence/comparison-mobile-390x844.png`.
-- Density normalization: all source and implementation captures use device scale factor 1 and were compared at equal pixel dimensions for each viewport.
-- State: light theme, Liquid Ether running; interactive captures include cursor-generated flow. Mobile navigation was also checked open.
+Все снимки — full-page PNG при DPR 1. Перед capture страница последовательно прокручена до каждого career event, чтобы evidence отражал реальное post-IntersectionObserver состояние.
 
-## Full-view comparison
+- `docs/design-evidence/implementation/landing-375.png` — 375×5432 px.
+- `docs/design-evidence/implementation/landing-430.png` — 430×5539 px.
+- `docs/design-evidence/implementation/landing-768.png` — 768×5130 px.
+- `docs/design-evidence/implementation/landing-1024.png` — 1024×5210 px.
+- `docs/design-evidence/implementation/landing-1280.png` — 1280×5536 px.
+- `docs/design-evidence/implementation/landing-1440.png` — 1440×5545 px.
 
-The implementation preserves the source hero's essential composition: contained top navigation, a centered status pill, large two-line display heading, concise supporting copy, two CTA controls, and a full-bleed fluid background responding to pointer movement. The ReactBits documentation shell and branding are intentionally excluded because the requested output is the personal-site hero, not a clone of the documentation page.
+## Исправленные регрессии
 
-The light-theme adaptation keeps the original motion and hierarchy while mapping the background, flow, foreground, borders, surfaces, and controls to the project's blue tokens.
+- Добавлен финальный contact CTA из `siteContent`, включая читаемый `@gguzhov` и точный Telegram contract.
+- CardNav дополнен ссылкой `#contact`; все section targets получили корректный floating-header offset.
+- У декоративных `.project-card--wall` отключены pointer events, pointer cursor, hover zoom/elevation и active scale; parallax контейнера и отдельные semantic controls сохранены.
 
-## Required fidelity surfaces
+## Ограничения и follow-up
 
-- Fonts and typography: JetBrains Mono Variable is loaded locally and used consistently across the hero, navigation, controls, and utility text. The display treatment uses weight 700, compact line-height, controlled tracking, and intentional two-line wrapping.
-- Spacing and layout rhythm: centered composition and relative proportions match the reference. Header, status, heading, supporting copy, and CTA rhythm remain coherent at desktop and mobile sizes.
-- Colors and visual tokens: all application colors map to the blue palette from `docs/design-system.md`. The final lighter effect uses `--blue-2`, `--blue-4`, and `--blue-7` equivalents at `0.48` opacity over `--blue-1`; foreground uses `--blue-12` and primary actions use `--blue-9`.
-- Image quality and asset fidelity: there are no raster illustration or logo substitutions. The background is the copied ReactBits WebGL component using Three.js, not a static image or CSS approximation. Interface icons use Hugeicons.
-- Copy and content: ReactBits marketing copy was replaced with concise personal-site copy for Геннадий Гужов. The content remains structurally equivalent to the source hero.
-- Accessibility: semantic landmarks and heading structure are present; mobile menu exposes `aria-expanded`; touch targets are at least 44×44 px; keyboard focus is visible; reduced motion disables automatic driving.
-
-## Focused comparison
-
-The dedicated 390×844 side-by-side comparison is the focused mobile check. It clearly exposes the header, menu control, pill, heading wrapping, supporting copy, CTA sizing, and liquid effect, so an additional crop was not required.
-
-## Responsive verification
-
-Checked widths: 375, 430, 768, 1024, 1280, and 1440 px. At every width, `documentElement.scrollWidth` equals `clientWidth`; no page-level horizontal overflow was found. Mobile navigation is used below 768 px and desktop navigation from 768 px upward.
-
-## Interaction and console verification
-
-- Liquid flow responds to pointer movement across desktop and mobile-sized viewports.
-- Mobile menu opens, exposes all three links, reports its expanded state, and closes when a link is selected.
-- Anchor CTAs and navigation targets resolve within the hero.
-- Browser console checked after the final implementation capture: no errors or warnings.
-
-## Comparison history
-
-### Pass 1
-
-- [P2] The initial light palette made the liquid flow too faint in the idle mobile capture.
-- Fix: raised effect opacity from `0.56` to `0.72`, increased auto intensity to `2.2`, restored auto speed to `0.5`, and moved the palette to the stronger `blue-7`, `blue-8`, and `blue-10` stops.
-- Post-fix evidence: `docs/design-evidence/implementation/hero-mobile-interactive-390x844.png` and `docs/design-evidence/implementation/hero-desktop-1280x720.png` show distinct fluid ribbons while retaining readable foreground contrast.
-
-### Pass 2
-
-- [P2] The copied component used deprecated `THREE.Clock`, producing a console warning.
-- Fix: migrated the component timing to `THREE.Timer` and disposed it during cleanup.
-- Post-fix evidence: fresh desktop and mobile browser sessions report no warnings or errors, and the fluid simulation remains interactive.
-
-### Pass 3
-
-- [P2] User feedback indicated that the active flow could still reduce heading readability.
-- Fix: replaced the effect palette with the lighter `blue-2`, `blue-4`, and `blue-7` stops and reduced layer opacity from `0.64` to `0.48`.
-- Post-fix evidence: `docs/design-evidence/implementation/hero-lightened-desktop-1280x720.png` and `docs/design-evidence/implementation/hero-lightened-mobile-390x844.png` show the active flow behind the heading. The calculated worst-case contrast between `--blue-12` text and the darkest composited flow stop is `8.43:1`, exceeding WCAG AA and AAA requirements for large text.
-- Responsive retest: 375, 430, 768, 1024, 1280, and 1440 px all passed without horizontal overflow or heading clipping. Browser console remained free of warnings and errors.
-
-### Pass 4
-
-- Identity: connected `public/logo.svg` as the favicon and as a 28×22 px brand mark beside “Геннадий Гужов”; the decorative inline logo is excluded from the accessibility tree while the brand link retains a complete accessible name.
-- Typography: switched the full interface to the locally bundled JetBrains Mono Variable family and documented its roles and fallback stack in `docs/design-system.md`.
-- Motion: tuned Liquid Ether to a calmer viscous flow, lowered automatic speed and intensity, softened cursor force, and added a short staged entrance for the header, status, title, intro, and actions.
-- Reduced motion: browser emulation confirmed that `prefers-reduced-motion: reduce` disables the header and title entrance animations; React also disables the Liquid Ether auto-demo through the same media preference.
-- Final evidence: `docs/design-evidence/implementation/hero-identity-motion-desktop-1280x720.png` and `docs/design-evidence/implementation/hero-identity-motion-mobile-390x844.png`.
-- Final responsive retest: 375, 430, 768, 1024, 1280, and 1440 px all passed with the heading inside the viewport, the logo loaded, and no horizontal overflow. Mobile navigation opened and closed correctly. Browser console reported no warnings or errors.
-
-## Findings
-
-No actionable P0, P1, or P2 findings remain.
-
-## Follow-up polish
-
-- [P3] Replace the placeholder internal anchor targets with final portfolio sections and real contact destinations when the rest of the site is built.
+- Проверка выполнена в desktop headless Chrome с эмуляцией viewport/touch/media. Физический iPhone/iPad, настоящий notch/safe-area, экранная клавиатура и Safari не проверялись; соответствующие CSS `env(safe-area-inset-*)` присутствуют, но физическая safe-area не заявляется как протестированная.
+- Vite продолжает выводить известное non-blocking предупреждение о главном чанке около 855 kB (gzip около 241 kB). Безопасный split потребовал бы менять загрузку Three/LiquidEther над первым экраном; это оставлено performance follow-up, чтобы не ухудшать hero UX в финальном polish.
 
 final result: passed

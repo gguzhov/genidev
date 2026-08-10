@@ -2,12 +2,13 @@ import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
 import CareerTimeline from "./components/CareerTimeline/CareerTimeline";
+import FinalContact from "./components/FinalContact/FinalContact";
 import LiquidEther from "./components/LiquidEther/LiquidEther";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
 import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
-import { career, hero, identity, problems, projects } from "./content/siteContent";
+import { career, contact, hero, identity, problems, projects } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
 import useReducedMotion from "./hooks/useReducedMotion";
 
@@ -18,6 +19,7 @@ const navigation = [
       { label: "Задачи", href: "#problems", ariaLabel: "Перейти к бизнес-задачам" },
       { label: "Путь", href: "#career", ariaLabel: "Перейти к карьерному пути" },
       { label: "Разработки", href: "#projects", ariaLabel: "Перейти к разработкам" },
+      { label: "Контакт", href: "#contact", ariaLabel: "Перейти к контактам" },
     ],
   },
   {
@@ -103,6 +105,7 @@ export function App() {
         <ProblemSelector problems={problems} sectionId="problems" />
         <CareerTimeline items={career} />
         <ProjectMarketplace projects={projects} onOpenProject={openProject} />
+        <FinalContact contact={contact} cta={hero.cta} />
       </main>
       {activeProject && (
         <ProjectCase

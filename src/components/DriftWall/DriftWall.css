@@ -54,6 +54,22 @@
   height: var(--dw-tile-height);
   border-radius: 18px;
   box-shadow: 0 16px 46px var(--blue-a3);
+  cursor: default;
+  pointer-events: none;
+}
+
+.project-card--wall:hover {
+  transform: none;
+  border-color: var(--color-border);
+  box-shadow: 0 16px 46px var(--blue-a3);
+}
+
+.project-card--wall:active {
+  transform: none;
+}
+
+.project-card--wall:hover .project-card__media img {
+  transform: none;
 }
 
 .project-card--wall .project-card__media {

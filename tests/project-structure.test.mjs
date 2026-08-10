@@ -206,3 +206,62 @@ test("keeps navigation and portrait interactions accessible", async () => {
   assert.match(profileCard, /pointer: fine/);
   assert.doesNotMatch(profileCard, /DeviceOrientation|DeviceMotion|deviceorientation/);
 });
+
+test("renders the final contact from the shared content contract", async () => {
+  for (const path of [
+    "src/components/FinalContact/FinalContact.jsx",
+    "src/components/FinalContact/FinalContact.css",
+  ]) {
+    assert.equal(await exists(path), true, `Missing ${path}`);
+  }
+
+  const app = await readFile("src/App.jsx", "utf8");
+  const finalContact = await readFile("src/components/FinalContact/FinalContact.jsx", "utf8");
+
+  assert.match(app, /import FinalContact/);
+  assert.match(app, /<FinalContact contact=\{contact\} cta=\{hero\.cta\}/);
+  assert.match(finalContact, /id="contact"/);
+  assert.match(finalContact, /aria-labelledby="contact-title"/);
+  assert.match(finalContact, /contact\.title/);
+  assert.match(finalContact, /contact\.handle/);
+  assert.match(finalContact, /cta\.label/);
+  assert.match(finalContact, /href=\{contact\.href\}/);
+  assert.match(finalContact, /target=\{contact\.target\}/);
+  assert.match(finalContact, /rel=\{contact\.rel\}/);
+});
+
+test("keeps landing landmarks, section navigation and floating-header offsets coherent", async () => {
+  const app = await readFile("src/App.jsx", "utf8");
+  const career = await readFile("src/components/CareerTimeline/CareerTimeline.jsx", "utf8");
+  const marketplace = await readFile(
+    "src/components/ProjectMarketplace/ProjectMarketplace.jsx",
+    "utf8",
+  );
+  const sectionsCss = await readFile("src/styles/sections.css", "utf8");
+
+  assert.equal((app.match(/<main(?:\s|>)/g) ?? []).length, 1);
+  assert.equal((app.match(/<h1(?:\s|>)/g) ?? []).length, 1);
+  for (const href of ["#problems", "#career", "#projects", "#contact"]) {
+    assert.ok(app.includes(`href: "${href}"`), `Missing CardNav link ${href}`);
+  }
+  assert.match(app, /sectionId="problems"/);
+  assert.match(career, /id="career"/);
+  assert.match(marketplace, /id="projects"/);
+  assert.match(sectionsCss, /scroll-margin-top:\s*\d+px/);
+});
+
+test("removes pointer and hover affordances from decorative wall tiles", async () => {
+  const driftCss = await readFile("src/components/DriftWall/DriftWall.css", "utf8");
+
+  assert.match(driftCss, /\.project-card--wall\s*\{[^}]*pointer-events:\s*none;/s);
+  assert.match(driftCss, /\.project-card--wall\s*\{[^}]*cursor:\s*default;/s);
+  assert.match(
+    driftCss,
+    /\.project-card--wall:hover\s*\{[^}]*transform:\s*none;[^}]*box-shadow:\s*0 16px 46px var\(--blue-a3\);/s,
+  );
+  assert.match(driftCss, /\.project-card--wall:active\s*\{[^}]*transform:\s*none;/s);
+  assert.match(
+    driftCss,
+    /\.project-card--wall:hover \.project-card__media img\s*\{[^}]*transform:\s*none;/s,
+  );
+});

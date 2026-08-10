@@ -2,6 +2,11 @@
   padding: 72px 0;
 }
 
+.section[id],
+.final-contact[id] {
+  scroll-margin-top: 104px;
+}
+
 .section__inner {
   width: min(calc(100% - 32px), 1280px);
   margin-inline: auto;
