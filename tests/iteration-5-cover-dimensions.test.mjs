@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { projects } from "../src/content/siteContent.js";
 
-const [cardSource, caseSource, caseCss] = await Promise.all([
-  readFile("src/components/ProjectMarketplace/ProjectCard.jsx", "utf8"),
+const [visualSource, caseSource, caseCss] = await Promise.all([
+  readFile("src/components/ProjectMarketplace/ProjectVisual.jsx", "utf8"),
   readFile("src/components/ProjectCase/ProjectCase.jsx", "utf8"),
   readFile("src/components/ProjectCase/ProjectCase.css", "utf8"),
 ]);
@@ -32,11 +32,12 @@ test("publishes the real intrinsic dimensions for every project cover", () => {
 });
 
 test("uses truthful intrinsic dimensions in both project image consumers with a fallback", () => {
-  for (const source of [cardSource, caseSource]) {
+  for (const source of [visualSource, caseSource]) {
     assert.match(source, /width=\{project\.coverWidth \?\? 1536\}/);
     assert.match(source, /height=\{project\.coverHeight \?\? 1024\}/);
-    assert.doesNotMatch(source, /width="1536"|height="1024"/);
   }
+  assert.doesNotMatch(caseSource, /width="1536"|height="1024"/);
+  assert.match(visualSource, /project-visual__atmosphere[\s\S]*width="1536"[\s\S]*height="1024"/);
 });
 
 test("shows the complete ProjectCase cover at its metadata aspect ratio", () => {

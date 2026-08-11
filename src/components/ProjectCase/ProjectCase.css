@@ -155,19 +155,25 @@
 .project-case__metrics {
   display: grid;
   gap: 0.75rem;
-  margin-bottom: 2rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
 }
 
-.project-case__metrics strong {
+.project-case__metrics li {
   display: grid;
   min-height: 8rem;
   padding: 1.25rem;
   border-radius: 1rem;
   align-content: end;
   background: var(--color-accent);
+}
+
+.project-case__metrics strong {
   color: var(--color-on-accent);
   font-size: clamp(1.25rem, 5.5vw, 2rem);
   line-height: 1.12;
+  overflow-wrap: anywhere;
 }
 
 .project-case__result-summary {

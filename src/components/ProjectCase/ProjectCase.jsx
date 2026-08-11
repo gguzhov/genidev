@@ -130,9 +130,11 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
         <section className="project-case__section" aria-labelledby="project-result-title">
           <h2 id="project-result-title">Результат</h2>
           <div className="project-case__result">
-            <div className="project-case__metrics">
-              {project.metrics.map((metric) => <strong key={metric}>{metric}</strong>)}
-            </div>
+            <ul className="project-case__metrics" aria-label="Ключевые результаты проекта">
+              {project.metrics.map((metric) => (
+                <li key={metric}><strong>{metric}</strong></li>
+              ))}
+            </ul>
             <ul className="project-case__prose project-case__list">
               {project.result.map((item) => <li key={item}>{item}</li>)}
             </ul>

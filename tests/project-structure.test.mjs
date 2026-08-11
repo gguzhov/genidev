@@ -268,7 +268,7 @@ test("keeps decorative wall tiles noninteractive regardless of stylesheet order"
   const interactiveSelectors = [
     ".project-card:hover",
     ".project-card:active",
-    ".project-card:hover .project-card__media img",
+    ".project-card:hover .project-visual__atmosphere",
   ];
   const decorativeSelectors = [
     ".drift-wall .project-card--wall:hover",

@@ -127,7 +127,16 @@ export const projects = [
     summary:
       "За месяц превратил типовой сайт клиники в цифровую платформу с CMS, AI-ассистентом и единой воронкой привлечения пациентов.",
     duration: "1 месяц до запуска",
-    metrics: ["+72% к посещаемости за месяц", "4 целевые записи"],
+    metrics: [
+      "+72% к посещаемости за месяц",
+      "4 целевые записи",
+      "CMS для самостоятельного обновления",
+      "AI-ассистент и единая воронка",
+    ],
+    visual: {
+      background: "/projects/ice/ostrov-ice-v1.webp",
+      logo: "/projects/brands/ostrov-logo.svg",
+    },
     cover: "/projects/ostrov/ostrov-home-comet.webp",
     coverWidth: 1341,
     coverHeight: 768,
@@ -227,7 +236,16 @@ export const projects = [
     summary:
       "За неделю превратил VPN-инфраструктуру в понятный подписочный продукт с оплатой, личным кабинетом, Telegram-ботом и автоматической выдачей доступа.",
     duration: "1 неделя до запуска",
-    metrics: ["300+ регистраций в месяц", "100+ активных платящих клиентов"],
+    metrics: [
+      "300+ регистраций в месяц",
+      "100+ активных платящих клиентов",
+      "Оплата и подключение без администратора",
+      "Автосинхронизация оплаты и VPN-доступа",
+    ],
+    visual: {
+      background: "/projects/ice/ilonmask-ice-v1.webp",
+      logo: "/projects/brands/ilonmask-logo.webp",
+    },
     cover: "/projects/ilonmask-product-cover.png",
     coverWidth: 1200,
     coverHeight: 630,

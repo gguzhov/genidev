@@ -173,9 +173,7 @@ test("uses truthful product-specific covers and readable project labels", async 
   assert.match(contentSource, /cover:\s*"\/projects\/ilonmask-product-cover\.png"/);
   assert.equal(await exists("public/projects/ilonmask-product-cover.png"), true);
   assert.match(marketplaceCss, /\.project-card__category\s*\{[^}]*font-size:\s*0\.75rem/s);
-  assert.match(marketplaceCss, /\.project-card__metrics > span\s*\{[^}]*font-size:\s*0\.8rem/s);
-  assert.match(
-    marketplaceCss,
-    /\.marketplace__grid > \.project-card:nth-child\(2\) \.project-card__media\s*\{[^}]*aspect-ratio:\s*1200\s*\/\s*630/s,
-  );
+  assert.match(marketplaceCss, /\.project-card__metrics > li\s*\{[^}]*font-size:\s*0\.8rem/s);
+  assert.match(marketplaceCss, /\.project-card__media,[\s\S]*aspect-ratio:\s*3\s*\/\s*2/s);
+  assert.doesNotMatch(marketplaceCss, /nth-child\(2\).*aspect-ratio/s);
 });

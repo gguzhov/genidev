@@ -55,7 +55,7 @@ test("crops only the real Ostrov cover chrome through semantic CSS metadata", ()
   assert.match(cardSource, /project-card--cover-/);
   assert.match(
     marketplaceCss,
-    /\.project-card--cover-browser-chrome \.project-card__media img\s*\{[^}]*height:\s*11[4-9]%[^}]*object-position:\s*center bottom/s,
+    /\.project-card--cover-browser-chrome \.project-visual__product\s*\{[^}]*height:\s*11[4-9]%[^}]*object-position:\s*center bottom/s,
   );
   assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-comet\.webp"/);
 });
