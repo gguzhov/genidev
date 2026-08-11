@@ -1,46 +1,83 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef } from "react";
 import { gsap } from "gsap";
-import { createWorkSequenceObserver } from "./workSequenceRevealState";
+import { CustomEase } from "gsap/CustomEase";
+import {
+  createWorkSequenceMotionState,
+  createWorkSequenceObserver,
+  transitionWorkSequenceMotionState,
+} from "./workSequenceRevealState";
 import "./WorkSequence.css";
+
+gsap.registerPlugin(CustomEase);
+const WORK_SEQUENCE_EASE = CustomEase.create("work-sequence-ease", "0.22,1,0.36,1");
 
 export default function WorkSequence({ items, reducedMotion = false }) {
   const sequenceRef = useRef(null);
-  const [isRevealed, setIsRevealed] = useState(reducedMotion);
-
-  useEffect(
-    () =>
-      createWorkSequenceObserver({
-        root: sequenceRef.current,
-        reducedMotion,
-        onReveal: () => setIsRevealed(true),
-      }),
-    [reducedMotion],
+  const [motionState, dispatchMotion] = useReducer(
+    transitionWorkSequenceMotionState,
+    reducedMotion,
+    createWorkSequenceMotionState,
   );
 
+  useEffect(() => {
+    dispatchMotion(reducedMotion ? "PREFERENCE_REDUCED" : "PREFERENCE_FULL");
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (motionState.hasSettled) return undefined;
+
+    return createWorkSequenceObserver({
+      root: sequenceRef.current,
+      reducedMotion,
+      onReveal: () => dispatchMotion("REVEAL"),
+    });
+  }, [motionState.hasSettled, reducedMotion]);
+
   useLayoutEffect(() => {
-    if (!isRevealed || reducedMotion || !sequenceRef.current) return undefined;
+    if (
+      !motionState.isRevealed ||
+      motionState.hasSettled ||
+      reducedMotion ||
+      !sequenceRef.current
+    ) {
+      return undefined;
+    }
 
     const context = gsap.context(() => {
       const nodes = sequenceRef.current.querySelectorAll(".work-sequence__item");
+      const signal = sequenceRef.current.querySelector(".work-sequence__track-signal");
       gsap.set(nodes, { autoAlpha: 0, y: 8 });
-      gsap.timeline().to(nodes, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "0.22,1,0.36,1",
-        stagger: 0.07,
+      gsap.set(signal, { strokeDashoffset: 1 });
+
+      const timeline = gsap.timeline({
+        onComplete: () => dispatchMotion("COMPLETE"),
       });
+      timeline
+        .to(signal, {
+          strokeDashoffset: 0,
+          duration: 0.5,
+          ease: WORK_SEQUENCE_EASE,
+        })
+        .to(nodes, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.5,
+          ease: WORK_SEQUENCE_EASE,
+          stagger: 0.07,
+        }, 0.5);
     }, sequenceRef);
 
     return () => context.revert();
-  }, [isRevealed, reducedMotion]);
+  }, [motionState.hasSettled, motionState.isRevealed, reducedMotion]);
+
+  const isStatic = reducedMotion || motionState.hasSettled;
 
   return (
     <div
-      className={`work-sequence${isRevealed ? " is-revealed" : ""}${
-        reducedMotion ? " work-sequence--static" : ""
+      className={`work-sequence${motionState.isRevealed ? " is-revealed" : ""}${
+        isStatic ? " work-sequence--static" : ""
       }`}
-      data-reveal-state={isRevealed ? "revealed" : "waiting"}
+      data-reveal-state={motionState.isRevealed ? "revealed" : "waiting"}
       ref={sequenceRef}
     >
       <svg className="work-sequence__track" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">

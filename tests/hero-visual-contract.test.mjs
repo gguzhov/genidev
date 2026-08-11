@@ -17,7 +17,7 @@ test("animates the sequence once and renders it statically for reduced motion", 
   ]);
 
   assert.match(component, /createWorkSequenceObserver/);
-  assert.match(component, /gsap\.timeline\(\)/);
+  assert.match(component, /gsap\.timeline\(/);
   assert.match(component, /stagger:\s*0\.07/);
   assert.match(component, /work-sequence--static/);
   assert.match(styles, /stroke-dashoffset:\s*1/);

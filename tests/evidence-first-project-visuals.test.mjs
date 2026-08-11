@@ -46,13 +46,19 @@ test("limits reactive ice depth to fine hover input and reduced-motion-safe CSS"
     "src/components/ProjectMarketplace/ProjectVisual.jsx",
     "utf8",
   );
+  const lifecycle = await readFile(
+    "src/components/ProjectMarketplace/projectVisualPointerLifecycle.js",
+    "utf8",
+  );
   const css = await readFile(
     "src/components/ProjectMarketplace/ProjectMarketplace.css",
     "utf8",
   );
 
   assert.match(visual, /onPointerMove/);
-  assert.match(visual, /matchMedia\("\(hover: hover\) and \(pointer: fine\)"\)/);
+  assert.match(lifecycle, /\(hover: hover\) and \(pointer: fine\)/);
+  assert.match(lifecycle, /prefers-reduced-motion: reduce/);
+  assert.match(lifecycle, /addEventListener\("change"/);
   assert.match(css, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /--project-pointer-x/);

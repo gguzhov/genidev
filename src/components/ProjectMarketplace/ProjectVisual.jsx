@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createProjectPointerLifecycle } from "./projectVisualPointerLifecycle";
 
 const DEFAULT_POINTER = {
   "--project-pointer-x": "0px",
@@ -8,17 +9,6 @@ const DEFAULT_POINTER = {
   "--project-tilt-x": "0deg",
   "--project-tilt-y": "0deg",
 };
-
-function canUsePointerDepth() {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return false;
-  }
-
-  return (
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-}
 
 export default function ProjectVisual({ project, interactive = true }) {
   const visualRef = useRef(null);
@@ -33,8 +23,6 @@ export default function ProjectVisual({ project, interactive = true }) {
   };
 
   const onPointerMove = (event) => {
-    if (!canUsePointerDepth()) return;
-
     const visual = visualRef.current;
     if (!visual) return;
 
@@ -57,20 +45,17 @@ export default function ProjectVisual({ project, interactive = true }) {
   };
 
   useEffect(() => {
-    if (!interactive) return undefined;
-
     const visual = visualRef.current;
     const card = visual?.closest(".project-card");
-    if (!visual || !card) return undefined;
-
-    const onPointerLeave = () => resetDepth(visual);
-    card.addEventListener("pointermove", onPointerMove);
-    card.addEventListener("pointerleave", onPointerLeave);
-
-    return () => {
-      card.removeEventListener("pointermove", onPointerMove);
-      card.removeEventListener("pointerleave", onPointerLeave);
-    };
+    return createProjectPointerLifecycle({
+      card,
+      visual,
+      interactive,
+      matchMedia:
+        typeof window === "undefined" ? undefined : window.matchMedia.bind(window),
+      onPointerMove,
+      resetDepth,
+    });
   }, [interactive]);
 
   return (

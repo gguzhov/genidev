@@ -96,9 +96,13 @@ test("keeps both project media blocks on the same grid and ratio", async () => {
 test("does not attach project pointer depth to decorative cards", async () => {
   const card = await readFile("src/components/ProjectMarketplace/ProjectCard.jsx", "utf8");
   const visual = await readFile("src/components/ProjectMarketplace/ProjectVisual.jsx", "utf8");
+  const lifecycle = await readFile(
+    "src/components/ProjectMarketplace/projectVisualPointerLifecycle.js",
+    "utf8",
+  );
   assert.match(card, /interactive=\{!decorative\}/);
   assert.match(visual, /interactive\s*=\s*true/);
-  assert.match(visual, /if \(!interactive\)/);
+  assert.match(lifecycle, /if \(!interactive/);
 });
 
 test("styles DriftWall metric list items using the semantic li contract", async () => {

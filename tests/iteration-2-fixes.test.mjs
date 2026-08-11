@@ -81,7 +81,7 @@ test("uses the exact approved task and marketplace copy", () => {
   );
   assert.match(
     contentSource,
-    /Проверенная продуктовая гипотеза\./,
+    /Гипотеза готова к проверке на реальных пользователях\./,
   );
   assert.match(contentSource, /duration:\s*"1 неделя до запуска"/);
   assert.match(

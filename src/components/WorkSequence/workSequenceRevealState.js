@@ -36,3 +36,27 @@ export function createWorkSequenceObserver({
     observer.disconnect();
   };
 }
+
+export function createWorkSequenceMotionState(reducedMotion = false) {
+  return {
+    isRevealed: reducedMotion,
+    hasSettled: reducedMotion,
+  };
+}
+
+export function transitionWorkSequenceMotionState(state, event) {
+  switch (event) {
+    case "PREFERENCE_REDUCED":
+      if (state.hasSettled && state.isRevealed) return state;
+      return { isRevealed: true, hasSettled: true };
+    case "REVEAL":
+      if (state.hasSettled || state.isRevealed) return state;
+      return { ...state, isRevealed: true };
+    case "COMPLETE":
+      if (state.hasSettled) return state;
+      return { isRevealed: true, hasSettled: true };
+    case "PREFERENCE_FULL":
+    default:
+      return state;
+  }
+}

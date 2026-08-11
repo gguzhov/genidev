@@ -164,7 +164,7 @@
   font-weight: 650;
   line-height: 1.4;
   animation: problem-outcome-enter var(--motion-state) var(--motion-ease) both;
-  animation-delay: calc(120ms + var(--outcome-index) * 45ms);
+  animation-delay: calc(var(--motion-state) + var(--outcome-index) * 45ms);
 }
 
 @keyframes problem-panel-enter {
