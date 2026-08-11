@@ -134,7 +134,7 @@ Render code, situation, CSS barcode and four outcomes. Raise essential text to a
 
 - [ ] **Step 4: Run GREEN**
 
-Run: `node --test tests/problem-passports.test.mjs tests/problem-selector.test.mjs tests/problem-selector-motion.test.mjs`
+Run: `node --test tests/problem-passports.test.mjs tests/problem-selector-state.test.mjs tests/evidence-first-motion.test.mjs`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
