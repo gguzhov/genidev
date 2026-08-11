@@ -37,6 +37,19 @@ test("uses one, two and three equal columns at the approved breakpoints", () => 
   assert.match(marketplaceCss, /\.project-card__media,[\s\S]*?aspect-ratio:\s*3\s*\/\s*2/);
 });
 
+test("equalizes complete tablet cards across both grid rows", () => {
+  const tablet = marketplaceCss.slice(
+    marketplaceCss.indexOf("@media (min-width: 768px)"),
+    marketplaceCss.indexOf("@media (min-width: 1024px)"),
+  );
+
+  assert.match(
+    tablet,
+    /\.marketplace__grid\s*\{[^}]*grid-auto-rows:\s*1fr/s,
+  );
+  assert.match(marketplaceCss, /\.project-card\s*\{[^}]*height:\s*100%/s);
+});
+
 test("shows exactly four rectangular evidence results and a truthful status row", () => {
   assert.equal(projects.length, 3);
   for (const project of projects) assert.equal(project.metrics.length, 4);
@@ -135,6 +148,50 @@ test("activates layer compositing only during allowed pointer interaction", asyn
     /\.project-visual--depth-active\s+\.project-visual__(?:atmosphere|product-frame|logo)[\s\S]*will-change:\s*transform/,
   );
   assert.equal((marketplaceCss.match(/will-change:\s*transform/g) ?? []).length, 1);
+});
+
+test("starts without pointer listeners or compositing when fine hover is unavailable", async () => {
+  const { createProjectPointerLifecycle } = await import(
+    "../src/components/ProjectMarketplace/projectVisualPointerLifecycle.js"
+  );
+  const cardListeners = new Map();
+  const classes = new Set();
+  const media = {
+    fine: createMedia(false),
+    reduced: createMedia(false),
+  };
+  const visual = {
+    classList: {
+      add: (className) => classes.add(className),
+      remove: (className) => classes.delete(className),
+    },
+  };
+  const card = {
+    addEventListener: (type, handler) => cardListeners.set(type, handler),
+    removeEventListener(type, handler) {
+      if (cardListeners.get(type) === handler) cardListeners.delete(type);
+    },
+  };
+  const cleanup = createProjectPointerLifecycle({
+    card,
+    visual,
+    interactive: true,
+    matchMedia: (query) => (query.includes("prefers-reduced") ? media.reduced : media.fine),
+    onPointerMove: () => {},
+    resetDepth: () => {},
+  });
+
+  assert.equal(cardListeners.size, 0);
+  assert.equal(classes.has("project-visual--depth-active"), false);
+  assert.match(
+    marketplaceCss,
+    /\.project-visual--depth-active\s+\.project-visual__atmosphere,[\s\S]*will-change:\s*transform/,
+  );
+  assert.equal((marketplaceCss.match(/will-change:\s*transform/g) ?? []).length, 1);
+
+  cleanup();
+  assert.equal(cardListeners.size, 0);
+  assert.equal(classes.has("project-visual--depth-active"), false);
 });
 
 function createMedia(initialMatches) {

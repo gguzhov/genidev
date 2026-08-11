@@ -89,3 +89,51 @@ Headless Chrome 151 / CDP, viewport height 1400, DPR 1:
 
 - QA выполнен в headless Chrome, не на физическом mobile-устройстве и не в Safari.
 - Защищённые untracked `.npmrc`, `tmp/` и `docs/design-evidence/*` не изменялись и не добавляются в commit.
+
+## Review revision — equal tablet rows и lifecycle coverage
+
+### TDD
+
+RED-команда:
+
+```text
+node --test tests/marketplace-redesign.test.mjs
+```
+
+Результат RED: `8 tests, 7 pass, 1 fail`. Новый контракт `equalizes complete tablet cards across both grid rows` ожидаемо упал из-за отсутствия `grid-auto-rows: 1fr` в tablet media query.
+
+Минимальный GREEN: в `.marketplace__grid` от 768 px добавлен `grid-auto-rows: 1fr`; вместе с существующим `.project-card { height: 100%; }` все implicit rows принимают высоту самой высокой карточки.
+
+Дополнительный lifecycle characterization `starts without pointer listeners or compositing when fine hover is unavailable` проверяет initial `fine=false`: `cardListeners.size === 0`, класс `project-visual--depth-active` отсутствует, а единственный `will-change: transform` остаётся scoped этим классом. Существующее поведение уже было корректным, поэтому этот test прошёл при первом запуске.
+
+GREEN-команды и точные результаты:
+
+```text
+node --test tests/marketplace-redesign.test.mjs
+8 tests, 8 pass, 0 fail
+
+node --test tests/marketplace-redesign.test.mjs tests/marketplace-state.test.mjs tests/iteration-2-fixes.test.mjs tests/evidence-first-project-visuals.test.mjs tests/final-review-regressions.test.mjs
+42 tests, 42 pass, 0 fail
+
+npm run build
+PASS — Vite 6.4.2, 72 modules transformed, Sites build prepared
+
+git diff --check
+PASS
+```
+
+### Fresh project-section evidence
+
+Capture-команда:
+
+```text
+node /tmp/genidev-task2-evidence.mjs
+```
+
+Headless Chrome/CDP использовал текущий production build. Перед capture все три карточки последовательно входили в viewport; затем скрипт ожидал `complete && naturalWidth > 0` у каждого project image, exact heading «Маркетплейс моих разработок», наличие DATONIKS и отсутствие page overflow.
+
+- `.superpowers/sdd/task-2-evidence/marketplace-375.png` — 375×2643 px.
+- `.superpowers/sdd/task-2-evidence/marketplace-768.png` — 768×2039 px; card heights `806.1 / 806.1 / 806.1` px.
+- `.superpowers/sdd/task-2-evidence/marketplace-1024.png` — 1024×1236 px; card heights `804.1 / 804.1 / 804.1` px.
+
+Все три PNG повторно проверены через `view_image`. Exact heading и DATONIKS полностью видимы, реальные evidence-слои загружены; пересечений карточек, обрезки контента и горизонтального overflow не обнаружено. На 768 px третья карточка сохраняет ширину одной колонки и полную высоту, равную карточкам первой grid row.
