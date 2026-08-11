@@ -100,10 +100,24 @@
 
 .career-timeline__body {
   max-width: 66ch;
-  margin: 13px 0 0;
+  margin: 6px 0 0;
   color: var(--color-text);
   font-size: 0.86rem;
   line-height: 1.65;
+}
+
+.career-timeline__label {
+  margin: 15px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.67rem;
+  font-weight: 720;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.career-timeline__proof {
+  max-width: 66ch;
 }
 
 .career-timeline__metrics {
@@ -111,7 +125,7 @@
   flex-wrap: wrap;
   gap: 8px;
   max-width: 66ch;
-  margin: 16px 0 0;
+  margin: 7px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -158,8 +172,9 @@
   }
 
   .career-timeline__entry h3,
+  .career-timeline__label,
   .career-timeline__body,
-  .career-timeline__metrics {
+  .career-timeline__proof {
     grid-column: 2;
   }
 

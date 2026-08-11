@@ -19,6 +19,12 @@ const FOCUSABLE_SELECTOR =
 gsap.registerPlugin(CustomEase);
 const cardNavEase = CustomEase.create("card-nav-ease", CARD_NAV_EASE.gsap);
 
+export const normalizeNavigationItems = (items) =>
+  items.flatMap((item) => {
+    if (Array.isArray(item?.links)) return item.links;
+    return item?.href ? [item] : [];
+  });
+
 export default function CardNav({ items = [], cta, className = "", ease = cardNavEase }) {
   const [menuState, setMenuState] = useState(CARD_NAV_INITIAL_STATE);
   const navRef = useRef(null);
@@ -28,6 +34,7 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
   const openFrameRef = useRef(null);
   const lifecycleStateRef = useRef(CARD_NAV_INITIAL_STATE);
   const reducedMotion = useReducedMotion();
+  const normalizedItems = normalizeNavigationItems(items);
   const { isExpanded, isHamburgerOpen, panelInteractive, contentVisible } = menuState;
 
   const calculateHeight = useCallback(() => {
@@ -231,7 +238,6 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
             onClick={handleHeaderNavigation}
           >
             <img src="/images/gennady-logo.webp" alt="" width="36" height="36" />
-            <span>Геннадий Гужов</span>
           </a>
 
           <a
@@ -257,39 +263,41 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
           aria-hidden={!panelInteractive}
           inert={!panelInteractive ? true : undefined}
         >
-          {items.map((item, index) => (
-            <section
-              className="card-nav__card"
-              key={item.label}
-              ref={(element) => {
-                cardsRef.current[index] = element;
-              }}
-            >
-              <p className="card-nav__label">{item.label}</p>
-              <div className="card-nav__links">
-                {item.links?.map((link) => (
-                  <a
-                    className="card-nav__link"
-                    href={link.href}
-                    key={`${link.href}-${link.label}`}
-                    aria-label={link.ariaLabel}
-                    target={link.target}
-                    rel={link.rel}
-                    tabIndex={panelInteractive ? 0 : -1}
-                    onClick={handlePanelNavigation}
-                  >
-                    <HugeiconsIcon
-                      icon={ArrowUpRight01Icon}
-                      size={18}
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </section>
-          ))}
+          <div className="card-nav__links">
+            {normalizedItems.map((link, index) => (
+              <a
+                className="card-nav__link"
+                href={link.href}
+                key={`${link.href}-${link.label}`}
+                aria-label={link.ariaLabel}
+                target={link.target}
+                rel={link.rel}
+                tabIndex={panelInteractive ? 0 : -1}
+                onClick={handlePanelNavigation}
+                ref={(element) => {
+                  cardsRef.current[index] = element;
+                }}
+              >
+                <span>{link.label}</span>
+                <HugeiconsIcon
+                  icon={ArrowUpRight01Icon}
+                  size={18}
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
+              </a>
+            ))}
+          </div>
+
+          <div
+            className="card-nav__visual"
+            aria-hidden="true"
+            ref={(element) => {
+              cardsRef.current[normalizedItems.length] = element;
+            }}
+          >
+            <img src="/images/ai-ice-core-v1.webp" alt="" width="720" height="720" />
+          </div>
         </div>
       </nav>
     </header>

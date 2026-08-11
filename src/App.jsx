@@ -14,27 +14,31 @@ import useReducedMotion from "./hooks/useReducedMotion";
 
 const navigation = [
   {
-    label: "Разделы",
-    links: [
-      { label: "Задачи", href: "#problems", ariaLabel: "Перейти к бизнес-задачам" },
-      { label: "Путь", href: "#career", ariaLabel: "Перейти к карьерному пути" },
-      { label: "Разработки", href: "#projects", ariaLabel: "Перейти к разработкам" },
-      { label: "Контакт", href: "#contact", ariaLabel: "Перейти к контактам" },
-    ],
+    label: "Задачи",
+    href: "#problems",
+    ariaLabel: "Перейти к бизнес-задачам",
+  },
+  {
+    label: "Опыт",
+    href: "#career",
+    ariaLabel: "Перейти к карьерному пути",
+  },
+  {
+    label: "Проекты",
+    href: "#projects",
+    ariaLabel: "Перейти к проектам",
   },
   {
     label: "Связаться",
-    links: [
-      {
-        label: "Telegram · @gguzhov",
-        href: hero.cta.href,
-        ariaLabel: "Написать Геннадию в Telegram",
-        target: hero.cta.target,
-        rel: hero.cta.rel,
-      },
-    ],
+    href: "#contact",
+    ariaLabel: "Перейти к контактам",
   },
 ];
+
+const navigationCta = {
+  ...hero.cta,
+  label: "Связаться",
+};
 
 export function App() {
   const reducedMotion = useReducedMotion();
@@ -46,7 +50,7 @@ export function App() {
 
   return (
     <>
-      <CardNav items={navigation} cta={hero.cta} />
+      <CardNav items={navigation} cta={navigationCta} />
       <main>
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero__inner">
@@ -86,7 +90,7 @@ export function App() {
         <ProblemSelector problems={problems} sectionId="problems" />
         <CareerTimeline items={career} />
         <ProjectMarketplace projects={projects} onOpenProject={openProject} />
-        <FinalContact contact={contact} cta={hero.cta} />
+        <FinalContact contact={contact} />
       </main>
       {activeProject && (
         <ProjectCase

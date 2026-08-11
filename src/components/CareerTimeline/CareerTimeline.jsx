@@ -43,8 +43,11 @@ export default function CareerTimeline({ items }) {
       <div className="section__inner">
         <div className="section__heading">
           <p className="section__eyebrow">Путь</p>
-          <h2 id="career-title">От экономики — к продуктам и AI</h2>
-          <p>От проверки спроса и экономики — к продуктовым, аналитическим и AI-системам.</p>
+          <h2 id="career-title">От торговли и экономики — к цифровым продуктам</h2>
+          <p>
+            Сначала учился находить спрос, считать деньги и выстраивать поставки. Затем
+            перенёс этот подход в инфраструктурные, медицинские и AI-продукты.
+          </p>
         </div>
 
         <ol
@@ -64,16 +67,20 @@ export default function CareerTimeline({ items }) {
               <article className="career-timeline__entry">
                 <p className="career-timeline__year">{item.year}</p>
                 <h3>{item.title}</h3>
+                <p className="career-timeline__label">Ответственность</p>
                 <p className="career-timeline__body">{item.body}</p>
                 {item.metrics?.length ? (
-                  <ul
-                    className="career-timeline__metrics"
-                    aria-label={`Подтверждённые результаты: ${item.title}`}
-                  >
-                    {item.metrics.map((metric) => (
-                      <li key={metric}>{metric}</li>
-                    ))}
-                  </ul>
+                  <div className="career-timeline__proof">
+                    <p className="career-timeline__label">Подтверждено</p>
+                    <ul
+                      className="career-timeline__metrics"
+                      aria-label={`Подтверждённые результаты: ${item.title}`}
+                    >
+                      {item.metrics.map((metric) => (
+                        <li key={metric}>{metric}</li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : null}
               </article>
             </li>

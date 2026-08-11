@@ -395,10 +395,12 @@ export const projects = [
 ];
 
 export const contact = {
-  title: "Есть задача, которую пора превратить в систему?",
+  title: "Расскажите, что должно измениться.",
+  body:
+    "Разберу задачу, предложу первый вариант решения и объясню, что потребуется для запуска.",
   handle: "@gguzhov",
   href: "https://t.me/gguzhov",
   target: "_blank",
   rel: "noreferrer",
-  ctaLabel: "Решить проблему",
+  ctaLabel: "Обсудить в Telegram",
 };

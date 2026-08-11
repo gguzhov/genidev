@@ -122,7 +122,11 @@ test("motion-sensitive surfaces use shared durations and retain reduced-motion f
   assert.match(profileCssSource, /@media \(prefers-reduced-motion:\s*reduce\), \(hover:\s*none\), \(pointer:\s*coarse\)/);
 });
 
-test("muted copy stays readable and the closing question is exact", () => {
+test("muted copy stays readable and the contact invitation is exact", () => {
   assert.match(tokensSource, /--color-text-muted:\s*var\(--blue-11\)/);
-  assert.match(contentSource, /title:\s*"Есть задача, которую пора превратить в систему\?"/);
+  assert.match(contentSource, /title:\s*"Расскажите, что должно измениться\."/);
+  assert.match(
+    contentSource,
+    /Разберу задачу, предложу первый вариант решения и объясню, что потребуется для запуска\./,
+  );
 });

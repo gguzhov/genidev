@@ -212,12 +212,12 @@ test("renders the final contact from the shared content contract", async () => {
   const finalContact = await readFile("src/components/FinalContact/FinalContact.jsx", "utf8");
 
   assert.match(app, /import FinalContact/);
-  assert.match(app, /<FinalContact contact=\{contact\} cta=\{hero\.cta\}/);
+  assert.match(app, /<FinalContact contact=\{contact\} \/>/);
   assert.match(finalContact, /id="contact"/);
   assert.match(finalContact, /aria-labelledby="contact-title"/);
   assert.match(finalContact, /contact\.title/);
   assert.match(finalContact, /contact\.handle/);
-  assert.match(finalContact, /cta\.label/);
+  assert.match(finalContact, /contact\.ctaLabel/);
   assert.match(finalContact, /href=\{contact\.href\}/);
   assert.match(finalContact, /target=\{contact\.target\}/);
   assert.match(finalContact, /rel=\{contact\.rel\}/);
