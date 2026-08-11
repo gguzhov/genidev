@@ -50,5 +50,5 @@ test("removes the redundant problem section lead", async () => {
   const source = await readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8");
   assert.doesNotMatch(source, /Разбираю задачу, считаю эффект/);
   assert.match(source, /Действия/);
-  assert.match(source, /К чему приводит/);
+  assert.match(source, /На выходе/);
 });

@@ -52,8 +52,10 @@ export default function ProblemSelector({ problems, sectionId }) {
     >
       <div className="section__inner">
         <header className="section__heading">
-          <p className="section__eyebrow">С чем я могу помочь</p>
-          <h2 id={headingId}>От бизнес-проблемы до измеримого результата</h2>
+          <h2 id={headingId}>В чем могу быть полезен?</h2>
+          <p>
+            Беру ответственность за путь от исходной задачи до работающего решения и данных после запуска.
+          </p>
         </header>
 
         <div className="problem-selector">
@@ -76,10 +78,10 @@ export default function ProblemSelector({ problems, sectionId }) {
                   onClick={() => selectProblem(index)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                 >
-                  <span className="problem-selector__tab-index" aria-hidden="true">
-                    0{index + 1}
+                  <span className="problem-selector__tab-code" aria-hidden="true">
+                    {problem.code}
                   </span>
-                  <span>{problem.title}</span>
+                  <span className="problem-selector__tab-title">{problem.title}</span>
                 </button>
               );
             })}
@@ -101,13 +103,21 @@ export default function ProblemSelector({ problems, sectionId }) {
             aria-labelledby={panelHeadingId}
           >
             <div className="problem-selector__panel-content" key={selected.id}>
-              <p className="problem-selector__index">
-                0{selectedIndex + 1} / 0{problems.length}
-              </p>
+              <div className="problem-selector__barcode">
+                <span className="problem-selector__code">{selected.code}</span>
+                <span className="problem-selector__barcode-bars" aria-hidden="true">
+                  <span
+                    className="problem-selector__scan"
+                    key={selected.id}
+                    aria-hidden="true"
+                  />
+                </span>
+              </div>
               <h3 id={panelHeadingId}>{selected.title}</h3>
+              <p className="problem-selector__situation">{selected.situation}</p>
 
               <div className="problem-selector__actions">
-                <p className="problem-selector__label">Действия</p>
+                <p className="problem-selector__label">Что беру на себя</p>
                 <ul
                   className="problem-selector__actions-list"
                   aria-label={`Действия для задачи «${selected.title}»`}
@@ -117,7 +127,7 @@ export default function ProblemSelector({ problems, sectionId }) {
                   ))}
                 </ul>
                 <p className="problem-selector__label problem-selector__label--outcomes">
-                  К чему приводит
+                  На выходе
                 </p>
                 <ul
                   className="problem-selector__outcomes"

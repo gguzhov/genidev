@@ -20,11 +20,10 @@
   position: relative;
   display: grid;
   flex: 0 0 min(82vw, 320px);
-  min-height: 64px;
-  padding: 13px 16px;
-  align-items: center;
-  grid-template-columns: auto 1fr;
-  gap: 13px;
+  min-height: 70px;
+  padding: 7px 16px;
+  align-content: center;
+  gap: 4px;
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-control);
@@ -32,7 +31,7 @@
   color: var(--color-text-muted);
   cursor: pointer;
   font: inherit;
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 650;
   line-height: 1.35;
   scroll-snap-align: start;
@@ -53,9 +52,16 @@
   transition: transform var(--motion-state) var(--motion-ease);
 }
 
-.problem-selector__tab-index {
+.problem-selector__tab-code {
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 720;
+  letter-spacing: 0.035em;
+  line-height: 1.25;
+}
+
+.problem-selector__tab-title {
+  line-height: 1.25;
 }
 
 .problem-selector__tab--selected {
@@ -95,26 +101,79 @@
 }
 
 .problem-selector__panel-content {
+  overflow: hidden;
   animation: problem-panel-enter var(--motion-state) var(--motion-ease) both;
 }
 
-.problem-selector__index,
 .problem-selector__label {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 720;
   letter-spacing: 0.08em;
   line-height: 1.4;
   text-transform: uppercase;
 }
 
+.problem-selector__barcode {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.problem-selector__code {
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 720;
+  letter-spacing: 0.035em;
+  line-height: 1.4;
+}
+
+.problem-selector__barcode-bars {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 30px;
+  flex: 0 0 96px;
+  overflow: hidden;
+  border-inline: 1px solid var(--color-border);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-text) 0 2px,
+    transparent 2px 5px,
+    var(--color-text) 5px 6px,
+    transparent 6px 10px
+  );
+  opacity: 0.84;
+}
+
+.problem-selector__scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--color-focus);
+  animation: problem-passport-scan var(--motion-state) var(--motion-ease) both;
+}
+
 .problem-selector__panel h3 {
   max-width: 22ch;
-  margin: 16px 0 0;
+  margin: 20px 0 0;
   font-size: clamp(1.42rem, 6vw, 2rem);
   line-height: 1.08;
   text-wrap: balance;
+}
+
+.problem-selector__situation {
+  max-width: 66ch;
+  margin: 14px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
 }
 
 .problem-selector__actions {
@@ -134,7 +193,7 @@
   padding: 9px 0;
   border-bottom: 1px solid var(--color-border);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 650;
   line-height: 1.45;
 }
@@ -146,21 +205,21 @@
 }
 
 .problem-selector__outcomes {
-  display: flex;
+  display: grid;
   margin: 10px 0 0;
   padding: 0;
-  flex-wrap: wrap;
   gap: 8px;
   list-style: none;
 }
 
 .problem-selector__outcomes li {
-  padding: 7px 10px;
+  min-width: 0;
+  padding: 10px 12px;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-control);
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: 0.72rem;
+  font-size: 0.875rem;
   font-weight: 650;
   line-height: 1.4;
   animation: problem-outcome-enter var(--motion-state) var(--motion-ease) both;
@@ -188,6 +247,22 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes problem-passport-scan {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    left: calc(100% - 2px);
+    opacity: 0;
   }
 }
 
@@ -222,7 +297,7 @@
     min-height: 70px;
     flex: 0 0 70px;
     padding-inline: 20px;
-    font-size: 0.84rem;
+    font-size: 0.875rem;
     scroll-snap-align: none;
   }
 
@@ -269,6 +344,10 @@
   .problem-selector__panel {
     padding: clamp(34px, 4vw, 48px);
   }
+
+  .problem-selector__outcomes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -281,6 +360,10 @@
   }
 
   .problem-selector__outcomes li {
+    animation: none;
+  }
+
+  .problem-selector__scan {
     animation: none;
   }
 }
