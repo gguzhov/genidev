@@ -30,7 +30,8 @@
   - 375, 430, 768, 1024, 1280 и 1440 px — page overflow отсутствует;
   - menu target 48×48 px, contact CTA 236×52 px;
   - 375/430 px — contact copy/CTA выше портрета, AI-core `display: none`;
-  - 768+ px — split contact, AI-core видим только внутри раскрываемой панели;
+  - 768 px — split contact, AI-core скрыт и не запрашивается;
+  - 1024+ px — AI-core видим только внутри раскрываемой панели;
   - desktop menu — четыре плоские ссылки без group labels, asset загружен, все ссылки помещаются;
   - keyboard — Shift+Tab замыкает focus trap на последнюю ссылку, Escape закрывает меню и возвращает фокус триггеру;
   - reduced motion — media query активен, core без transform, карьерный progress сразу завершён, меню раскрывается в конечное состояние;
@@ -55,3 +56,19 @@
 
 - Указанные в brief legacy-файлы `tests/card-nav-contract.test.mjs`, `tests/contact-content.test.mjs` и `tests/career-timeline.test.mjs` отсутствуют в base `9286cc9`; вместо них использованы существующие эквивалентные contract/state/regression tests и полный suite.
 - Защищённые untracked `.npmrc`, `tmp/` и старые evidence-папки не изменялись.
+
+## Review revision — desktop-only AI core
+
+- Исправлен breakpoint декоративного core: скрыт до 1024 px и появляется только в `@media (min-width: 1024px)`.
+- Удалён unconditional `<img src>`: `CardNav` содержит только пустой `aria-hidden="true"` visual, а `background-image` объявлен внутри desktop media query. Поэтому браузер не запрашивает 20 KB asset на 375/768 px.
+- TDD RED: обновлённый `tests/navigation-contact-career.test.mjs` упал на старом `<img src>` и breakpoint 768.
+- TDD GREEN: focused contract — 4/4 PASS; covering CardNav regressions — 31/31 PASS; полный suite — 154/154 PASS.
+- `npm run build` и `git diff --check` — PASS.
+- Из-за очищенного in-app Browser runtime (`list=[]` после troubleshooting) по явной авторизации использован ограниченный локальный headless Chrome с временным чистым профилем, без пользовательской сессии.
+- Fresh evidence проверены визуально:
+  - `task-4-evidence/375-nav.png` — плоское меню без core;
+  - `task-4-evidence/768-nav.png` — полноширинные ссылки без пустой visual-колонки и core;
+  - `task-4-evidence/1024-nav.png` — сдержанный core видим справа, ссылки не обрезаны;
+  - `task-4-evidence/375-contact.png`, `768-contact.png`, `1024-contact.png` — контактный текст, CTA и реальный портрет читаемы, без overflow.
+- Runtime evidence: 375/768 — `display:none`, `background-image:none`, `requestedCore:false`; 1024 — `display:block`, CSS background URL и `requestedCore:true`. На всех трёх ширинах `aria-hidden="true"` и page overflow отсутствует.
+- Визуальный review не выявил вредного эффекта generic-eye: объект остаётся абстрактным, спокойным и вторичным, поэтому регенерация не выполнялась.

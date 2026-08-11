@@ -72,18 +72,27 @@ test("renders the human contact invitation before the existing portrait", async 
   assert.match(contactCss, /grid-template-columns:\s*minmax\(0, 1fr\)\s+minmax\(\d+px, [^)]+\)/);
 });
 
-test("ships the restrained desktop-only expanded-menu image", async () => {
+test("loads the restrained expanded-menu image only from the 1024px desktop breakpoint", async () => {
   await access("public/images/ai-ice-core-v1.webp");
   const [nav, navCss] = await Promise.all([
     read("src/components/CardNav/CardNav.jsx"),
     read("src/components/CardNav/CardNav.css"),
   ]);
 
-  assert.match(nav, /ai-ice-core-v1\.webp/);
+  assert.doesNotMatch(nav, /ai-ice-core-v1\.webp|<img[^>]+card-nav__visual/);
   assert.match(nav, /aria-hidden="true"/);
   assert.match(navCss, /card-nav__visual/);
   assert.match(navCss, /@media \(min-width:\s*768px\)/);
-  assert.match(navCss, /grid-template-columns:\s*minmax\(0, 1fr\)\s+226px/);
-  assert.match(navCss, /card-nav__visual\s*\{[^}]*height:\s*226px/s);
+  const desktopVisualMediaIndex = navCss.indexOf("@media (min-width: 1024px)");
+  assert.notEqual(desktopVisualMediaIndex, -1);
+  assert.doesNotMatch(navCss.slice(0, desktopVisualMediaIndex), /ai-ice-core-v1\.webp/);
+  assert.match(
+    navCss.slice(desktopVisualMediaIndex),
+    /grid-template-columns:\s*minmax\(0, 1fr\)\s+226px/,
+  );
+  assert.match(
+    navCss.slice(desktopVisualMediaIndex),
+    /card-nav__visual\s*\{[^}]*display:\s*block[^}]*height:\s*226px[^}]*background-image:\s*url\("\/images\/ai-ice-core-v1\.webp"\)/s,
+  );
   assert.match(navCss, /prefers-reduced-motion:\s*reduce/);
 });

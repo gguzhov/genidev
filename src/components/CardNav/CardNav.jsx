@@ -295,9 +295,7 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
             ref={(element) => {
               cardsRef.current[normalizedItems.length] = element;
             }}
-          >
-            <img src="/images/ai-ice-core-v1.webp" alt="" width="720" height="720" />
-          </div>
+          />
         </div>
       </nav>
     </header>
