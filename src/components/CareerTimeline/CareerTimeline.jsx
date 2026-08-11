@@ -67,21 +67,8 @@ export default function CareerTimeline({ items }) {
               <article className="career-timeline__entry">
                 <p className="career-timeline__year">{item.year}</p>
                 <h3>{item.title}</h3>
-                <p className="career-timeline__label">Ответственность</p>
                 <p className="career-timeline__body">{item.body}</p>
-                {item.metrics?.length ? (
-                  <div className="career-timeline__proof">
-                    <p className="career-timeline__label">Подтверждено</p>
-                    <ul
-                      className="career-timeline__metrics"
-                      aria-label={`Подтверждённые результаты: ${item.title}`}
-                    >
-                      {item.metrics.map((metric) => (
-                        <li key={metric}>{metric}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
+                <p className="career-timeline__result">{item.result}</p>
               </article>
             </li>
           ))}

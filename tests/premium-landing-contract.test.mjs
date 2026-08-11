@@ -37,10 +37,10 @@ const [
 ]);
 
 test("hero presents the approved product title and complete work sequence", () => {
-  assert.match(contentSource, /title:\s*"Разрабатываю цифровые и AI-продукты\."/);
+  assert.match(contentSource, /title:\s*"Разработка цифровых продуктов и AI-автоматизация\."/);
   assert.match(
     contentSource,
-    /Превращаю бизнес-задачи в работающие цифровые продукты и автоматизированные процессы/,
+    /Создаю новые сервисы, превращаю ручные процессы в системы/,
   );
   assert.match(appSource, /<WorkSequence/);
   assert.match(appSource, /hero__title-line">\{hero\.title\}/);
@@ -57,9 +57,9 @@ test("problem selector uses a direct task rail and never mounts OptionWheel", ()
   assert.doesNotMatch(problemSelectorSource, /role="tab(?:list|panel)?"/);
 });
 
-test("career keeps every event readable and renders separate proof metrics", () => {
-  assert.match(contentSource, /metrics:/);
-  assert.match(careerComponentSource, /career-timeline__metrics/);
+test("career keeps every event readable and renders one strongest result", () => {
+  assert.match(contentSource, /result:\s*"3 млн ₽ заработано суммарно"/);
+  assert.match(careerComponentSource, /career-timeline__result/);
   assert.doesNotMatch(
     careerCssSource,
     /career-timeline--revealing[^{]*\{[^}]*opacity:\s*0/s,
@@ -124,9 +124,9 @@ test("motion-sensitive surfaces use shared durations and retain reduced-motion f
 
 test("muted copy stays readable and the contact invitation is exact", () => {
   assert.match(tokensSource, /--color-text-muted:\s*var\(--blue-11\)/);
-  assert.match(contentSource, /title:\s*"Расскажите, что должно измениться\."/);
+  assert.match(contentSource, /title:\s*"Есть задача, которая застряла между идеей и запуском\?"/);
   assert.match(
     contentSource,
-    /Разберу задачу, предложу первый вариант решения и объясню, что потребуется для запуска\./,
+    /Покажите, где теряются время, деньги или пользователи\./,
   );
 });

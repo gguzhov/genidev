@@ -70,104 +70,103 @@
   display: block;
   aspect-ratio: 3 / 2;
   overflow: hidden;
-  background: linear-gradient(145deg, var(--blue-3), var(--blue-6));
+  background: linear-gradient(145deg, var(--blue-3), var(--blue-7));
   isolation: isolate;
 }
 
-.project-visual::after {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  background: radial-gradient(
-    circle at var(--project-light-x) var(--project-light-y),
-    var(--blue-a5) 0,
-    var(--blue-a2) 34%,
-    var(--blue-a1) 68%
-  );
-  content: "";
-  pointer-events: none;
-}
-
-.project-visual__atmosphere {
+.project-visual__gradient {
   position: absolute;
   z-index: 0;
-  inset: -4%;
-  width: 108%;
-  height: 108%;
-  object-fit: cover;
-  transform: scale(1.035);
+  inset: -12%;
+  background:
+    radial-gradient(circle at var(--project-light-x) var(--project-light-y), var(--blue-a8), transparent 33%),
+    radial-gradient(circle at 18% 18%, var(--blue-a6), transparent 38%),
+    linear-gradient(145deg, var(--blue-4), var(--blue-9));
+  transform: translate3d(
+    calc(0px - var(--project-pointer-x)),
+    calc(0px - var(--project-pointer-y)),
+    0
+  );
 }
 
-.project-visual__product-frame {
+.project-visual--ostrov-zdoroviya .project-visual__gradient {
+  background:
+    radial-gradient(circle at var(--project-light-x) var(--project-light-y), var(--blue-contrast), transparent 27%),
+    radial-gradient(circle at 18% 24%, var(--blue-4), transparent 40%),
+    linear-gradient(135deg, var(--blue-2), var(--blue-7));
+}
+
+.project-visual--ilonmask-vpn .project-visual__gradient {
+  background:
+    radial-gradient(circle at var(--project-light-x) var(--project-light-y), var(--blue-a7), transparent 26%),
+    radial-gradient(circle at 72% 20%, var(--blue-10), transparent 38%),
+    linear-gradient(145deg, var(--blue-12), var(--blue-9));
+}
+
+.project-visual--datoniks .project-visual__gradient {
+  background:
+    radial-gradient(circle at var(--project-light-x) var(--project-light-y), var(--blue-a5), transparent 29%),
+    linear-gradient(150deg, var(--blue-contrast), var(--blue-5) 54%, var(--blue-9));
+}
+
+.project-visual__orbit {
   position: absolute;
-  z-index: 2;
-  right: 8%;
-  bottom: 9%;
-  display: grid;
-  width: 82%;
-  overflow: hidden;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 62%;
+  aspect-ratio: 1;
   border: 1px solid var(--blue-a6);
-  border-radius: clamp(8px, 2vw, 15px);
-  place-items: center;
-  background: var(--color-surface-raised);
-  box-shadow: 0 22px 48px var(--blue-a10);
-  transform: perspective(900px) rotateX(-0.8deg) rotateY(1deg);
-}
-
-.project-visual__product {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.project-card--cover-browser-chrome .project-visual__product {
-  height: 116%;
-  align-self: end;
-  object-fit: cover;
-  object-position: center bottom;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 44px var(--blue-a3),
+    0 18px 52px var(--blue-a5);
+  transform: translate(-50%, -50%) rotateX(64deg) rotateZ(-12deg);
 }
 
 .project-visual__fallback-title {
-  display: grid;
-  min-height: 5rem;
-  padding: 1rem;
-  place-items: center;
-  color: var(--color-text);
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  color: var(--color-on-accent);
   font-size: clamp(0.9rem, 3vw, 1.25rem);
   font-weight: 760;
   text-align: center;
+  transform: translate(-50%, -50%);
 }
 
 .project-visual__logo {
   position: absolute;
   z-index: 3;
-  top: 7%;
-  left: 6%;
-  width: clamp(128px, 39%, 250px);
-  max-height: 19%;
-  border: 1px solid var(--blue-a4);
-  border-radius: var(--radius-control);
-  padding: clamp(7px, 1.5vw, 12px);
-  background: var(--blue-surface);
+  top: 50%;
+  left: 50%;
+  width: clamp(136px, 44%, 240px);
+  max-height: 32%;
+  padding: 0;
   object-fit: contain;
-  box-shadow: 0 10px 30px var(--blue-a4);
-  backdrop-filter: blur(14px);
+  filter: drop-shadow(0 16px 28px var(--blue-a7));
+  transform: translate3d(
+    calc(-50% + var(--project-pointer-x)),
+    calc(-50% + var(--project-pointer-y)),
+    0
+  );
 }
 
 .project-visual--ilonmask-vpn .project-visual__logo {
-  width: clamp(56px, 16%, 92px);
-  height: clamp(56px, 16%, 92px);
+  width: clamp(82px, 24%, 132px);
+  height: clamp(82px, 24%, 132px);
   max-height: none;
   border-radius: 50%;
-  padding: 3px;
   object-fit: cover;
   object-position: center 30%;
 }
 
 .project-visual--datoniks .project-visual__logo {
-  border-color: var(--blue-8);
+  width: clamp(120px, 36%, 205px);
+  border-radius: var(--radius-control);
   background: var(--color-accent);
+  padding: 10px;
 }
 
 .project-card__body {
@@ -353,42 +352,20 @@
     transform: translateY(-2px);
   }
 
-  .project-card:hover .project-visual__atmosphere {
-    transform: translate3d(
-        calc(0px - var(--project-pointer-x)),
-        calc(0px - var(--project-pointer-y)),
-        0
-      )
-      scale(1.055);
-  }
-
-  .project-card:hover .project-visual__product-frame {
-    transform: perspective(900px)
-      translate3d(
-        var(--project-pointer-x),
-        var(--project-pointer-y),
-        0
-      )
-      rotateX(var(--project-tilt-x))
-      rotateY(var(--project-tilt-y));
-  }
-
   .project-card:hover .project-visual__logo {
     transform: translate3d(
-      var(--project-pointer-x),
-      var(--project-pointer-y),
+      calc(-50% + var(--project-pointer-x)),
+      calc(-50% + var(--project-pointer-y)),
       0
     );
   }
 
-  .project-visual__atmosphere,
-  .project-visual__product-frame,
+  .project-visual__gradient,
   .project-visual__logo {
     transition: transform var(--motion-state) var(--motion-ease);
   }
 
-  .project-visual--depth-active .project-visual__atmosphere,
-  .project-visual--depth-active .project-visual__product-frame,
+  .project-visual--depth-active .project-visual__gradient,
   .project-visual--depth-active .project-visual__logo {
     will-change: transform;
   }
@@ -402,8 +379,7 @@
   }
 
   .project-card,
-  .project-visual__atmosphere,
-  .project-visual__product-frame,
+  .project-visual__gradient,
   .project-visual__logo {
     transition: none;
     will-change: auto;
@@ -412,8 +388,7 @@
   .project-card:hover,
   .project-card:active,
   .project-card:focus-visible,
-  .project-card:hover .project-visual__atmosphere,
-  .project-card:hover .project-visual__product-frame,
+  .project-card:hover .project-visual__gradient,
   .project-card:hover .project-visual__logo {
     transform: none;
   }

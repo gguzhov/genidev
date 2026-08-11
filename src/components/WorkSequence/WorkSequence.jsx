@@ -80,11 +80,11 @@ export default function WorkSequence({ items, reducedMotion = false }) {
       data-reveal-state={motionState.isRevealed ? "revealed" : "waiting"}
       ref={sequenceRef}
     >
-      <svg className="work-sequence__track" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
-        <path className="work-sequence__track-base" pathLength="1" d="M2 5 H98" />
-        <path className="work-sequence__track-signal" pathLength="1" d="M2 5 H98" />
+      <svg className="work-sequence__track" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path className="work-sequence__track-base" pathLength="1" d="M6 88 C 20 12 80 12 94 88" />
+        <path className="work-sequence__track-signal" pathLength="1" d="M6 88 C 20 12 80 12 94 88" />
       </svg>
-      <ol aria-label="Этапы комплексной работы">
+      <ol aria-label="Этапы работы от проблемы до аналитики">
         {items.map((item, index) => (
           <li
             className="work-sequence__item"

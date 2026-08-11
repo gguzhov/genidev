@@ -71,7 +71,7 @@ test("shows exactly four rectangular evidence results and a truthful status row"
   assert.equal(datoniks?.status, "Инвестиционный проект · ищу партнёра");
 });
 
-test("keeps DATONIKS atmosphere, real slide and exact logo as independent layers", async () => {
+test("keeps DATONIKS exact logo centered over a project gradient", async () => {
   const datoniks = projects.find(({ slug }) => slug === "datoniks");
   assert.deepEqual(
     {
@@ -90,8 +90,8 @@ test("keeps DATONIKS atmosphere, real slide and exact logo as independent layers
     access("public/projects/datoniks/datoniks-slide-03.webp"),
     access("public/projects/datoniks/datoniks-logo.webp"),
   ]);
-  assert.match(visualSource, /project-visual__atmosphere/);
-  assert.match(visualSource, /project-visual__product/);
+  assert.match(visualSource, /project-visual__gradient/);
+  assert.doesNotMatch(visualSource, /project-visual__product/);
   assert.match(visualSource, /project-visual__logo/);
 });
 
@@ -147,7 +147,7 @@ test("activates layer compositing only during allowed pointer interaction", asyn
 
   assert.match(
     marketplaceCss,
-    /\.project-visual--depth-active\s+\.project-visual__(?:atmosphere|product-frame|logo)[\s\S]*will-change:\s*transform/,
+    /\.project-visual--depth-active\s+\.project-visual__(?:gradient|logo)[\s\S]*will-change:\s*transform/,
   );
   assert.equal((marketplaceCss.match(/will-change:\s*transform/g) ?? []).length, 1);
 });
@@ -187,7 +187,7 @@ test("starts without pointer listeners or compositing when fine hover is unavail
   assert.equal(classes.has("project-visual--depth-active"), false);
   assert.match(
     marketplaceCss,
-    /\.project-visual--depth-active\s+\.project-visual__atmosphere,[\s\S]*will-change:\s*transform/,
+    /\.project-visual--depth-active\s+\.project-visual__gradient,[\s\S]*will-change:\s*transform/,
   );
   assert.equal((marketplaceCss.match(/will-change:\s*transform/g) ?? []).length, 1);
 

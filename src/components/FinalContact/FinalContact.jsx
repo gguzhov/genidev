@@ -24,22 +24,22 @@ export default function FinalContact({ contact }) {
                 aria-hidden="true"
               />
             </a>
-            <p>
-              <a href={contact.href} target={contact.target} rel={contact.rel}>
-                {contact.handle}
-              </a>
-            </p>
           </div>
         </div>
 
-        <figure className="final-contact__portrait">
-          <img
-            src="/images/gennady-profile.webp"
-            alt="Геннадий Гужов"
-            width="928"
-            height="1152"
-          />
-        </figure>
+        <div className="final-contact__visual" aria-hidden="true">
+          <span className="final-contact__orbit final-contact__orbit--outer" />
+          <span className="final-contact__orbit final-contact__orbit--inner" />
+          <span className="final-contact__satellite" />
+          <figure className="final-contact__portrait">
+            <img
+              src="/images/gennady-profile.webp"
+              alt=""
+              width="928"
+              height="1152"
+            />
+          </figure>
+        </div>
       </div>
     </section>
   );

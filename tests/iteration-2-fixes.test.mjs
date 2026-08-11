@@ -51,7 +51,7 @@ test("keeps the work sequence vertical until the left hero column can fit six la
   assert.doesNotMatch(sequenceCss, /@media \(min-width:\s*768px\)/);
   assert.match(
     sequenceCss,
-    /@media \(min-width:\s*1024px\)[\s\S]*grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/,
+    /@media \(min-width:\s*1024px\)[\s\S]*\.work-sequence__track\s*\{[^}]*display:\s*block/,
   );
 });
 
@@ -77,11 +77,11 @@ test("caches portrait bounds outside pointermove and coalesces updates into one 
 test("uses the exact approved task and marketplace copy", () => {
   assert.match(
     contentSource,
-    /Выбираю операции, где AI даёт практический эффект\./,
+    /Выберу участок работы и измеримый критерий успеха\./,
   );
   assert.match(
     contentSource,
-    /Гипотеза готова к проверке на реальных пользователях\./,
+    /Рабочая версия вместо презентации с идеей\./,
   );
   assert.match(contentSource, /duration:\s*"1 неделя до запуска"/);
   assert.match(

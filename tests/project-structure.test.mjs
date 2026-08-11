@@ -15,7 +15,8 @@ test("stores project documentation under docs", async () => {
     assert.equal(await exists(path), true, `Missing ${path}`);
   }
 
-  assert.equal(await exists("DESIGN.md"), false);
+  assert.equal(await exists("DESIGN.md"), true);
+  assert.equal(await exists("PRODUCT.md"), true);
   assert.equal(await exists("design-qa.md"), false);
   assert.equal(await exists(".design-evidence"), false);
 
@@ -216,7 +217,7 @@ test("renders the final contact from the shared content contract", async () => {
   assert.match(finalContact, /id="contact"/);
   assert.match(finalContact, /aria-labelledby="contact-title"/);
   assert.match(finalContact, /contact\.title/);
-  assert.match(finalContact, /contact\.handle/);
+  assert.doesNotMatch(finalContact, /contact\.handle/);
   assert.match(finalContact, /contact\.ctaLabel/);
   assert.match(finalContact, /href=\{contact\.href\}/);
   assert.match(finalContact, /target=\{contact\.target\}/);
@@ -257,50 +258,17 @@ test("keeps the landing h1 unique when a project dialog is present", async () =>
   assert.doesNotMatch(projectCaseCss, /\.project-case__intro h1\s*\{/);
 });
 
-test("keeps decorative wall tiles noninteractive regardless of stylesheet order", async () => {
-  const driftCss = await readFile("src/components/DriftWall/DriftWall.css", "utf8");
+test("keeps the marketplace free from decorative duplicate cards", async () => {
+  const marketplace = await readFile("src/components/ProjectMarketplace/ProjectMarketplace.jsx", "utf8");
   const marketplaceCss = await readFile(
     "src/components/ProjectMarketplace/ProjectMarketplace.css",
     "utf8",
   );
-  const classPseudoSpecificity = (selector) =>
-    (selector.match(/\.[\w-]+|:[\w-]+/g) ?? []).length;
-
-  const interactiveSelectors = [
-    ".project-card:hover",
-    ".project-card:active",
-    ".project-card:hover .project-visual__atmosphere",
-  ];
-  const decorativeSelectors = [
-    ".drift-wall .project-card--wall:hover",
-    ".drift-wall .project-card--wall:active",
-    ".drift-wall .project-card--wall:hover .project-card__media img",
-  ];
-
-  for (const selector of interactiveSelectors) {
-    assert.ok(marketplaceCss.includes(selector), `Missing shared interaction ${selector}`);
-  }
-  for (let index = 0; index < decorativeSelectors.length; index += 1) {
-    assert.ok(driftCss.includes(decorativeSelectors[index]));
-    assert.ok(
-      classPseudoSpecificity(decorativeSelectors[index]) >
-        classPseudoSpecificity(interactiveSelectors[index]),
-      `${decorativeSelectors[index]} must override shared card interaction without relying on CSS order`,
-    );
-  }
-
-  assert.match(driftCss, /\.drift-wall \.project-card--wall\s*\{[^}]*pointer-events:\s*none;/s);
-  assert.match(driftCss, /\.drift-wall \.project-card--wall\s*\{[^}]*cursor:\s*default;/s);
+  assert.doesNotMatch(marketplace, /DriftWall/);
+  assert.match(marketplace, /projects\.map/);
+  assert.match(marketplaceCss, /\.project-card:hover/);
   assert.match(
-    driftCss,
-    /\.drift-wall \.project-card--wall:hover\s*\{[^}]*transform:\s*none;[^}]*box-shadow:\s*0 16px 46px var\(--blue-a3\);/s,
+    marketplaceCss,
+    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.project-card:hover[\s\S]*transform:\s*none/s,
   );
-  assert.match(driftCss, /\.drift-wall \.project-card--wall:active\s*\{[^}]*transform:\s*none;/s);
-  assert.match(
-    driftCss,
-    /\.drift-wall \.project-card--wall:hover \.project-card__media img\s*\{[^}]*transform:\s*none;/s,
-  );
-  assert.match(driftCss, /\.drift-wall__semantic-layer\s*\{[^}]*z-index:\s*3;/s);
-  assert.match(driftCss, /\.drift-wall__semantic-layer\s*\{[^}]*pointer-events:\s*auto;/s);
-  assert.doesNotMatch(driftCss, /\.drift-wall \.project-card--wall-control\s*\{[^}]*pointer-events:\s*none;/s);
 });

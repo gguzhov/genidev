@@ -6,12 +6,12 @@ import { projectPath, projectSlugFromPath } from "../src/lib/projectRouting.js";
 test("publishes the approved positioning and four business problems", () => {
   assert.equal(
     hero.title,
-    "Разрабатываю цифровые и AI-продукты.",
+    "Разработка цифровых продуктов и AI-автоматизация.",
   );
   assert.equal("description" in hero, false);
   assert.equal(
     hero.promise,
-    "Превращаю бизнес-задачи в работающие цифровые продукты и автоматизированные процессы.",
+    "Создаю новые сервисы, превращаю ручные процессы в системы и встраиваю AI там, где он сокращает время, ошибки или стоимость.",
   );
   assert.deepEqual(hero.sequence, [
     "Проблема",
@@ -21,7 +21,7 @@ test("publishes the approved positioning and four business problems", () => {
     "Запуск",
     "Аналитика",
   ]);
-  assert.equal(hero.cta.label, "Решить проблему");
+  assert.equal(hero.cta.label, "Обсудить задачу");
   assert.equal(hero.cta.href, "https://t.me/gguzhov");
   assert.equal(hero.cta.target, "_blank");
   assert.equal(hero.cta.rel, "noreferrer");
@@ -47,7 +47,8 @@ test("ships complete project cases without a role field", () => {
     assert.ok(project.problem.length > 80);
     assert.ok(project.actions.length >= 5);
     assert.ok(project.result.length >= 3);
-    assert.ok(project.technical.length >= 3);
+    assert.equal(project.technical, undefined);
+    assert.ok(project.skills.length >= 4);
     assert.equal("role" in project, false);
   }
 });

@@ -3,12 +3,14 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
 import CareerTimeline from "./components/CareerTimeline/CareerTimeline";
 import FinalContact from "./components/FinalContact/FinalContact";
+import GradientWave from "./components/GradientWave/GradientWave";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
 import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
+import SiteFooter from "./components/SiteFooter/SiteFooter";
 import WorkSequence from "./components/WorkSequence/WorkSequence";
-import { career, contact, hero, problems, projects } from "./content/siteContent";
+import { career, contact, hero, problems, projects, socialLinks } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
 import useReducedMotion from "./hooks/useReducedMotion";
 
@@ -50,6 +52,7 @@ export function App() {
 
   return (
     <>
+      <GradientWave />
       <CardNav items={navigation} cta={navigationCta} />
       <main>
         <section className="hero" id="top" aria-labelledby="hero-title">
@@ -92,6 +95,7 @@ export function App() {
         <ProjectMarketplace projects={projects} onOpenProject={openProject} />
         <FinalContact contact={contact} />
       </main>
+      <SiteFooter links={socialLinks} />
       {activeProject && (
         <ProjectCase
           project={activeProject}

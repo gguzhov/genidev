@@ -62,9 +62,6 @@ export default function ProblemSelector({ problems, sectionId }) {
       <div className="section__inner">
         <header className="section__heading">
           <h2 id={headingId}>{sectionCopy.problems.title}</h2>
-          <p>
-            Беру ответственность за путь от исходной задачи до работающего решения и данных после запуска.
-          </p>
         </header>
 
         <div className="problem-selector">
@@ -129,7 +126,7 @@ export default function ProblemSelector({ problems, sectionId }) {
               <p className="problem-selector__situation">{selected.situation}</p>
 
               <div className="problem-selector__actions">
-                <p className="problem-selector__label">Что беру на себя</p>
+                <p className="problem-selector__label">Что сделаю</p>
                 <ul
                   className="problem-selector__actions-list"
                   aria-label={`Действия для задачи «${selected.title}»`}
@@ -139,7 +136,7 @@ export default function ProblemSelector({ problems, sectionId }) {
                   ))}
                 </ul>
                 <p className="problem-selector__label problem-selector__label--outcomes">
-                  На выходе
+                  Что получите
                 </p>
                 <ul
                   className="problem-selector__outcomes"

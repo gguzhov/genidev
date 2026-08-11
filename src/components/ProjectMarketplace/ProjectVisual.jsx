@@ -12,8 +12,6 @@ const DEFAULT_POINTER = {
 
 export default function ProjectVisual({ project, interactive = true }) {
   const visualRef = useRef(null);
-  const [atmosphereFailed, setAtmosphereFailed] = useState(false);
-  const [productFailed, setProductFailed] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
 
   const resetDepth = (element) => {
@@ -65,47 +63,8 @@ export default function ProjectVisual({ project, interactive = true }) {
       style={DEFAULT_POINTER}
       ref={visualRef}
     >
-      {!atmosphereFailed && (
-        <img
-          className="project-visual__atmosphere"
-          data-visual-layer="atmosphere"
-          src={project.visual.background}
-          alt=""
-          width="1536"
-          height="1024"
-          loading="lazy"
-          decoding="async"
-          draggable="false"
-          onError={() => setAtmosphereFailed(true)}
-        />
-      )}
-
-      <span
-        className="project-visual__product-frame"
-        data-visual-layer="evidence"
-        style={
-          project.coverWidth && project.coverHeight
-            ? { aspectRatio: `${project.coverWidth} / ${project.coverHeight}` }
-            : undefined
-        }
-      >
-        {!productFailed && (
-          <img
-            className="project-visual__product"
-            src={project.cover}
-            alt=""
-            width={project.coverWidth ?? 1536}
-            height={project.coverHeight ?? 1024}
-            loading="lazy"
-            decoding="async"
-            draggable="false"
-            onError={() => setProductFailed(true)}
-          />
-        )}
-        {productFailed && (
-          <span className="project-visual__fallback-title">{project.title}</span>
-        )}
-      </span>
+      <span className="project-visual__gradient" data-visual-layer="atmosphere" />
+      <span className="project-visual__orbit" />
 
       {!logoFailed && (
         <img
@@ -118,6 +77,9 @@ export default function ProjectVisual({ project, interactive = true }) {
           draggable="false"
           onError={() => setLogoFailed(true)}
         />
+      )}
+      {logoFailed && (
+        <span className="project-visual__fallback-title">{project.title}</span>
       )}
     </span>
   );

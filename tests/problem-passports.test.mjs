@@ -15,30 +15,30 @@ const expectedPassports = [
   {
     id: "launch",
     code: "TASK / 01 · IDEA → PRODUCT",
-    title: "Вывести идею в работающий продукт",
+    title: "Нужно запустить новый продукт",
     situation:
-      "Когда есть идея, но ещё не ясно, кому нужен продукт, за что будут платить и какой первый сценарий запускать.",
+      "Есть идея или бизнес-задача, но непонятно, с какой версии начать, кому она нужна и как проверить спрос без лишних затрат.",
   },
   {
     id: "automate",
     code: "TASK / 02 · MANUAL → SYSTEM",
-    title: "Убрать ручную работу из процесса",
+    title: "Процесс держится на таблицах и чатах",
     situation:
-      "Когда процесс держится на таблицах, сообщениях и ручных действиях, а статус и ошибки приходится искать по людям.",
+      "Сотрудники переносят данные между файлами и сервисами, напоминают друг другу о задачах, а статус приходится собирать вручную.",
   },
   {
     id: "ai",
     code: "TASK / 03 · ROUTINE → AI FLOW",
-    title: "Встроить AI в работу команды",
+    title: "Команда тратит время на повторяющиеся задачи",
     situation:
-      "Когда команда тратит время на повторяемые задачи и хочет применить AI без потери контроля над качеством и решениями.",
+      "Люди снова и снова ищут информацию, разбирают документы, готовят ответы или классифицируют однотипные обращения.",
   },
   {
     id: "growth",
     code: "TASK / 04 · SIGNAL → GROWTH",
-    title: "Найти и реализовать точку роста",
+    title: "Продукт работает, но рост остановился",
     situation:
-      "Когда продукт уже работает, но аналитика не показывает, где теряются пользователи и какое изменение даст следующий рост.",
+      "Трафик или пользователи уже есть, но непонятно, где они уходят, что мешает целевому действию и какую гипотезу проверять первой.",
   },
 ];
 
@@ -49,7 +49,7 @@ test("publishes the four approved problem passports without clichés", () => {
   );
 
   for (const problem of problems) {
-    assert.match(problem.situation, /^Когда\s/);
+    assert.match(problem.situation, /^(Есть|Сотрудники|Люди|Трафик)\s/);
     assert.equal(problem.actions.length, 4);
     assert.equal(problem.outcomes.length, 4);
   }
@@ -62,10 +62,10 @@ test("publishes the four approved problem passports without clichés", () => {
 
 test("renders the exact section heading and semantic passport labels", () => {
   assert.match(componentSource, /<h2 id=\{headingId\}>\{sectionCopy\.problems\.title\}<\/h2>/);
-  assert.match(componentSource, /Беру ответственность за путь от исходной задачи до работающего решения и данных после запуска\./);
+  assert.doesNotMatch(componentSource, /Беру ответственность/);
   assert.match(componentSource, /\{selected\.situation\}/);
-  assert.match(componentSource, />Что беру на себя</);
-  assert.match(componentSource, />\s*На выходе\s*</);
+  assert.match(componentSource, />Что сделаю</);
+  assert.match(componentSource, />\s*Что получите\s*</);
   assert.doesNotMatch(componentSource, /section__eyebrow/);
 });
 

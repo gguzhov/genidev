@@ -53,14 +53,12 @@ test("uses a taller mobile anchor offset and restores the desktop offset", () =>
   );
 });
 
-test("crops only the real Ostrov cover chrome through semantic CSS metadata", () => {
+test("keeps cover metadata for the full case while marketplace uses centered brand", () => {
   assert.match(contentSource, /slug:\s*"ostrov-zdoroviya"[\s\S]*coverCrop:\s*"browser-chrome"/);
   assert.match(cardSource, /project\.coverCrop/);
   assert.match(cardSource, /project-card--cover-/);
-  assert.match(
-    marketplaceCss,
-    /\.project-card--cover-browser-chrome \.project-visual__product\s*\{[^}]*height:\s*11[4-9]%[^}]*object-position:\s*center bottom/s,
-  );
+  assert.doesNotMatch(marketplaceCss, /project-visual__product/);
+  assert.match(marketplaceCss, /\.project-visual__logo\s*\{[^}]*top:\s*50%[^}]*left:\s*50%/s);
   assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-comet\.webp"/);
 });
 

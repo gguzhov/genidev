@@ -23,10 +23,10 @@ test("keeps the header navigation flat, personal and focused on contact", async 
   assert.match(app, /label: "Связаться"/);
 });
 
-test("keeps confirmed career facts and presents responsibility separately from proof", async () => {
+test("keeps confirmed career facts with one strongest result", async () => {
   const careerComponent = await read("src/components/CareerTimeline/CareerTimeline.jsx");
-  const careerCopy = career.map(({ title, body, metrics = [] }) =>
-    [title, body, ...metrics].join(" "),
+  const careerCopy = career.map(({ title, body, result }) =>
+    [title, body, result].join(" "),
   ).join(" ");
 
   assert.match(career[0].body, /трендовых товаров для розничных клиентов/);
@@ -36,15 +36,12 @@ test("keeps confirmed career facts and presents responsibility separately from p
   assert.doesNotMatch(careerCopy, /поставщик|тамож/iu);
 
   assert.match(career[1].body, /Поиск инвестиционного партнёра продолжается/);
-  assert.deepEqual(career[1].metrics, [
-    "Прототип реализован в Иркутске",
-    "Патент на систему охлаждения",
-    "Инвестиционный запрос: 87 млн ₽",
-  ]);
+  assert.equal(career[0].result, "3 млн ₽ заработано суммарно");
+  assert.equal(career[1].result, "Прототип реализован в Иркутске");
   assert.equal(sectionCopy.career.title, "От торговли и экономики — к цифровым продуктам");
   assert.match(careerComponent, /sectionCopy\.career\.title/);
-  assert.match(careerComponent, /Ответственность/);
-  assert.match(careerComponent, /Подтверждено/);
+  assert.match(careerComponent, /career-timeline__result/);
+  assert.doesNotMatch(careerComponent, /Ответственность|Подтверждено/);
 });
 
 test("renders the human contact invitation before the existing portrait", async () => {
@@ -53,13 +50,13 @@ test("renders the human contact invitation before the existing portrait", async 
     read("src/components/FinalContact/FinalContact.css"),
   ]);
 
-  assert.equal(contact.title, "Расскажите, что должно измениться.");
+  assert.equal(contact.title, "Есть задача, которая застряла между идеей и запуском?");
   assert.equal(
     contact.body,
-    "Разберу задачу, предложу первый вариант решения и объясню, что потребуется для запуска.",
+    "Покажите, где теряются время, деньги или пользователи. Предложу, как превратить это в продукт, систему или AI-сценарий.",
   );
-  assert.equal(contact.ctaLabel, "Обсудить в Telegram");
-  assert.equal(contact.handle, "@gguzhov");
+  assert.equal(contact.ctaLabel, "Разобрать задачу");
+  assert.equal(contact.handle, undefined);
   assert.match(contactComponent, /FinalContact\(\{ contact \}\)/);
   assert.doesNotMatch(contactComponent, /cta\.label|cta\?\.label/);
   assert.match(contactComponent, /contact\.body/);

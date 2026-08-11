@@ -1,0 +1,95 @@
+.gradient-wave {
+  --wave-x: 0px;
+  --wave-y: 0px;
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 12%, var(--blue-a4), transparent 34%),
+    linear-gradient(180deg, var(--blue-1), var(--blue-2));
+  pointer-events: none;
+}
+
+.gradient-wave svg {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  opacity: 0.72;
+  transform: translate3d(var(--wave-x), var(--wave-y), 0);
+  transition: transform 700ms var(--motion-ease);
+}
+
+.gradient-wave__path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  animation: gradient-wave-intro 900ms var(--motion-ease) both;
+}
+
+.gradient-wave__path--one {
+  stroke: var(--blue-a6);
+  stroke-width: 72;
+}
+
+.gradient-wave__path--two {
+  stroke: var(--blue-a4);
+  stroke-width: 108;
+  animation-delay: 90ms;
+}
+
+.gradient-wave__path--three {
+  stroke: var(--blue-a3);
+  stroke-width: 148;
+  animation-delay: 160ms;
+}
+
+.gradient-wave__light {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  opacity: 0.46;
+  transform: translate3d(var(--wave-x), var(--wave-y), 0);
+  transition: transform 900ms var(--motion-ease);
+}
+
+.gradient-wave__light--near {
+  top: 13%;
+  right: -10%;
+  width: min(52vw, 720px);
+  aspect-ratio: 1;
+  background: var(--blue-a5);
+}
+
+.gradient-wave__light--far {
+  bottom: -22%;
+  left: -12%;
+  width: min(58vw, 780px);
+  aspect-ratio: 1;
+  background: var(--blue-a3);
+}
+
+@keyframes gradient-wave-intro {
+  from {
+    opacity: 0;
+    transform: translateY(42px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-wave svg,
+  .gradient-wave__light {
+    transform: none;
+    transition: none;
+  }
+
+  .gradient-wave__path {
+    animation: none;
+  }
+}

@@ -36,13 +36,12 @@ test("publishes the real intrinsic dimensions for every project cover", () => {
   });
 });
 
-test("uses truthful intrinsic dimensions in both project image consumers with a fallback", () => {
-  for (const source of [visualSource, caseSource]) {
-    assert.match(source, /width=\{project\.coverWidth \?\? 1536\}/);
-    assert.match(source, /height=\{project\.coverHeight \?\? 1024\}/);
-  }
+test("uses truthful intrinsic dimensions in the full case while cards use exact logos", () => {
+  assert.match(caseSource, /width=\{project\.coverWidth \?\? 1536\}/);
+  assert.match(caseSource, /height=\{project\.coverHeight \?\? 1024\}/);
   assert.doesNotMatch(caseSource, /width="1536"|height="1024"/);
-  assert.match(visualSource, /project-visual__atmosphere[\s\S]*width="1536"[\s\S]*height="1024"/);
+  assert.match(visualSource, /src=\{project\.visual\.logo\}/);
+  assert.doesNotMatch(visualSource, /project\.cover/);
 });
 
 test("shows the complete ProjectCase cover at its metadata aspect ratio", () => {

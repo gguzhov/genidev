@@ -106,39 +106,18 @@
   line-height: 1.65;
 }
 
-.career-timeline__label {
-  margin: 15px 0 0;
-  color: var(--color-text-muted);
-  font-size: 0.67rem;
-  font-weight: 720;
-  letter-spacing: 0.09em;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.career-timeline__proof {
+.career-timeline__result {
+  width: fit-content;
   max-width: 66ch;
-}
-
-.career-timeline__metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  max-width: 66ch;
-  margin: 7px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.career-timeline__metrics li {
-  padding: 7px 10px;
+  margin: 14px 0 0;
   border: 1px solid var(--color-border-strong, var(--blue-7));
-  border-radius: 999px;
+  border-radius: var(--radius-control);
+  padding: 9px 12px;
   background: var(--blue-a2);
   color: var(--color-accent);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 @media (min-width: 430px) {
@@ -172,9 +151,8 @@
   }
 
   .career-timeline__entry h3,
-  .career-timeline__label,
   .career-timeline__body,
-  .career-timeline__proof {
+  .career-timeline__result {
     grid-column: 2;
   }
 

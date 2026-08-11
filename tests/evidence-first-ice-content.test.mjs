@@ -5,7 +5,7 @@ import { hero, identity, problems } from "../src/content/siteContent.js";
 
 test("publishes the six-stage business path", () => {
   assert.equal(identity, "Геннадий Гужов");
-  assert.equal(hero.title, "Разрабатываю цифровые и AI-продукты.");
+  assert.equal(hero.title, "Разработка цифровых продуктов и AI-автоматизация.");
   assert.equal("description" in hero, false);
   assert.deepEqual(hero.sequence, [
     "Проблема",
@@ -49,6 +49,6 @@ test("keeps only one visible contact action on the portrait", async () => {
 test("removes the redundant problem section lead", async () => {
   const source = await readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8");
   assert.doesNotMatch(source, /Разбираю задачу, считаю эффект/);
-  assert.match(source, /Действия/);
-  assert.match(source, /На выходе/);
+  assert.match(source, /Что сделаю/);
+  assert.match(source, /Что получите/);
 });

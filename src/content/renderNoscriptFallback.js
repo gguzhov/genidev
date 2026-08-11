@@ -5,6 +5,7 @@ import {
   problems as siteProblems,
   projects as siteProjects,
   sectionCopy as siteSectionCopy,
+  socialLinks as siteSocialLinks,
 } from "./siteContent.js";
 
 const defaultContent = {
@@ -14,6 +15,7 @@ const defaultContent = {
   projects: siteProjects,
   contact: siteContact,
   sectionCopy: siteSectionCopy,
+  socialLinks: siteSocialLinks,
 };
 
 const escapeHtml = (value) =>
@@ -24,18 +26,27 @@ const escapeHtml = (value) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
-const renderLink = ({ href, target, rel, label }) => {
+const renderLink = ({ href, target, rel, label, download }) => {
   const targetAttribute = target ? ` target="${escapeHtml(target)}"` : "";
   const relAttribute = rel ? ` rel="${escapeHtml(rel)}"` : "";
+  const downloadAttribute = download ? " download" : "";
   return `<a class="noscript-site__cta" href="${escapeHtml(
     href,
-  )}"${targetAttribute}${relAttribute}>${escapeHtml(label)}</a>`;
+  )}"${targetAttribute}${relAttribute}${downloadAttribute}>${escapeHtml(label)}</a>`;
 };
 
 const renderItems = (items) => items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
 export function renderNoscriptFallback(content = defaultContent) {
-  const { hero, problems, career, projects, contact, sectionCopy = siteSectionCopy } = content;
+  const {
+    hero,
+    problems,
+    career,
+    projects,
+    contact,
+    sectionCopy = siteSectionCopy,
+    socialLinks = siteSocialLinks,
+  } = content;
 
   return `<style>
   .noscript-site{width:min(calc(100% - 32px),1120px);margin:0 auto;padding:104px 0 64px;color:var(--color-text,#182b67);font:16px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
@@ -65,9 +76,10 @@ export function renderNoscriptFallback(content = defaultContent) {
         .map(
           (problem) => `<article data-noscript-problem>
         <h3>${escapeHtml(problem.title)}</h3>
-        <p><strong>Действия</strong></p>
+        <p>${escapeHtml(problem.situation)}</p>
+        <p><strong>Что сделаю</strong></p>
         <ul>${renderItems(problem.actions)}</ul>
-        <p><strong>К чему приводит</strong></p>
+        <p><strong>Что получите</strong></p>
         <ul>${renderItems(problem.outcomes)}</ul>
       </article>`,
         )
@@ -83,13 +95,7 @@ export function renderNoscriptFallback(content = defaultContent) {
         <p><strong>${escapeHtml(event.year)}</strong></p>
         <h3>${escapeHtml(event.title)}</h3>
         <p>${escapeHtml(event.body)}</p>
-        ${
-          event.metrics?.length
-            ? `<ul aria-label="Подтверждённые результаты: ${escapeHtml(event.title)}">${renderItems(
-                event.metrics,
-              )}</ul>`
-            : ""
-        }
+        <p><strong>${escapeHtml(event.result)}</strong></p>
       </article>`,
         )
         .join("")}
@@ -107,12 +113,6 @@ export function renderNoscriptFallback(content = defaultContent) {
         ${project.status ? `<p><strong>${escapeHtml(project.status)}</strong></p>` : ""}
         <p>${escapeHtml(project.summary)}</p>
         <ul>${renderItems(project.metrics)}</ul>
-        ${
-          project.modelMetrics?.length
-            ? `<p><strong>Расчётные показатели — по финансовой модели</strong></p>
-        <ul>${renderItems(project.modelMetrics)}</ul>`
-            : ""
-        }
         ${project.externalActions?.map(renderLink).join("") ?? ""}
       </article>`,
         )
@@ -122,8 +122,13 @@ export function renderNoscriptFallback(content = defaultContent) {
   <section aria-labelledby="noscript-contact-title">
     <h2 id="noscript-contact-title">${escapeHtml(contact.title)}</h2>
     ${contact.body ? `<p>${escapeHtml(contact.body)}</p>` : ""}
-    <p>${escapeHtml(contact.handle)}</p>
     ${renderLink({ ...contact, label: contact.ctaLabel })}
   </section>
+  <footer>
+    <p>${socialLinks
+      .map(({ href, label, meta }) => `<a href="${escapeHtml(href)}">${escapeHtml(label)} — ${escapeHtml(meta)}</a>`)
+      .join(" · ")}</p>
+    <p>Разработано genidev. Информация на сайте не является публичной офертой.</p>
+  </footer>
 </main>`;
 }

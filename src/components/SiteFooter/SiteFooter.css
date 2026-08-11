@@ -1,0 +1,123 @@
+.site-footer {
+  padding: 20px var(--layout-gutter) max(20px, env(safe-area-inset-bottom));
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.site-footer__inner {
+  display: grid;
+  width: min(100%, var(--layout-max));
+  margin-inline: auto;
+  gap: 26px;
+}
+
+.site-footer__identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.site-footer__identity > img {
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--blue-7);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.site-footer__identity p,
+.site-footer__identity span,
+.site-footer__legal {
+  margin: 0;
+}
+
+.site-footer__identity p {
+  font-size: 0.9rem;
+  font-weight: 720;
+}
+
+.site-footer__identity span,
+.site-footer__legal {
+  color: var(--blue-5);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.site-footer__social {
+  display: grid;
+  gap: 8px;
+}
+
+.site-footer__social a {
+  display: grid;
+  min-height: 64px;
+  border: 1px solid var(--blue-a8);
+  border-radius: var(--radius-control);
+  padding: 10px 12px;
+  grid-template-columns: 28px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 12px;
+  background: var(--blue-a12);
+  transition:
+    background var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
+}
+
+.site-footer__social a:hover {
+  background: var(--blue-10);
+  transform: translateY(-2px);
+}
+
+.site-footer__social img {
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+}
+
+.site-footer__social-icon--github {
+  filter: brightness(0) invert(1);
+}
+
+.site-footer__social span {
+  display: grid;
+  gap: 2px;
+}
+
+.site-footer__social strong {
+  font-size: 0.84rem;
+}
+
+.site-footer__social small {
+  color: var(--blue-5);
+  font-size: 0.67rem;
+  line-height: 1.35;
+}
+
+@media (min-width: 768px) {
+  .site-footer {
+    padding-block: 32px;
+  }
+
+  .site-footer__inner {
+    grid-template-columns: minmax(210px, 0.6fr) minmax(0, 1.4fr);
+    align-items: center;
+  }
+
+  .site-footer__social {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-footer__legal {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer__social a {
+    transition: none;
+  }
+
+  .site-footer__social a:hover {
+    transform: none;
+  }
+}

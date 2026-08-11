@@ -5,6 +5,8 @@ import {
   getFocusWrapIndex,
   shouldResetProjectCaseScroll,
 } from "./projectCaseFocus";
+import OtherProjects from "./OtherProjects";
+import ProjectGallery from "./ProjectGallery";
 import "./ProjectCase.css";
 
 const FOCUSABLE_SELECTOR =
@@ -27,6 +29,7 @@ function ExternalActions({ actions }) {
           href={action.href}
           target={action.target}
           rel={action.rel}
+          download={action.download ? "" : undefined}
           key={`${action.label}-${action.href}`}
         >
           {action.label}
@@ -121,28 +124,41 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
             {project.status && <p className="project-case__status">{project.status}</p>}
             <p className="project-case__duration">{project.duration}</p>
             <p className="project-case__summary">{project.summary}</p>
-            <ExternalActions actions={project.externalActions} />
+            <ExternalActions actions={project.primaryAction ? [project.primaryAction] : undefined} />
           </div>
-          <div
-            className={`project-case__cover${coverFailed ? " has-image-fallback" : ""}`}
-            style={
-              project.coverWidth && project.coverHeight
-                ? { aspectRatio: `${project.coverWidth} / ${project.coverHeight}` }
-                : undefined
-            }
-          >
-            {!coverFailed && (
-              <img
-                src={project.cover}
-                alt={`Обложка проекта «${project.title}»`}
-                width={project.coverWidth ?? 1536}
-                height={project.coverHeight ?? 1024}
-                decoding="async"
-                onError={() => setCoverFailed(true)}
+          {project.videoEmbed ? (
+            <div className="project-case__video">
+              <iframe
+                src={project.videoEmbed}
+                title={`Видео проекта «${project.title}»`}
+                allow="autoplay; encrypted-media"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
               />
-            )}
-            <strong>{project.title}</strong>
-          </div>
+            </div>
+          ) : (
+            <div
+              className={`project-case__cover${coverFailed ? " has-image-fallback" : ""}`}
+              style={
+                project.coverWidth && project.coverHeight
+                  ? { aspectRatio: `${project.coverWidth} / ${project.coverHeight}` }
+                  : undefined
+              }
+            >
+              {!coverFailed && (
+                <img
+                  src={project.cover}
+                  alt={`Обложка проекта «${project.title}»`}
+                  width={project.coverWidth ?? 1536}
+                  height={project.coverHeight ?? 1024}
+                  decoding="async"
+                  onError={() => setCoverFailed(true)}
+                />
+              )}
+              <strong>{project.title}</strong>
+            </div>
+          )}
         </header>
 
         <section className="project-case__section" aria-labelledby="project-problem-title">
@@ -165,65 +181,25 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
                 <li key={metric}><strong>{metric}</strong></li>
               ))}
             </ul>
-            <ul className="project-case__prose project-case__list">
-              {project.result.map((item) => <li key={item}>{item}</li>)}
-            </ul>
             <p className="project-case__result-summary">{project.resultSummary}</p>
           </div>
         </section>
 
-        {project.modelMetrics?.length > 0 && (
-          <section
-            className="project-case__section"
-            aria-labelledby="project-model-metrics-title"
-          >
-            <h2 id="project-model-metrics-title">Расчётные показатели</h2>
-            <div className="project-case__model-metrics">
-              <p>Прогнозные значения по финансовой модели, а не достигнутые результаты.</p>
-              <ul className="project-case__metrics" aria-label="Показатели по финансовой модели">
-                {project.modelMetrics.map((metric) => (
-                  <li key={metric}><strong>{metric}</strong></li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
-
         {project.gallery.length > 0 && (
           <section className="project-case__gallery-section" aria-labelledby="project-gallery-title">
             <h2 id="project-gallery-title">Галерея</h2>
-            <div className="project-case__gallery">
-              {project.gallery.map((image) => (
-                <figure key={image.src}>
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    width={image.width}
-                    height={image.height}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </figure>
-              ))}
-            </div>
+            <ProjectGallery images={project.gallery} title={`Галерея проекта ${project.title}`} />
           </section>
         )}
 
-        <section className="project-case__section project-case__technical" aria-label="Техническая реализация">
-          <div aria-hidden="true" />
-          <details>
-            <summary>Техническая реализация</summary>
-            <ul className="project-case__list">
-              {project.technical.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-          </details>
-        </section>
-
         <section className="project-case__section" aria-labelledby="project-stack-title">
-          <h2 id="project-stack-title">Стек и интеграции</h2>
-          <ul className="project-case__stack">
-            {project.stack.map((item) => <li key={item}>{item}</li>)}
-          </ul>
+          <h2 id="project-stack-title">Навыки и инструменты</h2>
+          <div className="project-case__stack-wrap">
+            <ul className="project-case__stack">
+              {project.skills.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+            <ExternalActions actions={project.externalActions} />
+          </div>
         </section>
 
         {project.url && (
@@ -240,25 +216,7 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
           </div>
         )}
 
-        {otherProjects.length > 0 && (
-          <section className="project-case__others" aria-labelledby="other-projects-title">
-            <h2 id="other-projects-title">Другие проекты</h2>
-            <div className="project-case__other-grid">
-              {otherProjects.map((otherProject) => (
-                <button
-                  className="project-case__other-card"
-                  type="button"
-                  key={otherProject.slug}
-                  onClick={() => onOpenProject(otherProject.slug)}
-                >
-                  <span>{otherProject.category}</span>
-                  <strong>{otherProject.title}</strong>
-                  <span>{otherProject.duration}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
+        <OtherProjects projects={otherProjects} onOpenProject={onOpenProject} />
       </article>
     </div>
   );

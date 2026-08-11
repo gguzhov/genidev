@@ -30,25 +30,30 @@ test("publishes DATONIKS as the third, explicitly in-development investment proj
   assert.match(actions, /финансовую модель/i);
   assert.match(actions, /инвестиционн(?:ый|ого) питч/i);
 
-  assert.ok(datoniks.modelMetrics.length > 0);
-  for (const metric of datoniks.modelMetrics) {
-    assert.match(metric, /по финансовой модели/i);
-    assert.equal(datoniks.metrics.includes(metric), false);
-  }
+  assert.equal(datoniks.modelMetrics, undefined);
+  assert.match(datoniks.videoEmbed, /drive\.google\.com.*\/preview/);
 });
 
-test("exposes only the safe public presentation and investment conversation actions", () => {
+test("exposes the three requested investor materials", () => {
   const datoniks = projects.find(({ slug }) => slug === "datoniks");
   assert.deepEqual(datoniks.externalActions, [
     {
-      label: "Открыть презентацию",
+      label: "Питч-дек",
       href: "/documents/datoniks-pitch-deck-public.pdf",
       target: "_blank",
       rel: "noreferrer",
+      download: true,
     },
     {
-      label: "Обсудить инвестиции",
-      href: "https://t.me/gguzhov",
+      label: "Бизнес-план",
+      href: "/documents/datoniks-business-plan.pdf",
+      target: "_blank",
+      rel: "noreferrer",
+      download: true,
+    },
+    {
+      label: "Финансовая модель",
+      href: "https://docs.google.com/spreadsheets/d/1qMaFBjKzP-phYNemPR8UGTd8q3gQF4a0OACTBIbyXN4/edit?usp=sharing",
       target: "_blank",
       rel: "noreferrer",
     },
@@ -66,8 +71,9 @@ test("includes all three projects and DATONIKS actions in the no-JS fallback", (
   assert.match(html, /DATONIKS/);
   assert.match(html, /Инвестиционный проект · ищу партнёра/);
   assert.match(html, /href="\/documents\/datoniks-pitch-deck-public\.pdf"/);
-  assert.match(html, />Открыть презентацию</);
-  assert.match(html, />Обсудить инвестиции</);
+  assert.match(html, />Питч-дек</);
+  assert.match(html, />Бизнес-план</);
+  assert.match(html, />Финансовая модель</);
 });
 
 test("keeps the primary presentation action visually distinct from the secondary action", async () => {
