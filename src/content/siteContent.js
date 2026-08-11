@@ -482,6 +482,7 @@ export const socialLinks = [
     label: "Habr",
     meta: "9 статей · 300 тыс.+ просмотров",
     href: "https://habr.com/ru/users/gguzhov/articles/",
+    source: "https://habr.com/ru/users/gguzhov/articles/",
     icon: "/icons/habr.svg",
   },
 ];

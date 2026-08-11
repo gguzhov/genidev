@@ -6,7 +6,8 @@ export default function ProjectGallery({ images, title }) {
   const [activeIndex, setActiveIndex] = useState(0);
   if (!images?.length) return null;
 
-  const activeImage = images[activeIndex];
+  const resolvedIndex = Math.min(activeIndex, images.length - 1);
+  const activeImage = images[resolvedIndex];
   const showPrevious = () => {
     setActiveIndex((current) => (current - 1 + images.length) % images.length);
   };
@@ -30,7 +31,7 @@ export default function ProjectGallery({ images, title }) {
 
       <div className="project-gallery__controls">
         <p aria-live="polite">
-          {String(activeIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
+          {String(resolvedIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
         </p>
         <div>
           <button type="button" onClick={showPrevious} aria-label="Предыдущий кадр">

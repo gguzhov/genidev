@@ -115,3 +115,29 @@
 - Fresh capture: `30/30` PNG и `6/6` contact sheets, manifest captured at `2026-08-11T11:31:10.359Z`; evidence verifier PASS. 375/430 hero и полные ленты визуально проверены без тесноты header, обрезки или overflow.
 - Финальный единый gate: `npm test` — `167/167 PASS`; production build — PASS, main JS `337.36 kB` (`111.57 kB` gzip), chunk warning отсутствует; built no-JS HTML содержит все четыре точные строки; evidence verifier и `git diff --check` — PASS.
 - Impeccable не запускался. Защищённые `.npmrc`, `tmp/` и старые untracked evidence-папки не изменялись.
+
+## Independent advisor revision
+
+### Privacy и достоверность
+
+- Публичный 181-страничный бизнес-план пересобран из исходника как обезличенная версия: страницы с возрастом, полными именами, структурой владения, дивидендами и долями заменены растровыми redaction-слоями без скрытого исходного текста.
+- Добавлены воспроизводимый генератор `scripts/create-redacted-business-plan.py` и scanner `scripts/verify-pdf-public-privacy.mjs`. Scanner проверяет текст и URI-аннотации обоих опубликованных PDF на email, телефон, возраст, имена участников и строки владения.
+- Результат scanner: `PASS public PDF privacy — 2 files`. Все восемь изменённых страниц дополнительно отрендерены и просмотрены визуально; временные файлы перемещены в Trash.
+- Формулировка Habr сверена с актуальным официальным профилем: `9 статей · 300 тыс.+ просмотров`; источник зафиксирован в content и `PRODUCT.md`. Более сильная пользовательская цифра 515 тыс. не использована без публичного подтверждения.
+
+### Регрессии интерфейса
+
+- Галерея получает project-key и ограничивает индекс длиной текущего набора. Runtime-сценарий `Остров: 6-й кадр → DATONIKS: 2 кадра` открывает `01 / 02` без ошибки.
+- Desktop и reduced-motion сохраняют `translate(-50%, -50%)` для всех шести узлов hero-дуги; CDP измерил `dx=0`, `dy=0` у каждого узла.
+- Direct project route после закрытия возвращает фокус на первую карточку проекта и прокручивает fallback-цель в видимую область; для реального opener сохраняется `preventScroll`.
+- CTA запускает орбиту только после попадания в viewport, снимает fill-animation после завершения, реально меняет computed transform на keyboard focus и полностью статичен при reduced motion. Переключение reduced → full не переигрывает intro.
+- Letter-spacing больших заголовков ограничен токеном `-0.04em`.
+
+### Финальные проверки
+
+- Focused privacy + redesign: `16/16 PASS`.
+- Full `npm test`: `182/182 PASS`.
+- `npm run build`: PASS; main JS `339.47 kB` (`112.23 kB` gzip), chunk warning отсутствует.
+- CDP matrix: `375/430/768/1024/1280/1440 PASS`; page overflow отсутствует, CTA не меньше 44px, портрет видим, 3 проекта и ровно 4 результата на карточку.
+- CDP interaction: reduced mobile, centered desktop arc, long→short gallery switch, visible direct-route focus return, CTA computed-transform focus response и reduced→full no-replay PASS.
+- `git diff --check`: PASS.

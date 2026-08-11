@@ -75,7 +75,9 @@ test("контакт и социальные ссылки не дублирую�
   assert.equal(contact.handle, undefined);
   assert.match(contact.title, /застрял|изменить|запустить/i);
   assert.deepEqual(socialLinks.map(({ id }) => id), ["github", "telegram", "habr"]);
-  assert.match(socialLinks.find(({ id }) => id === "habr").meta, /300 тыс\.\+/);
+  const habr = socialLinks.find(({ id }) => id === "habr");
+  assert.equal(habr.meta, "9 статей · 300 тыс.+ просмотров");
+  assert.equal(habr.source, "https://habr.com/ru/users/gguzhov/articles/");
 });
 
 test("официальная монохромная иконка GitHub остаётся читаемой в тёмном подвале", () => {
@@ -100,6 +102,48 @@ test("компоненты содержат GradientWave, дугу, слайде
   assert.doesNotMatch(projectCaseCss, /project-case__model-metrics|project-case__technical/);
   assert.match(projectCase, /ProjectGallery/);
   assert.match(projectCase, /OtherProjects/);
+});
+
+test("галерея безопасно сбрасывается и ограничивает индекс при смене проекта", () => {
+  const projectCase = read("../src/components/ProjectCase/ProjectCase.jsx");
+  const gallery = read("../src/components/ProjectCase/ProjectGallery.jsx");
+  assert.match(projectCase, /<ProjectGallery\s+key=\{project\.slug\}/);
+  assert.match(gallery, /Math\.min\(activeIndex,\s*images\.length\s*-\s*1\)/);
+});
+
+test("финальное и reduced-motion состояние сохраняет центрирование узлов desktop-дуги", () => {
+  const sequenceCss = read("../src/components/WorkSequence/WorkSequence.css");
+  assert.match(
+    sequenceCss,
+    /@media \(min-width:\s*1024px\)[\s\S]*\.work-sequence--static \.work-sequence__item\s*\{[^}]*transform:\s*translate\(-50%,\s*-50%\)/s,
+  );
+  assert.match(
+    sequenceCss,
+    /@media \(min-width:\s*1024px\) and \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.work-sequence__item\s*\{[^}]*translate\(-50%,\s*-50%\)/s,
+  );
+});
+
+test("CTA появляется в viewport, поддерживает focus и сохраняет спокойный tracking", () => {
+  const contact = read("../src/components/FinalContact/FinalContact.jsx");
+  const contactCss = read("../src/components/FinalContact/FinalContact.css");
+  const heroCss = read("../src/styles/hero.css");
+  const projectCaseCss = read("../src/components/ProjectCase/ProjectCase.css");
+  assert.match(contact, /IntersectionObserver/);
+  assert.match(contact, /isSettled/);
+  assert.match(contact, /onAnimationEnd/);
+  assert.match(contactCss, /\.final-contact__inner\.is-settled:focus-within \.final-contact__orbit/);
+  assert.match(contactCss, /\.final-contact__inner\.is-settled \.final-contact__orbit\s*\{[^}]*animation:\s*none/s);
+  assert.match(
+    contactCss,
+    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.final-contact__inner\.is-settled \.final-contact__orbit\s*\{[^}]*animation:\s*none/s,
+  );
+  assert.doesNotMatch(`${heroCss}\n${projectCaseCss}`, /letter-spacing:\s*-0\.0(?:5|6|7|8|9)em/);
+});
+
+test("прямой project-route возвращает фокус к первой карточке", () => {
+  const routeHook = read("../src/hooks/useProjectRoute.js");
+  assert.match(routeHook, /querySelector\("\.project-card__open"\)/);
+  assert.match(routeHook, /returnFocusRef\.current\?\.isConnected[\s\S]*focus\(\{ preventScroll: true \}\)[\s\S]*fallbackTarget\.scrollIntoView\(\{ block: "center" \}\)[\s\S]*fallbackTarget\.focus\(\{ preventScroll: true \}\)/s);
 });
 
 test("анимация фона, дуги и CTA не использует бесконечный цикл", () => {

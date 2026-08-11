@@ -4,6 +4,7 @@ import test from "node:test";
 
 const MANIFEST_PATH = "public/documents/datoniks-pitch-deck-public.manifest.json";
 const VERIFY_SCRIPT = "scripts/verify-datoniks-public-deck.mjs";
+const VERIFY_CONTACTS_SCRIPT = "scripts/verify-pdf-public-privacy.mjs";
 const SOURCE_PATH = "/Users/gguzhov/Downloads/Питч-дек_DATONIKS.pdf";
 
 test("ties the public deck to source pages 1-17 and excludes private slide 18", async (t) => {
@@ -44,4 +45,17 @@ test("ties the public deck to source pages 1-17 and excludes private slide 18", 
   } else {
     t.diagnostic("Source PDF unavailable; durable excluded-page fingerprint verified instead.");
   }
+});
+
+test("scans every published DATONIKS PDF for contacts and participant data", async () => {
+  await assert.doesNotReject(access(VERIFY_CONTACTS_SCRIPT));
+  const scannerSource = await readFile(VERIFY_CONTACTS_SCRIPT, "utf8");
+  assert.match(scannerSource, /\(\?:Геннадий\|Анатолий\).*Гужов/);
+  assert.match(scannerSource, /Никита.*Мухин/);
+  const { scanPublishedPdfs } = await import("../scripts/verify-pdf-public-privacy.mjs");
+  const findings = scanPublishedPdfs([
+    "public/documents/datoniks-pitch-deck-public.pdf",
+    "public/documents/datoniks-business-plan.pdf",
+  ]);
+  assert.deepEqual(findings, []);
 });

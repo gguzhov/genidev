@@ -43,7 +43,7 @@
   color: var(--color-text);
   font-size: clamp(2.25rem, 10.8vw, 3.35rem);
   font-weight: 720;
-  letter-spacing: -0.068em;
+  letter-spacing: -0.04em;
   line-height: 0.98;
   text-wrap: balance;
 }

@@ -84,9 +84,20 @@ export default function useProjectRoute(projects) {
     let focusFrame;
     const previousActiveSlug = previousActiveSlugRef.current;
 
-    if (previousActiveSlug && !activeSlug && returnFocusRef.current?.isConnected) {
+    const returnTarget = returnFocusRef.current?.isConnected ? returnFocusRef.current : null;
+    const fallbackTarget = document.querySelector(".project-card__open");
+
+    if (previousActiveSlug && !activeSlug) {
       focusFrame = window.requestAnimationFrame(() => {
-        returnFocusRef.current?.focus({ preventScroll: true });
+        if (returnTarget instanceof HTMLElement) {
+          returnTarget.focus({ preventScroll: true });
+        } else if (fallbackTarget instanceof HTMLElement) {
+          const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+          document.documentElement.style.scrollBehavior = "auto";
+          fallbackTarget.scrollIntoView({ block: "center" });
+          fallbackTarget.focus({ preventScroll: true });
+          document.documentElement.style.scrollBehavior = previousScrollBehavior;
+        }
       });
     }
 

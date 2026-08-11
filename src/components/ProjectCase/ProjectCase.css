@@ -83,7 +83,7 @@
   margin: 0.65rem 0 1rem;
   font-size: clamp(2.6rem, 12vw, 5rem);
   line-height: 0.98;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
 }
 
 .project-case__summary {

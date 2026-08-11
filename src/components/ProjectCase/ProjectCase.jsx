@@ -188,7 +188,11 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
         {project.gallery.length > 0 && (
           <section className="project-case__gallery-section" aria-labelledby="project-gallery-title">
             <h2 id="project-gallery-title">Галерея</h2>
-            <ProjectGallery images={project.gallery} title={`Галерея проекта ${project.title}`} />
+            <ProjectGallery
+              key={project.slug}
+              images={project.gallery}
+              title={`Галерея проекта ${project.title}`}
+            />
           </section>
         )}
 

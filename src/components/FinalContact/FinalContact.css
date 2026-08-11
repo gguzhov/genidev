@@ -78,9 +78,20 @@
   left: 50%;
   border: 1px solid var(--color-border-strong);
   border-radius: 50%;
-  transform: translate(-50%, -50%) rotate(-18deg);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-48deg) scale(0.92);
+}
+
+.final-contact__inner.is-revealed .final-contact__orbit {
   transition: transform 800ms var(--motion-ease);
   animation: final-contact-orbit 1100ms var(--motion-ease) both;
+}
+
+.final-contact__inner.is-settled .final-contact__orbit {
+  opacity: 1;
+  animation: none;
+  transform: translate(-50%, -50%) rotate(-18deg) scale(1);
+  transition: transform 800ms var(--motion-ease);
 }
 
 .final-contact__orbit--outer {
@@ -107,8 +118,14 @@
   box-shadow: 0 10px 28px var(--blue-a8);
 }
 
-.final-contact__inner:hover .final-contact__orbit {
-  transform: translate(-50%, -50%) rotate(12deg);
+.final-contact__inner.is-settled:focus-within .final-contact__orbit {
+  transform: translate(-50%, -50%) rotate(12deg) scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .final-contact__inner.is-settled:hover .final-contact__orbit {
+    transform: translate(-50%, -50%) rotate(12deg) scale(1);
+  }
 }
 
 @keyframes final-contact-orbit {
@@ -193,9 +210,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .final-contact__orbit {
+  .final-contact__inner.is-revealed .final-contact__orbit,
+  .final-contact__inner.is-settled .final-contact__orbit {
+    opacity: 1;
     animation: none;
-    transform: translate(-50%, -50%) rotate(-18deg);
+    transform: translate(-50%, -50%) rotate(-18deg) scale(1);
     transition: none;
   }
 }
