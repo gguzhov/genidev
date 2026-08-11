@@ -118,7 +118,7 @@ test("motion-sensitive surfaces use shared durations and retain reduced-motion f
   assert.match(navComponentSource, /duration:\s*0\.28/);
   assert.doesNotMatch(careerCssSource, /transition:\s*transform\s+700ms/);
   assert.match(globalCssSource, /@media \(prefers-reduced-motion:\s*reduce\)/);
-  assert.match(globalCssSource, /animation-delay:\s*0ms\s*!important/);
+  assert.doesNotMatch(globalCssSource, /0\.01ms|animation-duration:\s*[^;]+!important/);
   assert.match(profileCssSource, /@media \(prefers-reduced-motion:\s*reduce\), \(hover:\s*none\), \(pointer:\s*coarse\)/);
 });
 

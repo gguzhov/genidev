@@ -16,6 +16,7 @@ html {
   min-width: 320px;
   min-height: 100%;
   scroll-behavior: smooth;
+  scrollbar-color: var(--color-border-strong) var(--color-surface);
 }
 
 body {
@@ -45,6 +46,17 @@ button {
   font: inherit;
 }
 
+::selection {
+  background: var(--blue-a5);
+  color: var(--color-text);
+}
+
+input,
+textarea {
+  accent-color: var(--color-accent);
+  caret-color: var(--color-accent);
+}
+
 a:focus-visible,
 button:focus-visible {
   outline: 3px solid var(--color-focus);
@@ -54,16 +66,5 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important;
-    animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
   }
 }

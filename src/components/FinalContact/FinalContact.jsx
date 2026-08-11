@@ -7,7 +7,6 @@ export default function FinalContact({ contact }) {
     <section className="final-contact" id="contact" aria-labelledby="contact-title">
       <div className="final-contact__inner">
         <div className="final-contact__copy">
-          <p className="section__eyebrow">Обсудить задачу</p>
           <h2 id="contact-title">{contact.title}</h2>
           <p className="final-contact__body">{contact.body}</p>
           <div className="final-contact__actions">

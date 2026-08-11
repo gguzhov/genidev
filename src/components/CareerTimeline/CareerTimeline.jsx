@@ -42,7 +42,6 @@ export default function CareerTimeline({ items }) {
     <section className="section career-section" id="career" aria-labelledby="career-title">
       <div className="section__inner">
         <div className="section__heading">
-          <p className="section__eyebrow">Путь</p>
           <h2 id="career-title">От торговли и экономики — к цифровым продуктам</h2>
           <p>
             Сначала учился находить спрос, считать деньги и выстраивать поставки. Затем

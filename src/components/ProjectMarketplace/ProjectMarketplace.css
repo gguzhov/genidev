@@ -13,6 +13,24 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.marketplace__grid.is-reveal-ready .project-card {
+  opacity: 1;
+  clip-path: inset(0 round var(--radius-feature));
+  transition:
+    opacity var(--motion-reveal) var(--motion-ease)
+      calc(var(--reveal-index, 0) * 70ms),
+    clip-path var(--motion-reveal) var(--motion-ease)
+      calc(var(--reveal-index, 0) * 70ms),
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
+}
+
+.marketplace__grid.is-reveal-ready:not(.is-revealed) .project-card {
+  opacity: 0.001;
+  clip-path: inset(0 0 14% 0 round var(--radius-feature));
+}
+
 .project-card {
   position: relative;
   display: grid;
@@ -178,7 +196,7 @@
 .project-card__title {
   color: var(--color-text);
   font-size: clamp(1.35rem, 6vw, 1.9rem);
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
   line-height: 1.1;
 }
 
@@ -377,6 +395,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .marketplace__grid.is-reveal-ready .project-card {
+    opacity: 1;
+    clip-path: none;
+    transform: none;
+  }
+
   .project-card,
   .project-visual__atmosphere,
   .project-visual__product-frame,

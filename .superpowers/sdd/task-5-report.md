@@ -1,56 +1,44 @@
-# Task 5 — карьерная линия
+# Task 5 — общая motion-система, docs и полный QA
 
 ## RED
 
-- Добавлен контракт существования `CareerTimeline` и его подключения в `App`.
-- Добавлены focused production-logic tests для fallback без `IntersectionObserver`, `prefers-reduced-motion` и cleanup наблюдателя.
-- До реализации `npm test` завершался с четырьмя ожидаемыми ошибками: отсутствовали компонент и модуль состояния.
-- Отдельный RED для observer cleanup: `observeCareerItems is not a function`.
+- Создан `tests/marketplace-final-regression.test.mjs` с контрактами JetBrains Mono, отсутствия глобального `0.01ms` kill switch и infinite animation, token-driven motion, progressive one-shot marketplace reveal, stale copy и безопасного DATONIKS PDF/build.
+- Первый запуск: `1 PASS / 6 FAIL`. Ожидаемые причины: stale `Inter`, глобальный reduced-motion reset, отсутствующие reveal lifecycle/CSS и финальные privacy/motion-контракты.
+- Отдельный lifecycle RED воспроизвёл runtime-переход в reduced motion: ожидаемое финальное состояние не фиксировалось до добавления media-query listener.
 
 ## GREEN
 
-- Реализован семантический `<ol>` с пятью карьерными событиями из `career`.
-- До запуска JS контент остаётся видимым; reveal включается только после mount при доступном `IntersectionObserver` и без reduced motion.
-- При reduced motion или отсутствии observer все события сразу доступны. Наблюдатель использует `threshold: 0.2`, снимает наблюдение с показанного события и отключается в cleanup.
-- На mobile линия находится слева, все события — справа; с 1024 px линия становится центральной, события чередуются. Карточная поверхность намеренно не используется.
+- Удалён stale `Inter`; корневой font declaration использует `--font-primary`.
+- Удалён глобальный `0.01ms !important` reduced-motion kill switch. Motion-компоненты сохраняют локальные финальные состояния.
+- Реализован `createMarketplaceRevealLifecycle`: enhancement включается только при доступном observer и разрешённом motion, отключает observer после первого reveal и игнорирует late callbacks после cleanup.
+- Runtime-переход в reduced motion завершает pending reveal навсегда, снимает observer и не переигрывается при возврате настройки.
+- Карточки видимы по умолчанию; при enhancement проявляются один раз за `--motion-reveal` с `--motion-ease` и шагом `70ms`. Reduced/no-observer сразу остаются в финальном видимом состоянии.
+- Сохранён один смысловой signal — bounded barcode scan; infinite loops не добавлены.
+- Удалены eyebrow из изменённых career/contact headings, tracking ограничен `-0.04em`.
+- Темизированы browser surfaces: selection, scrollbar, caret/accent-controls.
+
+## Impeccable
+
+- `context.mjs` запущен один раз до работы.
+- Mechanical detector запущен ровно один раз после UI по восьми изменённым JSX/CSS targets.
+- Результат: `[]`; P0/P1 и intentional exceptions отсутствуют.
+- Выполнен один bounded visual pass. Дефектов для fix pass не найдено; второй цикл полировки не запускался.
+
+## Browser QA
+
+- Использован Codex In-app Browser с production preview.
+- Проверены 375/430/768/1024/1280/1440px и все пять секций.
+- Везде: page overflow отсутствует, targets ≥44px, project media `3:2`, results `4/4/4`; сетка проектов `1/1/2/3/3/3`.
+- PASS: menu/Escape/focus return, problem keyboard navigation, все три dialogs, focus trap, DATONIKS PDF, Back/Forward, reduced motion, console/network/assets.
+- Сохранено ровно 30 PNG в `docs/design-evidence/marketplace-datoniks-final/`.
 
 ## Проверки
 
-- `node --test tests/career-timeline-state.test.mjs` — 4/4 PASS.
-- `npm test` — 33/33 PASS.
-- `npm run build` — PASS.
-- Проверено в браузере на 375, 430, 768, 1024, 1280 и 1440 px: 5 элементов, `OL`, все элементы читаемы, горизонтального overflow нет; на desktop маркер совпадает с центральной осью.
+- Targeted regression: `8/8 PASS`.
+- Full tests перед browser QA: `161/161 PASS`.
+- Финальный production build: PASS, main JS `337.07 kB` (`111.33 kB` gzip), без chunk warning.
+- Финальный единый прогон `npm test && npm run build && git diff --check`: `162/162 PASS`, production build PASS, diff check empty.
 
-## Файлы
+## Защищённые файлы
 
-- `src/components/CareerTimeline/CareerTimeline.jsx`
-- `src/components/CareerTimeline/CareerTimeline.css`
-- `src/components/CareerTimeline/careerTimelineState.js`
-- `src/App.jsx`
-- `tests/career-timeline-state.test.mjs`
-- `tests/project-structure.test.mjs`
-
-## Self-review / concerns
-
-- Контент не скрывается через `display: none` или `visibility: hidden`; reduced motion также снимает transition/transform.
-- Используются существующие цветовые токены; зависимостей не добавлено.
-- `vite build` сообщает существующее предупреждение о chunk размером свыше 500 kB (822.86 kB); задача карьерной линии не меняет стратегию разделения кода.
-
-## Cleanup race fix
-
-### RED
-
-- Добавлен regression-тест `ignores queued observer callbacks after cleanup`: он сохраняет callback `IntersectionObserver`, вызывает cleanup, затем доставляет сохранённый callback.
-- До исправления тест падал: callback вызывал `onReveal` со stale index `[0]` после cleanup.
-
-### GREEN
-
-- `observeCareerItems` получил локальный lifecycle guard `active`.
-- Cleanup сначала деактивирует callback, затем вызывает `disconnect()`, поэтому late callback после смены `items` или unmount не может вызвать `setVisibleItems`.
-
-### Проверки
-
-- `node --test tests/career-timeline-state.test.mjs` — 5/5 PASS.
-- `npm test` — 34/34 PASS.
-- `npm run build` — PASS.
-- `git diff --check` — PASS.
+Пользовательские untracked `.npmrc`, `tmp/` и старые evidence-папки не изменялись.

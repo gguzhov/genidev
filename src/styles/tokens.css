@@ -53,7 +53,7 @@
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   color: var(--color-text);
   background: var(--color-canvas);
-  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-primary);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }

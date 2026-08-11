@@ -22,7 +22,7 @@
   max-width: 24ch;
   margin: 0;
   font-size: clamp(2rem, 8.7vw, 3.4rem);
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   line-height: 1;
   text-wrap: balance;
 }
