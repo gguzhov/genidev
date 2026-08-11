@@ -54,7 +54,7 @@ export function renderNoscriptFallback(content = defaultContent) {
     ${renderLink(hero.cta)}
   </header>
   <section aria-labelledby="noscript-problems-title">
-    <h2 id="noscript-problems-title">С чем я могу помочь</h2>
+    <h2 id="noscript-problems-title">От бизнес-проблемы до измеримого результата</h2>
     <div class="noscript-site__grid">
       ${problems
         .map(

@@ -21,6 +21,11 @@ test("renders all essential landing content from the shared content contract", a
   assert.match(html, new RegExp(hero.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.doesNotMatch(html, /Геннадий Гужов/);
   assert.match(html, new RegExp(hero.promise));
+  assert.match(
+    html,
+    /<h2 id="noscript-problems-title">От бизнес-проблемы до измеримого результата<\/h2>/,
+  );
+  assert.doesNotMatch(html, /<h2 id="noscript-problems-title">С чем я могу помочь<\/h2>/);
   assert.equal((html.match(/data-noscript-problem/g) ?? []).length, problems.length);
   assert.equal((html.match(/data-noscript-career/g) ?? []).length, career.length);
   assert.equal((html.match(/data-noscript-project/g) ?? []).length, projects.length);

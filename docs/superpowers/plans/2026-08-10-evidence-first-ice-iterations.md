@@ -91,7 +91,7 @@ test("removes the redundant problem section lead", async () => {
 
 - [ ] **Step 2: Run the focused test and verify RED**
 
-Run: `node --test tests/evidence-first-ice-content.test.mjs`  
+Run: `node --test tests/evidence-first-ice-content.test.mjs`
 Expected: FAIL on the old five-stage sequence, old `description/result` contract and portrait identity layers.
 
 - [ ] **Step 3: Replace the content contract with the approved copy**
@@ -116,10 +116,10 @@ export const problems = [
       "Проектирую и запускаю первую рабочую версию.",
     ],
     outcomes: [
-      "Проверенная продуктовая гипотеза.",
-      "Понятная экономика запуска.",
-      "Работающий MVP.",
-      "Данные для следующего решения.",
+      "Гипотеза готова к проверке на реальных пользователях.",
+      "Доходы, затраты и ограничения собраны в модели.",
+      "MVP готов к первым пользователям.",
+      "Определены метрики для решения о развитии.",
     ],
   },
   {
@@ -132,10 +132,10 @@ export const problems = [
       "Разрабатываю управляемый цифровой сценарий.",
     ],
     outcomes: [
-      "Меньше ручных операций.",
-      "Единый статус процесса.",
-      "Контроль ошибок и исключений.",
-      "Аналитика выполнения.",
+      "Ручные операции переведены в цифровой сценарий.",
+      "Статус процесса виден в одной системе.",
+      "Ошибки и исключения фиксируются.",
+      "Скорость и результат процесса доступны в аналитике.",
     ],
   },
   {
@@ -148,10 +148,10 @@ export const problems = [
       "Настраиваю проверку качества и мониторинг.",
     ],
     outcomes: [
-      "AI работает внутри процесса.",
-      "Качество можно проверять.",
-      "Повторяемые операции выполняются быстрее.",
-      "Решения и ошибки остаются под контролем.",
+      "Типовые операции выполняются автоматически.",
+      "Ответы проверяются по заданным критериям.",
+      "Сотрудники быстрее обрабатывают повторяемые задачи.",
+      "Ошибки и нестандартные случаи передаются человеку.",
     ],
   },
   {
@@ -164,10 +164,10 @@ export const problems = [
       "Внедряю изменения и измеряю эффект.",
     ],
     outcomes: [
-      "Понятная карта точек роста.",
-      "Улучшенный пользовательский путь.",
-      "Проверенные продуктовые гипотезы.",
-      "Решения на основе данных.",
+      "Видны потери на каждом шаге воронки.",
+      "Сокращён путь до целевого действия.",
+      "Гипотезы приоритизированы по ожидаемому эффекту.",
+      "Эффект изменений виден в продуктовых метриках.",
     ],
   },
 ];
@@ -298,7 +298,7 @@ test("uses one media ratio and keeps real interface evidence", async () => {
 
 - [ ] **Step 2: Run the focused test and verify RED**
 
-Run: `node --test tests/evidence-first-project-visuals.test.mjs`  
+Run: `node --test tests/evidence-first-project-visuals.test.mjs`
 Expected: FAIL because `project.visual`, four-result arrays and generated assets do not exist.
 
 - [ ] **Step 3: Generate the two project-bound images with built-in Imagen**
@@ -495,7 +495,7 @@ test("keeps both project media blocks on the same grid and ratio", async () => {
 
 - [ ] **Step 2: Run the focused test and verify RED**
 
-Run: `node --test tests/evidence-first-motion.test.mjs`  
+Run: `node --test tests/evidence-first-motion.test.mjs`
 Expected: FAIL until the new one-shot path, staggered outcomes and equal desktop grid are implemented.
 
 - [ ] **Step 3: Implement the one-shot observer lifecycle**
