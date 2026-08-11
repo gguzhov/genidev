@@ -86,7 +86,7 @@ test("uses the exact approved task and marketplace copy", () => {
   assert.match(contentSource, /duration:\s*"1 неделя до запуска"/);
   assert.match(
     marketplaceSource,
-    /В этих проектах я самостоятельно прошёл путь от бизнес-задачи до запуска\./,
+    /В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска\./,
   );
 });
 

@@ -68,6 +68,7 @@ export default function ProjectVisual({ project, interactive = true }) {
       {!atmosphereFailed && (
         <img
           className="project-visual__atmosphere"
+          data-visual-layer="atmosphere"
           src={project.visual.background}
           alt=""
           width="1536"
@@ -81,6 +82,7 @@ export default function ProjectVisual({ project, interactive = true }) {
 
       <span
         className="project-visual__product-frame"
+        data-visual-layer="evidence"
         style={
           project.coverWidth && project.coverHeight
             ? { aspectRatio: `${project.coverWidth} / ${project.coverHeight}` }
@@ -108,6 +110,7 @@ export default function ProjectVisual({ project, interactive = true }) {
       {!logoFailed && (
         <img
           className="project-visual__logo"
+          data-visual-layer="brand"
           src={project.visual.logo}
           alt=""
           loading="lazy"

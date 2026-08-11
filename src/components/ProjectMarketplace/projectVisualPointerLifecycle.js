@@ -1,5 +1,6 @@
 export const PROJECT_FINE_POINTER_QUERY = "(hover: hover) and (pointer: fine)";
 export const PROJECT_REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+export const PROJECT_DEPTH_ACTIVE_CLASS = "project-visual--depth-active";
 
 function subscribeMedia(media, listener) {
   if (typeof media.addEventListener === "function") {
@@ -20,7 +21,10 @@ export function createProjectPointerLifecycle({
   resetDepth,
 }) {
   if (!interactive || !card || !visual || typeof matchMedia !== "function") {
-    if (visual) resetDepth(visual);
+    if (visual) {
+      visual.classList?.remove(PROJECT_DEPTH_ACTIVE_CLASS);
+      resetDepth(visual);
+    }
     return () => {};
   }
 
@@ -29,10 +33,18 @@ export function createProjectPointerLifecycle({
   let disposed = false;
   let pointerListenersAttached = false;
 
-  const onPointerLeave = () => resetDepth(visual);
+  const resetInteraction = () => {
+    visual.classList?.remove(PROJECT_DEPTH_ACTIVE_CLASS);
+    resetDepth(visual);
+  };
+  const handlePointerMove = (event) => {
+    visual.classList?.add(PROJECT_DEPTH_ACTIVE_CLASS);
+    onPointerMove(event);
+  };
+  const onPointerLeave = () => resetInteraction();
   const detachPointerListeners = () => {
     if (!pointerListenersAttached) return;
-    card.removeEventListener("pointermove", onPointerMove);
+    card.removeEventListener("pointermove", handlePointerMove);
     card.removeEventListener("pointerleave", onPointerLeave);
     pointerListenersAttached = false;
   };
@@ -40,14 +52,14 @@ export function createProjectPointerLifecycle({
     if (disposed) return;
     const shouldAttach = finePointerMedia.matches && !reducedMotionMedia.matches;
     if (shouldAttach && !pointerListenersAttached) {
-      card.addEventListener("pointermove", onPointerMove);
+      card.addEventListener("pointermove", handlePointerMove);
       card.addEventListener("pointerleave", onPointerLeave);
       pointerListenersAttached = true;
       return;
     }
     if (!shouldAttach) {
       detachPointerListeners();
-      resetDepth(visual);
+      resetInteraction();
     }
   };
 
@@ -60,6 +72,6 @@ export function createProjectPointerLifecycle({
     detachPointerListeners();
     unsubscribeFinePointer();
     unsubscribeReducedMotion();
-    resetDepth(visual);
+    resetInteraction();
   };
 }

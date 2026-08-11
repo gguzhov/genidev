@@ -20,7 +20,12 @@ export default function ProjectCard({
         <p className="project-card__category">{project.category}</p>
         <h3 className="project-card__title">{project.title}</h3>
         <p className="project-card__summary">{project.summary}</p>
-        <p className="project-card__duration">{project.duration}</p>
+        <div className="project-card__meta" aria-label="Статус и срок проекта">
+          <span className="project-card__status">
+            {project.status ?? "Реализованный продукт"}
+          </span>
+          <span className="project-card__duration">{project.duration}</span>
+        </div>
         <ul className="project-card__metrics" aria-label="Результаты проекта">
           {project.metrics.map((metric) => (
             <li key={metric}>{metric}</li>

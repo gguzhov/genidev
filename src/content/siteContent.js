@@ -323,7 +323,7 @@ export const projects = [
       "По финансовой модели: 42% — средняя рентабельность по EBITDA",
     ],
     visual: {
-      background: "/projects/datoniks/datoniks-slide-10.webp",
+      background: "/projects/ice/datoniks-ice-v1.webp",
       logo: "/projects/datoniks/datoniks-logo.webp",
     },
     cover: "/projects/datoniks/datoniks-slide-03.webp",

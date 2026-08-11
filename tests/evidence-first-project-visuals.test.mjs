@@ -28,7 +28,8 @@ test("publishes four strongest outcomes and hybrid visual assets", async () => {
   for (const project of projects) {
     assert.deepEqual(project.metrics, expectedMetrics[project.slug]);
     if (project.slug === "datoniks") {
-      assert.equal(project.visual.background, "/projects/datoniks/datoniks-slide-10.webp");
+      assert.equal(project.visual.background, "/projects/ice/datoniks-ice-v1.webp");
+      assert.equal(project.cover, "/projects/datoniks/datoniks-slide-03.webp");
       assert.equal(project.visual.logo, "/projects/datoniks/datoniks-logo.webp");
     } else {
       assert.match(project.visual.background, /^\/projects\/ice\/.+\.webp$/);

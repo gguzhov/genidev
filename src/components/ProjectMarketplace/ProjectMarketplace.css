@@ -10,11 +10,13 @@
 .marketplace__grid {
   display: grid;
   gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .project-card {
   position: relative;
   display: grid;
+  height: 100%;
   width: 100%;
   min-width: 0;
   overflow: hidden;
@@ -145,6 +147,11 @@
   object-position: center 30%;
 }
 
+.project-visual--datoniks .project-visual__logo {
+  border-color: var(--blue-8);
+  background: var(--color-accent);
+}
+
 .project-card__body {
   display: grid;
   gap: 12px;
@@ -154,6 +161,7 @@
 .project-card__category,
 .project-card__title,
 .project-card__summary,
+.project-card__status,
 .project-card__duration {
   margin: 0;
 }
@@ -181,11 +189,29 @@
   line-height: 1.6;
 }
 
+.project-card__meta {
+  display: flex;
+  align-items: flex-start;
+  border-block: 1px solid var(--color-border);
+  padding: 9px 0;
+  gap: 8px 14px;
+  flex-wrap: wrap;
+}
+
+.project-card__status,
 .project-card__duration {
   color: var(--color-text);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
   line-height: 1.45;
+}
+
+.project-card__status {
+  flex: 1 1 15ch;
+}
+
+.project-card__duration {
+  color: var(--color-text-muted);
 }
 
 .project-card__metrics {
@@ -197,11 +223,11 @@
 }
 
 .project-card__metrics > li {
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
-  padding: 7px 10px;
+  border-radius: var(--radius-control);
+  padding: 9px 10px;
   background: var(--blue-2);
   color: var(--color-text);
   font-size: 0.8rem;
@@ -267,11 +293,6 @@
     align-content: start;
   }
 
-  .project-card__metrics > li {
-    width: auto;
-    border-radius: var(--radius-control);
-  }
-
   .project-card__open {
     align-self: end;
   }
@@ -279,11 +300,12 @@
 
 @media (min-width: 1024px) {
   .marketplace__grid {
-    gap: 32px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
   }
 
   .project-card__body {
-    padding: 30px;
+    padding: 22px;
   }
 
   .project-card__metrics {
@@ -292,6 +314,16 @@
 
   .project-card__summary {
     font-size: 0.92rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .marketplace__grid {
+    gap: 24px;
+  }
+
+  .project-card__body {
+    padding: 26px;
   }
 }
 
@@ -334,6 +366,11 @@
   .project-visual__product-frame,
   .project-visual__logo {
     transition: transform var(--motion-state) var(--motion-ease);
+  }
+
+  .project-visual--depth-active .project-visual__atmosphere,
+  .project-visual--depth-active .project-visual__product-frame,
+  .project-visual--depth-active .project-visual__logo {
     will-change: transform;
   }
 }
@@ -344,6 +381,7 @@
   .project-visual__product-frame,
   .project-visual__logo {
     transition: none;
+    will-change: auto;
   }
 
   .project-card:hover,
