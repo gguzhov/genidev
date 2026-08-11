@@ -4,9 +4,11 @@
 
 ## Среда
 
-- Codex In-app Browser, production preview Vite 6.4.2: `http://127.0.0.1:4173/`.
-- Viewport height: `900px`; ширины: `375`, `430`, `768`, `1024`, `1280`, `1440px`.
-- Проверка выполнялась на production build. В конце viewport override сброшен, browser session закрыта.
+- Функциональная приёмка выполнена в Codex In-app Browser на production preview Vite 6.4.2: `http://127.0.0.1:4173/`.
+- Перед повторной съёмкой evidence выполнена обязательная диагностика In-app Browser; список доступных browser sessions оказался пустым. Для повторной съёмки использован fallback: чистый временный профиль headless Chrome и прямой CDP.
+- CDP viewport: `900px` по высоте; ширины: `375`, `430`, `768`, `1024`, `1280`, `1440px`; `deviceScaleFactor: 1`.
+- Каждый из 30 кадров начинался с новой навигации. Скриншот снимался по полным DOM-границам конкретной секции, а fixed navigation скрывалась на non-hero кадрах, чтобы не появлялось stitching.
+- Проверка и повторная съёмка выполнялись на production build. Временные browser sessions и профиль закрыты после проверки.
 - Один Impeccable mechanical detector запущен после завершения UI по всем изменённым JSX/CSS: результат `[]`, P0/P1 нет. Повторный detector не запускался.
 
 ## Итог
@@ -33,6 +35,13 @@
 - History: Back закрывает DATONIKS, Forward открывает тот же route-backed case повторно — PASS.
 - DATONIKS PDF link: `/documents/datoniks-pitch-deck-public.pdf`, `_blank`, `noreferrer`; HTTP `200`, `application/pdf`, 17 страниц, `14 830 894` bytes — PASS.
 
+## Приватность DATONIKS PDF
+
+- Публичная страница 17 и исходный слайд 18 отдельно отрендерены в PNG через Poppler при `180dpi` и визуально проверены. `tesseract` в среде недоступен, поэтому OCR не заявляется.
+- На публичной странице 17 отсутствуют запрещённые телефон, email и юридический адрес. На исходном слайде 18 визуально присутствуют все три вида приватных данных.
+- Временные single-page PDF/PNG хранились только в `/tmp` и удалены после проверки; рендер исходного слайда 18 не добавлялся в репозиторий.
+- [`datoniks-pitch-deck-public.manifest.json`](../public/documents/datoniks-pitch-deck-public.manifest.json) фиксирует SHA-256 и page fingerprints. Regression подтверждает: публичные страницы строго совпадают с исходными страницами 1–17, публичный файл содержит 17 страниц, fingerprint исходного слайда 18 исключён.
+
 ## Reduced motion, console и network
 
 - `prefers-reduced-motion: reduce`: hero animations и barcode scan имеют `animation-name: none`; WorkSequence статичен; career `5/5` в финальном состоянии.
@@ -44,6 +53,41 @@
 
 В [`docs/design-evidence/marketplace-datoniks-final`](./design-evidence/marketplace-datoniks-final/) сохранено ровно 30 актуальных PNG: пять секций × шесть ширин. Имена: `<width>-01-hero.png` … `<width>-05-contact.png`.
 
-Один общий визуальный pass выполнен по шести составным лентам и ключевым исходным PNG. Перекрытий, обрезанного текста, случайных пустот и responsive-регрессий не найдено, поэтому отдельный fix pass не потребовался. Дополнительный цикл полировки не запускался.
+Автоматический manifest [`marketplace-datoniks-final-manifest.json`](./design-evidence/marketplace-datoniks-final-manifest.json) сверяет точное имя, DOM-заголовок, DPR, ожидаемую ширину и полную DOM-высоту каждого PNG. Результат: `30/30 PASS`.
 
-Ограничение: физические iPhone/iPad, Safari, настоящий notch/safe-area и экранная клавиатура не проверялись; QA выполнен в in-app Chromium с viewport/media emulation.
+| Filename | DOM heading | Dimensions |
+| --- | --- | ---: |
+| 375-01-hero.png | Разрабатываю цифровые и AI-продукты. | 375×1196 |
+| 375-02-problems.png | В чем могу быть полезен? | 375×1348 |
+| 375-03-career.png | От торговли и экономики — к цифровым продуктам | 375×1835 |
+| 375-04-projects.png | Маркетплейс моих разработок | 375×2643 |
+| 375-05-contact.png | Расскажите, что должно измениться. | 375×673 |
+| 430-01-hero.png | Разрабатываю цифровые и AI-продукты. | 430×1277 |
+| 430-02-problems.png | В чем могу быть полезен? | 430×1327 |
+| 430-03-career.png | От торговли и экономики — к цифровым продуктам | 430×1814 |
+| 430-04-projects.png | Маркетплейс моих разработок | 430×2692 |
+| 430-05-contact.png | Расскажите, что должно измениться. | 430×721 |
+| 768-01-hero.png | Разрабатываю цифровые и AI-продукты. | 768×832 |
+| 768-02-problems.png | В чем могу быть полезен? | 768×1203 |
+| 768-03-career.png | От торговли и экономики — к цифровым продуктам | 768×1606 |
+| 768-04-projects.png | Маркетплейс моих разработок | 768×2039 |
+| 768-05-contact.png | Расскажите, что должно измениться. | 768×682 |
+| 1024-01-hero.png | Разрабатываю цифровые и AI-продукты. | 1024×900 |
+| 1024-02-problems.png | В чем могу быть полезен? | 1024×1137 |
+| 1024-03-career.png | От торговли и экономики — к цифровым продуктам | 1024×1555 |
+| 1024-04-projects.png | Маркетплейс моих разработок | 1024×1236 |
+| 1024-05-contact.png | Расскажите, что должно измениться. | 1024×666 |
+| 1280-01-hero.png | Разрабатываю цифровые и AI-продукты. | 1280×900 |
+| 1280-02-problems.png | В чем могу быть полезен? | 1280×1179 |
+| 1280-03-career.png | От торговли и экономики — к цифровым продуктам | 1280×1637 |
+| 1280-04-projects.png | Маркетплейс моих разработок | 1280×1278 |
+| 1280-05-contact.png | Расскажите, что должно измениться. | 1280×725 |
+| 1440-01-hero.png | Разрабатываю цифровые и AI-продукты. | 1440×900 |
+| 1440-02-problems.png | В чем могу быть полезен? | 1440×1159 |
+| 1440-03-career.png | От торговли и экономики — к цифровым продуктам | 1440×1637 |
+| 1440-04-projects.png | Маркетплейс моих разработок | 1440×1278 |
+| 1440-05-contact.png | Расскажите, что должно измениться. | 1440×765 |
+
+Все 30 кадров визуально просмотрены через шесть воспроизводимых contact sheets в [`marketplace-datoniks-final-contact-sheets`](./design-evidence/marketplace-datoniks-final-contact-sheets/), по одной на ширину. Первый bounded visual pass обнаружил только дефекты процесса съёмки: незавершённый reveal карточек и наложение fixed navigation на non-hero clips. В единственном fix pass capture script дождался финального reveal и исключил navigation из таких кадров; после повторной съёмки все шесть contact sheets проверены без обрезки, неверного offset, stitching и отсутствующего контента. Дополнительный цикл визуальной полировки не запускался.
+
+Ограничение: физические iPhone/iPad, Safari, настоящий notch/safe-area и экранная клавиатура не проверялись; QA выполнен в Chromium с viewport/media emulation.

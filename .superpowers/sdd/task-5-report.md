@@ -42,3 +42,29 @@
 ## Защищённые файлы
 
 Пользовательские untracked `.npmrc`, `tmp/` и старые evidence-папки не изменялись.
+
+## Review revision — evidence и privacy
+
+### RED → GREEN
+
+- Добавлены `tests/marketplace-evidence-regression.test.mjs` и `tests/datoniks-public-deck-privacy.test.mjs`. RED: `0/2 PASS` из-за отсутствующих verifier scripts.
+- GREEN: `2/2 PASS`. Evidence regression проверяет точные 30 имён, шесть ширин, пять DOM-заголовков, `deviceScaleFactor: 1`, PNG signature и полную DOM-высоту. PDF regression фиксирует SHA-256/page fingerprints, совпадение публичной версии с исходными страницами 1–17 и исключение слайда 18.
+
+### Повторная съёмка
+
+- При обязательной диагностике Codex In-app Browser доступных sessions не оказалось. Использован заявленный fallback: clean-profile headless Chrome, production preview и raw CDP; зависимостей не добавлено.
+- Все ровно 30 tracked PNG в `docs/design-evidence/marketplace-datoniks-final/` заменены. Для каждой пары width/section выполнялась свежая навигация; section clip снимался при DPR=1 по абсолютным DOM-границам.
+- Manifest `docs/design-evidence/marketplace-datoniks-final-manifest.json` формирует воспроизводимую таблицу `filename → DOM heading → dimensions`; автоматическая проверка: `30/30 PASS`.
+- Созданы шесть contact sheets в `docs/design-evidence/marketplace-datoniks-final-contact-sheets/`. В bounded visual pass найдено два capture-only дефекта: незавершённый reveal project cards и fixed-nav stitching. Единственный fix pass добавил ожидание финального reveal и скрытие fixed navigation на non-hero captures. Повторная визуальная проверка всех шести лент: PASS.
+
+### DATONIKS privacy
+
+- Poppler-рендер публичной страницы 17 визуально не содержит телефон, email или юридический адрес; Poppler-рендер исходного слайда 18 визуально содержит все три вида приватных данных. OCR не заявляется: `tesseract` недоступен.
+- Single-page PDF/PNG создавались только во временной директории `/tmp` и удалены после просмотра. Исходный слайд 18 и его render не опубликованы.
+- `public/documents/datoniks-pitch-deck-public.manifest.json` хранит только безопасные hashes/page fingerprints и контракт страниц `1–17 included / 18 excluded`.
+
+### Повторные проверки
+
+- Targeted evidence/privacy regression: `2/2 PASS`.
+- Финальный `npm test && npm run build && git diff --check`: `164/164 PASS`, production build PASS; main JS `337.07 kB` (`111.33 kB` gzip), diff check empty.
+- Impeccable detector повторно не запускался, как требовал review.

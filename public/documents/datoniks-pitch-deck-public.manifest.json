@@ -1,0 +1,49 @@
+{
+  "sourceFilename": "Питч-дек_DATONIKS.pdf",
+  "sourceSha256": "b8d4b892de45891c980d5ff28df80d3476e83b4c5b2320cf81d72a163ffb1af1",
+  "sourcePageCount": 18,
+  "includedSourcePages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "excludedSourcePages": [
+    18
+  ],
+  "publicPath": "public/documents/datoniks-pitch-deck-public.pdf",
+  "publicSha256": "45756bb30e13679c7ddb23cfdd046859234ba3c7fc6346ea369c2902ccf213d1",
+  "publicPageCount": 17,
+  "publicPageFingerprints": [
+    "7f69a0d598c90ae1e76d87cb37aeb76ce96efc196eb08b8e508277bd7a20dd63",
+    "0e64bd689f33ae222383d98ec09d071f20c5d5f805925c1d7cbddd1693d2b1ef",
+    "f5f3b35fd08fb1f13aa467331f5ab5e5a344ede90afdf2e34ffad66c8cc5500e",
+    "2bb6a5ce70e73c0a2d0a54d7b1f7b8f66ce95bdaa9b1037b5f79dbc73a5bbbf4",
+    "23d04a910c239c815d7c3bee6309ef5e499700edcb6be8a5dcea7dabb486d8d5",
+    "7a67ce6b756d0e33476767cf3c6b90c9dc1c150100b9f4033685d20f50b2ccae",
+    "862dad51ea8f5cc5ff286292f0077bd20d20c3ea1d8d28faceeb53a780d8004e",
+    "37c844c5d997e51ce1e806be93a5910853baabf0b4776d46192a9cc0f8ecd159",
+    "d9281892c209419ce692e0417990cfc23633ec75b8f699f0a70956169d91190f",
+    "afb17c84336b92a73c0326229b359ee91ff99a41096dbdd8ded91b4b681d9365",
+    "82a72d4b76959947841c49b4d3acdbfc64116f95777c46adef5db55b0da3e06b",
+    "96a318a508ada2a8d7793a8e2090d2ee0474b3530d412efb1fcb9220cb5627d1",
+    "216296556428c0ee7ede4a47b5403d8d9d1481411aaeebc1c219ac0da014da7b",
+    "60e122e2749663e337d6f01f36ca8e328f822dca2e82467f8b8ad5c6bdbec5b2",
+    "c7508bbd2a0aa859158318a7086a409e97d75ffd8501a724019d90efb311022a",
+    "e9c2c6d3145eaab99b21c20dfcc2920309ffdc89ad94101f84a4f0a7cda21498",
+    "fba473db4cfdfb3e086f2d21b590932eb6ddb1aa3a8a850b1db552af68005c44"
+  ]
+}

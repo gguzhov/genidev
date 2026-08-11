@@ -1,0 +1,310 @@
+{
+  "capturedAt": "2026-08-11T10:43:16.804Z",
+  "browser": "Google Chrome clean-profile headless CDP fallback",
+  "siteUrl": "http://127.0.0.1:4173",
+  "viewportHeight": 900,
+  "deviceScaleFactor": 1,
+  "evidenceDirectory": "marketplace-datoniks-final",
+  "entries": [
+    {
+      "filename": "375-01-hero.png",
+      "selector": ".hero",
+      "headingSelector": "#hero-title",
+      "heading": "Разрабатываю цифровые и AI-продукты.",
+      "width": 375,
+      "domHeight": 1195.859375,
+      "pngWidth": 375,
+      "pngHeight": 1196
+    },
+    {
+      "filename": "375-02-problems.png",
+      "selector": "#problems",
+      "headingSelector": "#problems h2",
+      "heading": "В чем могу быть полезен?",
+      "width": 375,
+      "domHeight": 1347.1875,
+      "pngWidth": 375,
+      "pngHeight": 1348
+    },
+    {
+      "filename": "375-03-career.png",
+      "selector": "#career",
+      "headingSelector": "#career h2",
+      "heading": "От торговли и экономики — к цифровым продуктам",
+      "width": 375,
+      "domHeight": 1834.671875,
+      "pngWidth": 375,
+      "pngHeight": 1835
+    },
+    {
+      "filename": "375-04-projects.png",
+      "selector": "#projects",
+      "headingSelector": "#projects h2",
+      "heading": "Маркетплейс моих разработок",
+      "width": 375,
+      "domHeight": 2642.484375,
+      "pngWidth": 375,
+      "pngHeight": 2643
+    },
+    {
+      "filename": "375-05-contact.png",
+      "selector": "#contact",
+      "headingSelector": "#contact h2",
+      "heading": "Расскажите, что должно измениться.",
+      "width": 375,
+      "domHeight": 672.296875,
+      "pngWidth": 375,
+      "pngHeight": 673
+    },
+    {
+      "filename": "430-01-hero.png",
+      "selector": ".hero",
+      "headingSelector": "#hero-title",
+      "heading": "Разрабатываю цифровые и AI-продукты.",
+      "width": 430,
+      "domHeight": 1276.375,
+      "pngWidth": 430,
+      "pngHeight": 1277
+    },
+    {
+      "filename": "430-02-problems.png",
+      "selector": "#problems",
+      "headingSelector": "#problems h2",
+      "heading": "В чем могу быть полезен?",
+      "width": 430,
+      "domHeight": 1326.21875,
+      "pngWidth": 430,
+      "pngHeight": 1327
+    },
+    {
+      "filename": "430-03-career.png",
+      "selector": "#career",
+      "headingSelector": "#career h2",
+      "heading": "От торговли и экономики — к цифровым продуктам",
+      "width": 430,
+      "domHeight": 1813.75,
+      "pngWidth": 430,
+      "pngHeight": 1814
+    },
+    {
+      "filename": "430-04-projects.png",
+      "selector": "#projects",
+      "headingSelector": "#projects h2",
+      "heading": "Маркетплейс моих разработок",
+      "width": 430,
+      "domHeight": 2691.078125,
+      "pngWidth": 430,
+      "pngHeight": 2692
+    },
+    {
+      "filename": "430-05-contact.png",
+      "selector": "#contact",
+      "headingSelector": "#contact h2",
+      "heading": "Расскажите, что должно измениться.",
+      "width": 430,
+      "domHeight": 720.015625,
+      "pngWidth": 430,
+      "pngHeight": 721
+    },
+    {
+      "filename": "768-01-hero.png",
+      "selector": ".hero",
+      "headingSelector": "#hero-title",
+      "heading": "Разрабатываю цифровые и AI-продукты.",
+      "width": 768,
+      "domHeight": 831.765625,
+      "pngWidth": 768,
+      "pngHeight": 832
+    },
+    {
+      "filename": "768-02-problems.png",
+      "selector": "#problems",
+      "headingSelector": "#problems h2",
+      "heading": "В чем могу быть полезен?",
+      "width": 768,
+      "domHeight": 1202.4375,
+      "pngWidth": 768,
+      "pngHeight": 1203
+    },
+    {
+      "filename": "768-03-career.png",
+      "selector": "#career",
+      "headingSelector": "#career h2",
+      "heading": "От торговли и экономики — к цифровым продуктам",
+      "width": 768,
+      "domHeight": 1606,
+      "pngWidth": 768,
+      "pngHeight": 1606
+    },
+    {
+      "filename": "768-04-projects.png",
+      "selector": "#projects",
+      "headingSelector": "#projects h2",
+      "heading": "Маркетплейс моих разработок",
+      "width": 768,
+      "domHeight": 2038.53125,
+      "pngWidth": 768,
+      "pngHeight": 2039
+    },
+    {
+      "filename": "768-05-contact.png",
+      "selector": "#contact",
+      "headingSelector": "#contact h2",
+      "heading": "Расскажите, что должно измениться.",
+      "width": 768,
+      "domHeight": 681.0625,
+      "pngWidth": 768,
+      "pngHeight": 682
+    },
+    {
+      "filename": "1024-01-hero.png",
+      "selector": ".hero",
+      "headingSelector": "#hero-title",
+      "heading": "Разрабатываю цифровые и AI-продукты.",
+      "width": 1024,
+      "domHeight": 900,
+      "pngWidth": 1024,
+      "pngHeight": 900
+    },
+    {
+      "filename": "1024-02-problems.png",
+      "selector": "#problems",
+      "headingSelector": "#problems h2",
+      "heading": "В чем могу быть полезен?",
+      "width": 1024,
+      "domHeight": 1136.59375,
+      "pngWidth": 1024,
+      "pngHeight": 1137
+    },
+    {
+      "filename": "1024-03-career.png",
+      "selector": "#career",
+      "headingSelector": "#career h2",
+      "heading": "От торговли и экономики — к цифровым продуктам",
+      "width": 1024,
+      "domHeight": 1554.9375,
+      "pngWidth": 1024,
+      "pngHeight": 1555
+    },
+    {
+      "filename": "1024-04-projects.png",
+      "selector": "#projects",
+      "headingSelector": "#projects h2",
+      "heading": "Маркетплейс моих разработок",
+      "width": 1024,
+      "domHeight": 1235.578125,
+      "pngWidth": 1024,
+      "pngHeight": 1236
+    },
+    {
+      "filename": "1024-05-contact.png",
+      "selector": "#contact",
+      "headingSelector": "#contact h2",
+      "heading": "Расскажите, что должно измениться.",
+      "width": 1024,
+      "domHeight": 666,
+      "pngWidth": 1024,
+      "pngHeight": 666
+    },
+    {
+      "filename": "1280-01-hero.png",
+      "selector": ".hero",
+      "headingSelector": "#hero-title",
+      "heading": "Разрабатываю цифровые и AI-продукты.",
+      "width": 1280,
+      "domHeight": 900,
+      "pngWidth": 1280,
+      "pngHeight": 900
+    },
+    {
+      "filename": "1280-02-problems.png",
+      "selector": "#problems",
+      "headingSelector": "#problems h2",
+      "heading": "В чем могу быть полезен?",
+      "width": 1280,
+      "domHeight": 1178.125,
+      "pngWidth": 1280,
+      "pngHeight": 1179
+    },
+    {
+      "filename": "1280-03-career.png",
+      "selector": "#career",
+      "headingSelector": "#career h2",
+      "heading": "От торговли и экономики — к цифровым продуктам",
+      "width": 1280,
+      "domHeight": 1636.125,
+      "pngWidth": 1280,
+      "pngHeight": 1637
+    },
+    {
+      "filename": "1280-04-projects.png",
+      "selector": "#projects",
+      "headingSelector": "#projects h2",
+      "heading": "Маркетплейс моих разработок",
+      "width": 1280,
+      "domHeight": 1277.34375,
+      "pngWidth": 1280,
+      "pngHeight": 1278
+    },
+    {
+      "filename": "1280-05-contact.png",
+      "selector": "#contact",
+      "headingSelector": "#contact h2",
+      "heading": "Расскажите, что должно измениться.",
+      "width": 1280,
+      "domHeight": 724.640625,
+      "pngWidth": 1280,
+      "pngHeight": 725
+    },
+    {
+      "filename": "1440-01-hero.png",
+      "selector": ".hero",
+      "headingSelector": "#hero-title",
+      "heading": "Разрабатываю цифровые и AI-продукты.",
+      "width": 1440,
+      "domHeight": 900,
+      "pngWidth": 1440,
+      "pngHeight": 900
+    },
+    {
+      "filename": "1440-02-problems.png",
+      "selector": "#problems",
+      "headingSelector": "#problems h2",
+      "heading": "В чем могу быть полезен?",
+      "width": 1440,
+      "domHeight": 1158.53125,
+      "pngWidth": 1440,
+      "pngHeight": 1159
+    },
+    {
+      "filename": "1440-03-career.png",
+      "selector": "#career",
+      "headingSelector": "#career h2",
+      "heading": "От торговли и экономики — к цифровым продуктам",
+      "width": 1440,
+      "domHeight": 1636.125,
+      "pngWidth": 1440,
+      "pngHeight": 1637
+    },
+    {
+      "filename": "1440-04-projects.png",
+      "selector": "#projects",
+      "headingSelector": "#projects h2",
+      "heading": "Маркетплейс моих разработок",
+      "width": 1440,
+      "domHeight": 1277.859375,
+      "pngWidth": 1440,
+      "pngHeight": 1278
+    },
+    {
+      "filename": "1440-05-contact.png",
+      "selector": "#contact",
+      "headingSelector": "#contact h2",
+      "heading": "Расскажите, что должно измениться.",
+      "width": 1440,
+      "domHeight": 764.84375,
+      "pngWidth": 1440,
+      "pngHeight": 765
+    }
+  ]
+}
