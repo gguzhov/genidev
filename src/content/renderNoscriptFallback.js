@@ -22,10 +22,13 @@ const escapeHtml = (value) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
-const renderLink = ({ href, target, rel, label }) =>
-  `<a class="noscript-site__cta" href="${escapeHtml(href)}" target="${escapeHtml(
-    target,
-  )}" rel="${escapeHtml(rel)}">${escapeHtml(label)}</a>`;
+const renderLink = ({ href, target, rel, label }) => {
+  const targetAttribute = target ? ` target="${escapeHtml(target)}"` : "";
+  const relAttribute = rel ? ` rel="${escapeHtml(rel)}"` : "";
+  return `<a class="noscript-site__cta" href="${escapeHtml(
+    href,
+  )}"${targetAttribute}${relAttribute}>${escapeHtml(label)}</a>`;
+};
 
 const renderItems = (items) => items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
@@ -99,8 +102,16 @@ export function renderNoscriptFallback(content = defaultContent) {
           (project) => `<article data-noscript-project>
         <p>${escapeHtml(project.category)} · ${escapeHtml(project.duration)}</p>
         <h3>${escapeHtml(project.title)}</h3>
+        ${project.status ? `<p><strong>${escapeHtml(project.status)}</strong></p>` : ""}
         <p>${escapeHtml(project.summary)}</p>
         <ul>${renderItems(project.metrics)}</ul>
+        ${
+          project.modelMetrics?.length
+            ? `<p><strong>Расчётные показатели — по финансовой модели</strong></p>
+        <ul>${renderItems(project.modelMetrics)}</ul>`
+            : ""
+        }
+        ${project.externalActions?.map(renderLink).join("") ?? ""}
       </article>`,
         )
         .join("")}

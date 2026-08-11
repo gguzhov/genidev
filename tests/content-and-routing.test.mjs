@@ -32,13 +32,17 @@ test("publishes the approved positioning and four business problems", () => {
 
 test("keeps the approved career sequence", () => {
   assert.deepEqual(career.map(({ year }) => year), ["2021–2024", "2024", "2025", "2025", "2026"]);
-  assert.match(career[1].title, /модульных дата-центров/i);
+  assert.match(career[1].title, /модульные дата-центры/i);
   assert.match(career[2].body, /Лондонским университетом/i);
   assert.match(career[3].title, /ГКБ №15/i);
 });
 
 test("ships complete project cases without a role field", () => {
-  assert.deepEqual(projects.map(({ slug }) => slug), ["ostrov-zdoroviya", "ilonmask-vpn"]);
+  assert.deepEqual(projects.map(({ slug }) => slug), [
+    "ostrov-zdoroviya",
+    "ilonmask-vpn",
+    "datoniks",
+  ]);
   for (const project of projects) {
     assert.ok(project.problem.length > 80);
     assert.ok(project.actions.length >= 5);

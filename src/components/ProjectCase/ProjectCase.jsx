@@ -14,6 +14,34 @@ function Paragraphs({ text }) {
   return text.split("\n\n").map((paragraph) => <p key={paragraph}>{paragraph}</p>);
 }
 
+function ExternalActions({ actions }) {
+  if (!actions?.length) return null;
+
+  return (
+    <div className="project-case__external-actions" aria-label="Действия проекта">
+      {actions.map((action, index) => (
+        <a
+          className={`button project-case__external-action${
+            index === 0 ? " button--primary" : ""
+          }`}
+          href={action.href}
+          target={action.target}
+          rel={action.rel}
+          key={`${action.label}-${action.href}`}
+        >
+          {action.label}
+          <HugeiconsIcon
+            icon={ArrowUpRight01Icon}
+            size={20}
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </a>
+      ))}
+    </div>
+  );
+}
+
 export default function ProjectCase({ project, projects, onClose, onOpenProject }) {
   const dialogRef = useRef(null);
   const surfaceRef = useRef(null);
@@ -90,8 +118,10 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
           <div className="project-case__intro">
             <p className="project-case__eyebrow">{project.category}</p>
             <h2 className="project-case__title" id="project-title">{project.title}</h2>
+            {project.status && <p className="project-case__status">{project.status}</p>}
             <p className="project-case__duration">{project.duration}</p>
             <p className="project-case__summary">{project.summary}</p>
+            <ExternalActions actions={project.externalActions} />
           </div>
           <div
             className={`project-case__cover${coverFailed ? " has-image-fallback" : ""}`}
@@ -142,6 +172,23 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
           </div>
         </section>
 
+        {project.modelMetrics?.length > 0 && (
+          <section
+            className="project-case__section"
+            aria-labelledby="project-model-metrics-title"
+          >
+            <h2 id="project-model-metrics-title">Расчётные показатели</h2>
+            <div className="project-case__model-metrics">
+              <p>Прогнозные значения по финансовой модели, а не достигнутые результаты.</p>
+              <ul className="project-case__metrics" aria-label="Показатели по финансовой модели">
+                {project.modelMetrics.map((metric) => (
+                  <li key={metric}><strong>{metric}</strong></li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
         {project.gallery.length > 0 && (
           <section className="project-case__gallery-section" aria-labelledby="project-gallery-title">
             <h2 id="project-gallery-title">Галерея</h2>
@@ -179,17 +226,19 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
           </ul>
         </section>
 
-        <div className="project-case__product-link-wrap">
-          <a
-            className="button button--primary project-case__product-link"
-            href={project.url}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Открыть публичный продукт
-            <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
-          </a>
-        </div>
+        {project.url && (
+          <div className="project-case__product-link-wrap">
+            <a
+              className="button button--primary project-case__product-link"
+              href={project.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Открыть публичный продукт
+              <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+            </a>
+          </div>
+        )}
 
         {otherProjects.length > 0 && (
           <section className="project-case__others" aria-labelledby="other-projects-title">

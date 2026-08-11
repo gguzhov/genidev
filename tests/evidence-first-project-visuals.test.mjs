@@ -16,13 +16,24 @@ const expectedMetrics = {
     "Оплата и подключение без администратора",
     "Автосинхронизация оплаты и VPN-доступа",
   ],
+  datoniks: [
+    "Прототип реализован в Иркутске",
+    "Патент на систему охлаждения",
+    "Бизнес-план и финансовая модель",
+    "87 млн ₽ — инвестиционный запрос",
+  ],
 };
 
 test("publishes four strongest outcomes and hybrid visual assets", async () => {
   for (const project of projects) {
     assert.deepEqual(project.metrics, expectedMetrics[project.slug]);
-    assert.match(project.visual.background, /^\/projects\/ice\/.+\.webp$/);
-    assert.match(project.visual.logo, /^\/projects\/brands\//);
+    if (project.slug === "datoniks") {
+      assert.equal(project.visual.background, "/projects/datoniks/datoniks-slide-10.webp");
+      assert.equal(project.visual.logo, "/projects/datoniks/datoniks-logo.webp");
+    } else {
+      assert.match(project.visual.background, /^\/projects\/ice\/.+\.webp$/);
+      assert.match(project.visual.logo, /^\/projects\/brands\//);
+    }
     await access(`public${project.visual.background}`);
     await access(`public${project.visual.logo}`);
   }

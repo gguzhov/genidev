@@ -28,6 +28,11 @@ test("publishes the real intrinsic dimensions for every project cover", () => {
       coverWidth: 1200,
       coverHeight: 630,
     },
+    datoniks: {
+      cover: "/projects/datoniks/datoniks-slide-03.webp",
+      coverWidth: 1920,
+      coverHeight: 1080,
+    },
   });
 });
 
