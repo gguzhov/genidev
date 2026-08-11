@@ -53,7 +53,7 @@ export default function ProblemSelector({ problems, sectionId }) {
       <div className="section__inner">
         <header className="section__heading">
           <p className="section__eyebrow">С чем я могу помочь</p>
-          <h2 id={headingId}>От запуска продукта до AI-автоматизации</h2>
+          <h2 id={headingId}>От бизнес-проблемы до измеримого результата</h2>
         </header>
 
         <div className="problem-selector">
