@@ -1,10 +1,17 @@
 {
-  "capturedAt": "2026-08-11T10:43:16.804Z",
+  "capturedAt": "2026-08-11T11:07:49.104Z",
   "browser": "Google Chrome clean-profile headless CDP fallback",
   "siteUrl": "http://127.0.0.1:4173",
   "viewportHeight": 900,
   "deviceScaleFactor": 1,
   "evidenceDirectory": "marketplace-datoniks-final",
+  "contactSheetDirectory": "marketplace-datoniks-final-contact-sheets",
+  "captureReadiness": {
+    "workSequenceFinalNodes": 6,
+    "problemOutcomesFinalVisible": 4,
+    "projectCardsFinalVisible": 3,
+    "projectImagesDecoded": 9
+  },
   "entries": [
     {
       "filename": "375-01-hero.png",
@@ -14,7 +21,10 @@
       "width": 375,
       "domHeight": 1195.859375,
       "pngWidth": 375,
-      "pngHeight": 1196
+      "pngHeight": 1196,
+      "readiness": {
+        "workSequenceFinalNodes": 6
+      }
     },
     {
       "filename": "375-02-problems.png",
@@ -24,7 +34,10 @@
       "width": 375,
       "domHeight": 1347.1875,
       "pngWidth": 375,
-      "pngHeight": 1348
+      "pngHeight": 1348,
+      "readiness": {
+        "problemOutcomesFinalVisible": 4
+      }
     },
     {
       "filename": "375-03-career.png",
@@ -34,7 +47,8 @@
       "width": 375,
       "domHeight": 1834.671875,
       "pngWidth": 375,
-      "pngHeight": 1835
+      "pngHeight": 1835,
+      "readiness": {}
     },
     {
       "filename": "375-04-projects.png",
@@ -44,7 +58,11 @@
       "width": 375,
       "domHeight": 2642.484375,
       "pngWidth": 375,
-      "pngHeight": 2643
+      "pngHeight": 2643,
+      "readiness": {
+        "projectCardsFinalVisible": 3,
+        "projectImagesDecoded": 9
+      }
     },
     {
       "filename": "375-05-contact.png",
@@ -54,7 +72,8 @@
       "width": 375,
       "domHeight": 672.296875,
       "pngWidth": 375,
-      "pngHeight": 673
+      "pngHeight": 673,
+      "readiness": {}
     },
     {
       "filename": "430-01-hero.png",
@@ -64,7 +83,10 @@
       "width": 430,
       "domHeight": 1276.375,
       "pngWidth": 430,
-      "pngHeight": 1277
+      "pngHeight": 1277,
+      "readiness": {
+        "workSequenceFinalNodes": 6
+      }
     },
     {
       "filename": "430-02-problems.png",
@@ -74,7 +96,10 @@
       "width": 430,
       "domHeight": 1326.21875,
       "pngWidth": 430,
-      "pngHeight": 1327
+      "pngHeight": 1327,
+      "readiness": {
+        "problemOutcomesFinalVisible": 4
+      }
     },
     {
       "filename": "430-03-career.png",
@@ -84,7 +109,8 @@
       "width": 430,
       "domHeight": 1813.75,
       "pngWidth": 430,
-      "pngHeight": 1814
+      "pngHeight": 1814,
+      "readiness": {}
     },
     {
       "filename": "430-04-projects.png",
@@ -94,7 +120,11 @@
       "width": 430,
       "domHeight": 2691.078125,
       "pngWidth": 430,
-      "pngHeight": 2692
+      "pngHeight": 2692,
+      "readiness": {
+        "projectCardsFinalVisible": 3,
+        "projectImagesDecoded": 9
+      }
     },
     {
       "filename": "430-05-contact.png",
@@ -104,7 +134,8 @@
       "width": 430,
       "domHeight": 720.015625,
       "pngWidth": 430,
-      "pngHeight": 721
+      "pngHeight": 721,
+      "readiness": {}
     },
     {
       "filename": "768-01-hero.png",
@@ -114,7 +145,10 @@
       "width": 768,
       "domHeight": 831.765625,
       "pngWidth": 768,
-      "pngHeight": 832
+      "pngHeight": 832,
+      "readiness": {
+        "workSequenceFinalNodes": 6
+      }
     },
     {
       "filename": "768-02-problems.png",
@@ -124,7 +158,10 @@
       "width": 768,
       "domHeight": 1202.4375,
       "pngWidth": 768,
-      "pngHeight": 1203
+      "pngHeight": 1203,
+      "readiness": {
+        "problemOutcomesFinalVisible": 4
+      }
     },
     {
       "filename": "768-03-career.png",
@@ -134,7 +171,8 @@
       "width": 768,
       "domHeight": 1606,
       "pngWidth": 768,
-      "pngHeight": 1606
+      "pngHeight": 1606,
+      "readiness": {}
     },
     {
       "filename": "768-04-projects.png",
@@ -144,7 +182,11 @@
       "width": 768,
       "domHeight": 2038.53125,
       "pngWidth": 768,
-      "pngHeight": 2039
+      "pngHeight": 2039,
+      "readiness": {
+        "projectCardsFinalVisible": 3,
+        "projectImagesDecoded": 9
+      }
     },
     {
       "filename": "768-05-contact.png",
@@ -154,7 +196,8 @@
       "width": 768,
       "domHeight": 681.0625,
       "pngWidth": 768,
-      "pngHeight": 682
+      "pngHeight": 682,
+      "readiness": {}
     },
     {
       "filename": "1024-01-hero.png",
@@ -164,7 +207,10 @@
       "width": 1024,
       "domHeight": 900,
       "pngWidth": 1024,
-      "pngHeight": 900
+      "pngHeight": 900,
+      "readiness": {
+        "workSequenceFinalNodes": 6
+      }
     },
     {
       "filename": "1024-02-problems.png",
@@ -174,7 +220,10 @@
       "width": 1024,
       "domHeight": 1136.59375,
       "pngWidth": 1024,
-      "pngHeight": 1137
+      "pngHeight": 1137,
+      "readiness": {
+        "problemOutcomesFinalVisible": 4
+      }
     },
     {
       "filename": "1024-03-career.png",
@@ -184,7 +233,8 @@
       "width": 1024,
       "domHeight": 1554.9375,
       "pngWidth": 1024,
-      "pngHeight": 1555
+      "pngHeight": 1555,
+      "readiness": {}
     },
     {
       "filename": "1024-04-projects.png",
@@ -194,7 +244,11 @@
       "width": 1024,
       "domHeight": 1235.578125,
       "pngWidth": 1024,
-      "pngHeight": 1236
+      "pngHeight": 1236,
+      "readiness": {
+        "projectCardsFinalVisible": 3,
+        "projectImagesDecoded": 9
+      }
     },
     {
       "filename": "1024-05-contact.png",
@@ -204,7 +258,8 @@
       "width": 1024,
       "domHeight": 666,
       "pngWidth": 1024,
-      "pngHeight": 666
+      "pngHeight": 666,
+      "readiness": {}
     },
     {
       "filename": "1280-01-hero.png",
@@ -214,7 +269,10 @@
       "width": 1280,
       "domHeight": 900,
       "pngWidth": 1280,
-      "pngHeight": 900
+      "pngHeight": 900,
+      "readiness": {
+        "workSequenceFinalNodes": 6
+      }
     },
     {
       "filename": "1280-02-problems.png",
@@ -224,7 +282,10 @@
       "width": 1280,
       "domHeight": 1178.125,
       "pngWidth": 1280,
-      "pngHeight": 1179
+      "pngHeight": 1179,
+      "readiness": {
+        "problemOutcomesFinalVisible": 4
+      }
     },
     {
       "filename": "1280-03-career.png",
@@ -234,7 +295,8 @@
       "width": 1280,
       "domHeight": 1636.125,
       "pngWidth": 1280,
-      "pngHeight": 1637
+      "pngHeight": 1637,
+      "readiness": {}
     },
     {
       "filename": "1280-04-projects.png",
@@ -244,7 +306,11 @@
       "width": 1280,
       "domHeight": 1277.34375,
       "pngWidth": 1280,
-      "pngHeight": 1278
+      "pngHeight": 1278,
+      "readiness": {
+        "projectCardsFinalVisible": 3,
+        "projectImagesDecoded": 9
+      }
     },
     {
       "filename": "1280-05-contact.png",
@@ -254,7 +320,8 @@
       "width": 1280,
       "domHeight": 724.640625,
       "pngWidth": 1280,
-      "pngHeight": 725
+      "pngHeight": 725,
+      "readiness": {}
     },
     {
       "filename": "1440-01-hero.png",
@@ -264,7 +331,10 @@
       "width": 1440,
       "domHeight": 900,
       "pngWidth": 1440,
-      "pngHeight": 900
+      "pngHeight": 900,
+      "readiness": {
+        "workSequenceFinalNodes": 6
+      }
     },
     {
       "filename": "1440-02-problems.png",
@@ -274,7 +344,10 @@
       "width": 1440,
       "domHeight": 1158.53125,
       "pngWidth": 1440,
-      "pngHeight": 1159
+      "pngHeight": 1159,
+      "readiness": {
+        "problemOutcomesFinalVisible": 4
+      }
     },
     {
       "filename": "1440-03-career.png",
@@ -284,7 +357,8 @@
       "width": 1440,
       "domHeight": 1636.125,
       "pngWidth": 1440,
-      "pngHeight": 1637
+      "pngHeight": 1637,
+      "readiness": {}
     },
     {
       "filename": "1440-04-projects.png",
@@ -294,7 +368,11 @@
       "width": 1440,
       "domHeight": 1277.859375,
       "pngWidth": 1440,
-      "pngHeight": 1278
+      "pngHeight": 1278,
+      "readiness": {
+        "projectCardsFinalVisible": 3,
+        "projectImagesDecoded": 9
+      }
     },
     {
       "filename": "1440-05-contact.png",
@@ -304,7 +382,88 @@
       "width": 1440,
       "domHeight": 764.84375,
       "pngWidth": 1440,
-      "pngHeight": 765
+      "pngHeight": 765,
+      "readiness": {}
+    }
+  ],
+  "contactSheets": [
+    {
+      "filename": "375-all-sections.png",
+      "width": 375,
+      "sourceFiles": [
+        "375-01-hero.png",
+        "375-02-problems.png",
+        "375-03-career.png",
+        "375-04-projects.png",
+        "375-05-contact.png"
+      ],
+      "pngWidth": 375,
+      "pngHeight": 7695
+    },
+    {
+      "filename": "430-all-sections.png",
+      "width": 430,
+      "sourceFiles": [
+        "430-01-hero.png",
+        "430-02-problems.png",
+        "430-03-career.png",
+        "430-04-projects.png",
+        "430-05-contact.png"
+      ],
+      "pngWidth": 430,
+      "pngHeight": 7831
+    },
+    {
+      "filename": "768-all-sections.png",
+      "width": 768,
+      "sourceFiles": [
+        "768-01-hero.png",
+        "768-02-problems.png",
+        "768-03-career.png",
+        "768-04-projects.png",
+        "768-05-contact.png"
+      ],
+      "pngWidth": 768,
+      "pngHeight": 6362
+    },
+    {
+      "filename": "1024-all-sections.png",
+      "width": 1024,
+      "sourceFiles": [
+        "1024-01-hero.png",
+        "1024-02-problems.png",
+        "1024-03-career.png",
+        "1024-04-projects.png",
+        "1024-05-contact.png"
+      ],
+      "pngWidth": 1024,
+      "pngHeight": 5494
+    },
+    {
+      "filename": "1280-all-sections.png",
+      "width": 1280,
+      "sourceFiles": [
+        "1280-01-hero.png",
+        "1280-02-problems.png",
+        "1280-03-career.png",
+        "1280-04-projects.png",
+        "1280-05-contact.png"
+      ],
+      "pngWidth": 1280,
+      "pngHeight": 5719
+    },
+    {
+      "filename": "1440-all-sections.png",
+      "width": 1440,
+      "sourceFiles": [
+        "1440-01-hero.png",
+        "1440-02-problems.png",
+        "1440-03-career.png",
+        "1440-04-projects.png",
+        "1440-05-contact.png"
+      ],
+      "pngWidth": 1440,
+      "pngHeight": 5739
     }
   ]
 }

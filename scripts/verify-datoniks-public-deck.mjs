@@ -85,6 +85,7 @@ export function createDeckManifest({ sourcePath, publicPath, manifestPath }) {
     sourcePageCount: source.pageCount,
     includedSourcePages: Array.from({ length: 17 }, (_, index) => index + 1),
     excludedSourcePages: [18],
+    excludedSourcePageFingerprints: [source.pageFingerprints[17]],
     publicPath,
     publicSha256: sha256File(publicPath),
     publicPageCount: published.pageCount,
@@ -109,6 +110,19 @@ export function verifyDeckAgainstSource({ manifestPath, sourcePath }) {
   }
   if (published.pageFingerprints.includes(source.pageFingerprints[17])) {
     errors.push("private source slide 18 is present in the public deck");
+  }
+  if (
+    JSON.stringify(manifest.excludedSourcePageFingerprints) !==
+    JSON.stringify([source.pageFingerprints[17]])
+  ) {
+    errors.push("excluded source page fingerprint changed");
+  }
+  if (
+    manifest.excludedSourcePageFingerprints?.some((fingerprint) =>
+      published.pageFingerprints.includes(fingerprint),
+    )
+  ) {
+    errors.push("durable excluded-page fingerprint is present in the public deck");
   }
   if (JSON.stringify(published.pageFingerprints) !== JSON.stringify(manifest.publicPageFingerprints)) {
     errors.push("public page fingerprints changed");

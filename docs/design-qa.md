@@ -40,7 +40,7 @@
 - Публичная страница 17 и исходный слайд 18 отдельно отрендерены в PNG через Poppler при `180dpi` и визуально проверены. `tesseract` в среде недоступен, поэтому OCR не заявляется.
 - На публичной странице 17 отсутствуют запрещённые телефон, email и юридический адрес. На исходном слайде 18 визуально присутствуют все три вида приватных данных.
 - Временные single-page PDF/PNG хранились только в `/tmp` и удалены после проверки; рендер исходного слайда 18 не добавлялся в репозиторий.
-- [`datoniks-pitch-deck-public.manifest.json`](../public/documents/datoniks-pitch-deck-public.manifest.json) фиксирует SHA-256 и page fingerprints. Regression подтверждает: публичные страницы строго совпадают с исходными страницами 1–17, публичный файл содержит 17 страниц, fingerprint исходного слайда 18 исключён.
+- [`datoniks-pitch-deck-public.manifest.json`](../public/documents/datoniks-pitch-deck-public.manifest.json) фиксирует SHA-256, fingerprints публичных страниц и durable fingerprint исключённого исходного слайда 18. Regression подтверждает: публичные страницы строго совпадают с исходными страницами 1–17, публичный файл содержит 17 страниц, fingerprint исходного слайда 18 отсутствует в публичном PDF. При недоступном source тест не делает тихий ранний выход: сохраняется проверка durable fingerprint с явной diagnostic-записью.
 
 ## Reduced motion, console и network
 
@@ -53,7 +53,7 @@
 
 В [`docs/design-evidence/marketplace-datoniks-final`](./design-evidence/marketplace-datoniks-final/) сохранено ровно 30 актуальных PNG: пять секций × шесть ширин. Имена: `<width>-01-hero.png` … `<width>-05-contact.png`.
 
-Автоматический manifest [`marketplace-datoniks-final-manifest.json`](./design-evidence/marketplace-datoniks-final-manifest.json) сверяет точное имя, DOM-заголовок, DPR, ожидаемую ширину и полную DOM-высоту каждого PNG. Результат: `30/30 PASS`.
+Автоматический manifest [`marketplace-datoniks-final-manifest.json`](./design-evidence/marketplace-datoniks-final-manifest.json) сверяет точное имя, DOM-заголовок, DPR, ожидаемую ширину и полную DOM-высоту каждого PNG. Дополнительный readiness-контракт для каждой ширины фиксирует `6/6` финальных узлов WorkSequence, `4/4` полностью видимых outcomes, `3/3` финальных project cards и `9/9` загруженных и декодированных project images. Verifier также проверяет точный состав, source files и суммарные размеры всех шести contact sheets. Результат: `30/30 PNG + 6/6 contact sheets PASS`.
 
 | Filename | DOM heading | Dimensions |
 | --- | --- | ---: |
@@ -89,5 +89,7 @@
 | 1440-05-contact.png | Расскажите, что должно измениться. | 1440×765 |
 
 Все 30 кадров визуально просмотрены через шесть воспроизводимых contact sheets в [`marketplace-datoniks-final-contact-sheets`](./design-evidence/marketplace-datoniks-final-contact-sheets/), по одной на ширину. Первый bounded visual pass обнаружил только дефекты процесса съёмки: незавершённый reveal карточек и наложение fixed navigation на non-hero clips. В единственном fix pass capture script дождался финального reveal и исключил navigation из таких кадров; после повторной съёмки все шесть contact sheets проверены без обрезки, неверного offset, stitching и отсутствующего контента. Дополнительный цикл визуальной полировки не запускался.
+
+Review readiness revision пересняла матрицу после более строгой подготовки DOM: hero прокручивается к WorkSequence и ждёт финального состояния всех шести узлов; problem capture ждёт финальные стили четырёх outcomes; project capture последовательно активирует lazy-loading, ждёт финал трёх карточек и вызывает `decode()` у всех девяти изображений. Перед clip smooth scroll принудительно отключается и проверяется `scrollY === 0`, поэтому fixed navigation не фиксируется на промежуточном offset. Новые шесть contact sheets визуально проверены; blank images, частичные reveal и stitching отсутствуют.
 
 Ограничение: физические iPhone/iPad, Safari, настоящий notch/safe-area и экранная клавиатура не проверялись; QA выполнен в Chromium с viewport/media emulation.

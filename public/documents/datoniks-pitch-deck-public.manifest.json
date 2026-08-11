@@ -24,6 +24,9 @@
   "excludedSourcePages": [
     18
   ],
+  "excludedSourcePageFingerprints": [
+    "1df106246354690181e28711abda15f70131abcab9659a33a754fa07a5d8a448"
+  ],
   "publicPath": "public/documents/datoniks-pitch-deck-public.pdf",
   "publicSha256": "45756bb30e13679c7ddb23cfdd046859234ba3c7fc6346ea369c2902ccf213d1",
   "publicPageCount": 17,

@@ -68,3 +68,28 @@
 - Targeted evidence/privacy regression: `2/2 PASS`.
 - Финальный `npm test && npm run build && git diff --check`: `164/164 PASS`, production build PASS; main JS `337.07 kB` (`111.33 kB` gzip), diff check empty.
 - Impeccable detector повторно не запускался, как требовал review.
+
+## Final evidence-readiness revision
+
+### RED → GREEN
+
+- Targeted RED: `0/4 PASS`. Manifest не содержал capture-readiness/contact-sheet contract, verifier не умел отклонять незавершённые состояния, capture не ждал WorkSequence/outcomes/image decode, privacy test тихо завершался без source.
+- Targeted GREEN: `4/4 PASS` для evidence/privacy regression.
+- `REQUIRED_CAPTURE_READINESS` фиксирует на каждой ширине: `6/6` финальных WorkSequence nodes, `4/4` видимых outcomes, `3/3` финальных project cards, `9/9` complete + decoded project images.
+- Verifier отклоняет отсутствующие/неполные readiness-поля и проверяет все шесть contact sheets против пяти source PNG и их суммарных размеров.
+- DATONIKS manifest хранит durable SHA-256 fingerprint исключённого слайда 18. При доступном source выполняется полная сверка страниц 1–17 и fingerprint slide 18; при недоступном source тест сохраняет durable проверку и печатает diagnostic вместо тихого `return`.
+
+### Recapture
+
+- Production clean-profile Chrome/CDP: заново записаны ровно `30/30` tracked PNG и автоматически собраны `6/6` contact sheets.
+- Manifest readiness по всем шести ширинам: hero `6`, problems `4`, projects `3 + 9 decoded` — PASS.
+- Первый readiness spot-check выявил capture-only smooth-scroll offset fixed navigation на mobile hero. TDD-контракт добавил `scrollBehavior = "auto"` и обязательный `scrollY === 0`; единственный affected recapture исправил stitching без изменений UI.
+- Финальный visual spot-check: все шесть лент проверены; 375/430 дополнительно перепроверены после scroll fix. Частичных reveal, blank/lazy images и stitching нет.
+
+### Proof
+
+- `node scripts/verify-marketplace-evidence.mjs ...`: `30/30 PNG + 6/6 contact sheets PASS`.
+- `node scripts/verify-datoniks-public-deck.mjs --verify-source ...`: source pages `1–17` match; slide `18` excluded.
+- `npm test`: `166/166 PASS`.
+- `npm run build`: PASS; main JS `337.07 kB` (`111.33 kB` gzip), warning отсутствует.
+- Пользовательские `.npmrc`, `tmp/` и старые untracked evidence-папки не изменялись.
