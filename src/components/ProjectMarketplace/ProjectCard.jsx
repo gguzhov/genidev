@@ -14,7 +14,7 @@ export default function ProjectCard({
       }`}
       aria-hidden={decorative ? "true" : undefined}
     >
-      <ProjectVisual project={project} />
+      <ProjectVisual project={project} interactive={!decorative} />
 
       <div className="project-card__body">
         <p className="project-card__category">{project.category}</p>

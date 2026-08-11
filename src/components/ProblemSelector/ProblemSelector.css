@@ -163,12 +163,26 @@
   font-size: 0.72rem;
   font-weight: 650;
   line-height: 1.4;
+  animation: problem-outcome-enter var(--motion-state) var(--motion-ease) both;
+  animation-delay: calc(120ms + var(--outcome-index) * 45ms);
 }
 
 @keyframes problem-panel-enter {
   from {
     opacity: 0;
     transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes problem-outcome-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 
   to {
@@ -263,6 +277,10 @@
   }
 
   .problem-selector__panel-content {
+    animation: none;
+  }
+
+  .problem-selector__outcomes li {
     animation: none;
   }
 }

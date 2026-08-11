@@ -99,7 +99,7 @@
   gap: 4px;
 }
 
-.project-card--wall .project-card__metrics > span {
+.project-card--wall .project-card__metrics > li {
   border: 0;
   padding: 0;
   background: transparent;
@@ -107,7 +107,7 @@
   font-size: 0.55rem;
 }
 
-.project-card--wall .project-card__metrics > span + span::before {
+.project-card--wall .project-card__metrics > li + li::before {
   margin-right: 4px;
   content: "·";
 }
@@ -164,7 +164,7 @@
   gap: 4px;
 }
 
-.project-card--wall-control .project-card__metrics > span {
+.project-card--wall-control .project-card__metrics > li {
   padding: 4px 7px;
   font-size: 0.52rem;
 }

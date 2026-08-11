@@ -123,8 +123,13 @@ export default function ProblemSelector({ problems, sectionId }) {
                   className="problem-selector__outcomes"
                   aria-label={`Результаты задачи «${selected.title}»`}
                 >
-                  {selected.outcomes.map((outcome) => (
-                    <li key={outcome}>{outcome}</li>
+                  {selected.outcomes.map((outcome, outcomeIndex) => (
+                    <li
+                      key={outcome}
+                      style={{ "--outcome-index": outcomeIndex }}
+                    >
+                      {outcome}
+                    </li>
                   ))}
                 </ul>
               </div>

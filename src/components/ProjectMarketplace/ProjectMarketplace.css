@@ -298,7 +298,7 @@
   .project-card:hover {
     border-color: var(--color-border-strong);
     box-shadow: 0 26px 72px var(--blue-a5);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
   }
 
   .project-card:hover .project-visual__atmosphere {
@@ -307,7 +307,7 @@
         calc(0px - var(--project-pointer-y)),
         0
       )
-      scale(1.075);
+      scale(1.055);
   }
 
   .project-card:hover .project-visual__product-frame {

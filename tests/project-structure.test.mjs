@@ -79,7 +79,8 @@ test("uses the approved calm motion contract", async () => {
   const sequenceCss = await readFile("src/components/WorkSequence/WorkSequence.css", "utf8");
   assert.match(heroCss, /@keyframes hero-reveal/);
   assert.match(heroCss, /prefers-reduced-motion:\s*reduce/);
-  assert.match(sequenceCss, /--sequence-delay/);
+  assert.match(sequenceCss, /stroke-dashoffset:\s*1/);
+  assert.match(sequenceCss, /var\(--motion-reveal\)/);
   assert.match(sequenceCss, /prefers-reduced-motion:\s*reduce/);
 });
 

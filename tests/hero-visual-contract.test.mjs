@@ -16,10 +16,12 @@ test("animates the sequence once and renders it statically for reduced motion", 
     readFile("src/components/WorkSequence/WorkSequence.css", "utf8"),
   ]);
 
-  assert.match(component, /"--sequence-index": index/);
+  assert.match(component, /createWorkSequenceObserver/);
+  assert.match(component, /gsap\.timeline\(\)/);
+  assert.match(component, /stagger:\s*0\.07/);
   assert.match(component, /work-sequence--static/);
-  assert.match(styles, /var\(--sequence-index\)/);
-  assert.match(styles, /@keyframes work-sequence-reveal/);
+  assert.match(styles, /stroke-dashoffset:\s*1/);
+  assert.match(styles, /\.work-sequence\.is-revealed/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /\.work-sequence--static/);
   assert.doesNotMatch(styles, /animation-iteration-count:\s*infinite/);

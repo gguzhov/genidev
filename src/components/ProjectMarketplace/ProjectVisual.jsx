@@ -20,7 +20,7 @@ function canUsePointerDepth() {
   );
 }
 
-export default function ProjectVisual({ project }) {
+export default function ProjectVisual({ project, interactive = true }) {
   const visualRef = useRef(null);
   const [atmosphereFailed, setAtmosphereFailed] = useState(false);
   const [productFailed, setProductFailed] = useState(false);
@@ -57,6 +57,8 @@ export default function ProjectVisual({ project }) {
   };
 
   useEffect(() => {
+    if (!interactive) return undefined;
+
     const visual = visualRef.current;
     const card = visual?.closest(".project-card");
     if (!visual || !card) return undefined;
@@ -69,7 +71,7 @@ export default function ProjectVisual({ project }) {
       card.removeEventListener("pointermove", onPointerMove);
       card.removeEventListener("pointerleave", onPointerLeave);
     };
-  }, []);
+  }, [interactive]);
 
   return (
     <span
