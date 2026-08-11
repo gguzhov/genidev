@@ -1,4 +1,9 @@
 import { useCallback, useId, useRef, useState } from "react";
+import { sectionCopy } from "../../content/siteContent";
+import {
+  getProblemScanKey,
+  nextProblemScanRevision,
+} from "./problemPassportScanState";
 import { transitionSelectedIndex } from "./problemSelectionState";
 import "./ProblemSelector.css";
 
@@ -11,6 +16,7 @@ const DIRECTION_KEYS = {
 
 export default function ProblemSelector({ problems, sectionId }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scanRevision, setScanRevision] = useState(0);
   const buttonRefs = useRef([]);
   const instanceId = useId();
   const resolvedSectionId = sectionId ?? `${instanceId}-section`;
@@ -25,6 +31,9 @@ export default function ProblemSelector({ problems, sectionId }) {
     },
     [problems.length],
   );
+  const retriggerScan = useCallback(() => {
+    setScanRevision(nextProblemScanRevision);
+  }, []);
   const selected = problems[selectedIndex];
 
   if (!selected) return null;
@@ -52,7 +61,7 @@ export default function ProblemSelector({ problems, sectionId }) {
     >
       <div className="section__inner">
         <header className="section__heading">
-          <h2 id={headingId}>В чем могу быть полезен?</h2>
+          <h2 id={headingId}>{sectionCopy.problems.title}</h2>
           <p>
             Беру ответственность за путь от исходной задачи до работающего решения и данных после запуска.
           </p>
@@ -76,6 +85,7 @@ export default function ProblemSelector({ problems, sectionId }) {
                   aria-pressed={selectedIndex === index}
                   aria-controls={panelId}
                   onClick={() => selectProblem(index)}
+                  onFocus={retriggerScan}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                 >
                   <span className="problem-selector__tab-code" aria-hidden="true">
@@ -101,6 +111,7 @@ export default function ProblemSelector({ problems, sectionId }) {
             id={panelId}
             role="region"
             aria-labelledby={panelHeadingId}
+            onPointerEnter={retriggerScan}
           >
             <div className="problem-selector__panel-content" key={selected.id}>
               <div className="problem-selector__barcode">
@@ -108,7 +119,8 @@ export default function ProblemSelector({ problems, sectionId }) {
                 <span className="problem-selector__barcode-bars" aria-hidden="true">
                   <span
                     className="problem-selector__scan"
-                    key={selected.id}
+                    key={getProblemScanKey(selected.id, scanRevision)}
+                    data-scan-revision={scanRevision}
                     aria-hidden="true"
                   />
                 </span>

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { projects } from "../src/content/siteContent.js";
+import { projects, sectionCopy } from "../src/content/siteContent.js";
 
 const [marketplaceSource, cardSource, visualSource, marketplaceCss] = await Promise.all([
   readFile("src/components/ProjectMarketplace/ProjectMarketplace.jsx", "utf8"),
@@ -12,11 +12,13 @@ const [marketplaceSource, cardSource, visualSource, marketplaceCss] = await Prom
 ]);
 
 test("publishes the approved marketplace heading without the obsolete eyebrow", () => {
-  assert.match(marketplaceSource, />Маркетплейс моих разработок<\/h2>/);
-  assert.match(
-    marketplaceSource,
-    />В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска\.<\/p>/,
+  assert.equal(sectionCopy.marketplace.title, "Маркетплейс моих разработок");
+  assert.equal(
+    sectionCopy.marketplace.description,
+    "В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска.",
   );
+  assert.match(marketplaceSource, /sectionCopy\.marketplace\.title/);
+  assert.match(marketplaceSource, /sectionCopy\.marketplace\.description/);
   assert.doesNotMatch(marketplaceSource, /Реализованные проекты/);
 });
 

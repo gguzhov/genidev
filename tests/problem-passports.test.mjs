@@ -7,6 +7,9 @@ const [componentSource, stylesSource] = await Promise.all([
   readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8"),
   readFile("src/components/ProblemSelector/ProblemSelector.css", "utf8"),
 ]);
+const scanStateModule = await import(
+  "../src/components/ProblemSelector/problemPassportScanState.js"
+).catch(() => null);
 
 const expectedPassports = [
   {
@@ -58,7 +61,7 @@ test("publishes the four approved problem passports without clichés", () => {
 });
 
 test("renders the exact section heading and semantic passport labels", () => {
-  assert.match(componentSource, /<h2 id=\{headingId\}>В чем могу быть полезен\?<\/h2>/);
+  assert.match(componentSource, /<h2 id=\{headingId\}>\{sectionCopy\.problems\.title\}<\/h2>/);
   assert.match(componentSource, /Беру ответственность за путь от исходной задачи до работающего решения и данных после запуска\./);
   assert.match(componentSource, /\{selected\.situation\}/);
   assert.match(componentSource, />Что беру на себя</);
@@ -74,22 +77,31 @@ test("uses a decorative CSS barcode with a visible adjacent code", () => {
   assert.match(stylesSource, /\.problem-selector__barcode-bars\s*\{[^}]*repeating-linear-gradient/s);
 });
 
-test("re-keys one bounded scan only when the selected passport changes", () => {
+test("re-keys one bounded scan when the passport changes, gains hover or receives focus", () => {
   assert.match(
     componentSource,
-    /className="problem-selector__scan"[\s\S]*?key=\{selected\.id\}[\s\S]*?aria-hidden="true"/,
+    /className="problem-selector__scan"[\s\S]*?key=\{getProblemScanKey\(selected\.id, scanRevision\)\}[\s\S]*?aria-hidden="true"/,
   );
+  assert.match(componentSource, /onPointerEnter=\{retriggerScan\}/);
+  assert.match(componentSource, /onFocus=\{retriggerScan\}/);
   assert.match(
     stylesSource,
     /\.problem-selector__scan\s*\{[^}]*animation:\s*problem-passport-scan var\(--motion-state\)[^;}]*;/s,
   );
   assert.match(stylesSource, /@keyframes problem-passport-scan/);
   assert.doesNotMatch(stylesSource, /animation-iteration-count|\binfinite\b/);
-  assert.doesNotMatch(componentSource, /setInterval|requestAnimationFrame|onMouseEnter|onPointerEnter|onFocus=/);
+  assert.doesNotMatch(componentSource, /setInterval|requestAnimationFrame|setTimeout/);
   assert.match(
     stylesSource,
     /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.problem-selector__scan\s*\{[^}]*animation:\s*none/s,
   );
+});
+
+test("advances the scan by exactly one revision per bounded interaction", () => {
+  assert.ok(scanStateModule, "Missing bounded problem passport scan state helper");
+  assert.equal(scanStateModule.nextProblemScanRevision(0), 1);
+  assert.equal(scanStateModule.nextProblemScanRevision(1), 2);
+  assert.equal(scanStateModule.getProblemScanKey("launch", 2), "launch:2");
 });
 
 test("keeps essential passport copy at 14px or larger", () => {

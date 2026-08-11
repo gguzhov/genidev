@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { sectionCopy } from "../../content/siteContent";
 import ProjectCard from "./ProjectCard";
 import { createMarketplaceRevealLifecycle } from "./marketplaceRevealLifecycle";
 import "./ProjectMarketplace.css";
@@ -20,8 +21,8 @@ export default function ProjectMarketplace({ projects, onOpenProject }) {
     <section className="section marketplace" id="projects" aria-labelledby="projects-title">
       <div className="section__inner">
         <header className="section__heading marketplace__heading">
-          <h2 id="projects-title">Маркетплейс моих разработок</h2>
-          <p>В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска.</p>
+          <h2 id="projects-title">{sectionCopy.marketplace.title}</h2>
+          <p>{sectionCopy.marketplace.description}</p>
         </header>
 
         <div className="marketplace__grid" ref={gridRef}>

@@ -85,9 +85,10 @@ test("uses the exact approved task and marketplace copy", () => {
   );
   assert.match(contentSource, /duration:\s*"1 неделя до запуска"/);
   assert.match(
-    marketplaceSource,
+    contentSource,
     /В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска\./,
   );
+  assert.match(marketplaceSource, /sectionCopy\.marketplace\.description/);
 });
 
 test("announces only a concise selected-task status instead of the large panel", () => {

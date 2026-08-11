@@ -92,4 +92,11 @@
 
 Review readiness revision пересняла матрицу после более строгой подготовки DOM: hero прокручивается к WorkSequence и ждёт финального состояния всех шести узлов; problem capture ждёт финальные стили четырёх outcomes; project capture последовательно активирует lazy-loading, ждёт финал трёх карточек и вызывает `decode()` у всех девяти изображений. Перед clip smooth scroll принудительно отключается и проверяется `scrollY === 0`, поэтому fixed navigation не фиксируется на промежуточном offset. Новые шесть contact sheets визуально проверены; blank images, частичные reveal и stitching отсутствуют.
 
+## Final whole-branch review
+
+- No-JS fallback и основные React-секции используют общий `sectionCopy`: заголовки задач и карьерного пути, описание маркетплейса и `contact.body` совпадают с видимым интерфейсом; старые формулировки отсутствуют.
+- Закрытый CardNav на 375 и 430 px показывает CTA «Связаться». CDP-замеры: CTA `120.86×48px`, логотип `44×44px`, меню `48×48px`; пересечений и горизонтального overflow нет. Обновлённые hero и полные contact sheets обеих mobile-ширин визуально проверены.
+- Barcode scan получает ровно одну новую ревизию при входе указателя в паспорт и при keyboard focus выбранной задачи. В Chrome `animation-iteration-count: 1`; при `prefers-reduced-motion: reduce` — `animation-name: none`.
+- После исправлений заново сформированы `30/30` evidence PNG, `6/6` contact sheets и manifest; evidence verifier — PASS.
+
 Ограничение: физические iPhone/iPad, Safari, настоящий notch/safe-area и экранная клавиатура не проверялись; QA выполнен в Chromium с viewport/media emulation.

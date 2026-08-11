@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { sectionCopy } from "../../content/siteContent";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import {
   getContiguousReachedIndexes,
@@ -42,7 +43,7 @@ export default function CareerTimeline({ items }) {
     <section className="section career-section" id="career" aria-labelledby="career-title">
       <div className="section__inner">
         <div className="section__heading">
-          <h2 id="career-title">От торговли и экономики — к цифровым продуктам</h2>
+          <h2 id="career-title">{sectionCopy.career.title}</h2>
           <p>
             Сначала учился находить спрос, считать деньги и выстраивать поставки. Затем
             перенёс этот подход в инфраструктурные, медицинские и AI-продукты.

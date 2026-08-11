@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
-import { career, hero, problems, projects } from "../src/content/siteContent.js";
+import * as siteContent from "../src/content/siteContent.js";
+
+const { career, contact, hero, problems, projects } = siteContent;
 
 const RENDERER_PATH = "src/content/renderNoscriptFallback.js";
 
@@ -21,11 +23,35 @@ test("renders all essential landing content from the shared content contract", a
   assert.match(html, new RegExp(hero.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.doesNotMatch(html, /Геннадий Гужов/);
   assert.match(html, new RegExp(hero.promise));
+  assert.deepEqual(siteContent.sectionCopy, {
+    problems: {
+      title: "В чем могу быть полезен?",
+    },
+    career: {
+      title: "От торговли и экономики — к цифровым продуктам",
+    },
+    marketplace: {
+      title: "Маркетплейс моих разработок",
+      description:
+        "В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска.",
+    },
+  });
+  assert.match(html, /<h2 id="noscript-problems-title">В чем могу быть полезен\?<\/h2>/);
   assert.match(
     html,
-    /<h2 id="noscript-problems-title">От бизнес-проблемы до измеримого результата<\/h2>/,
+    /<h2 id="noscript-career-title">От торговли и экономики — к цифровым продуктам<\/h2>/,
   );
-  assert.doesNotMatch(html, /<h2 id="noscript-problems-title">С чем я могу помочь<\/h2>/);
+  assert.match(
+    html,
+    /<p>В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска\.<\/p>/,
+  );
+  assert.match(html, new RegExp(`<p>${contact.body.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<\\/p>`));
+  assert.doesNotMatch(html, /От бизнес-проблемы до измеримого результата/);
+  assert.doesNotMatch(html, /<h2 id="noscript-career-title">Карьерный путь<\/h2>/);
+  assert.doesNotMatch(
+    html,
+    /Проекты, которые я самостоятельно прошёл от бизнес-задачи до запуска\./,
+  );
   assert.equal((html.match(/data-noscript-problem/g) ?? []).length, problems.length);
   assert.equal((html.match(/data-noscript-career/g) ?? []).length, career.length);
   assert.equal((html.match(/data-noscript-project/g) ?? []).length, projects.length);
@@ -94,6 +120,7 @@ test("escapes no-JS text and external-link attributes", async () => {
   });
 
   assert.doesNotMatch(html, /<script>|<strong>|<unsafe>|<now>/);
+  assert.doesNotMatch(html, />undefined</);
   assert.match(html, /Title &lt;strong&gt;/);
   assert.match(html, /Description &amp; detail/);
   assert.match(html, /href="https:\/\/example\.com\/\?q=&quot;x&quot;&amp;next=&lt;unsafe&gt;"/);

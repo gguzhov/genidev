@@ -4,6 +4,7 @@ import {
   hero as siteHero,
   problems as siteProblems,
   projects as siteProjects,
+  sectionCopy as siteSectionCopy,
 } from "./siteContent.js";
 
 const defaultContent = {
@@ -12,6 +13,7 @@ const defaultContent = {
   career: siteCareer,
   projects: siteProjects,
   contact: siteContact,
+  sectionCopy: siteSectionCopy,
 };
 
 const escapeHtml = (value) =>
@@ -33,7 +35,7 @@ const renderLink = ({ href, target, rel, label }) => {
 const renderItems = (items) => items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
 export function renderNoscriptFallback(content = defaultContent) {
-  const { hero, problems, career, projects, contact } = content;
+  const { hero, problems, career, projects, contact, sectionCopy = siteSectionCopy } = content;
 
   return `<style>
   .noscript-site{width:min(calc(100% - 32px),1120px);margin:0 auto;padding:104px 0 64px;color:var(--color-text,#182b67);font:16px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
@@ -57,7 +59,7 @@ export function renderNoscriptFallback(content = defaultContent) {
     ${renderLink(hero.cta)}
   </header>
   <section aria-labelledby="noscript-problems-title">
-    <h2 id="noscript-problems-title">От бизнес-проблемы до измеримого результата</h2>
+    <h2 id="noscript-problems-title">${escapeHtml(sectionCopy.problems.title)}</h2>
     <div class="noscript-site__grid">
       ${problems
         .map(
@@ -73,7 +75,7 @@ export function renderNoscriptFallback(content = defaultContent) {
     </div>
   </section>
   <section aria-labelledby="noscript-career-title">
-    <h2 id="noscript-career-title">Карьерный путь</h2>
+    <h2 id="noscript-career-title">${escapeHtml(sectionCopy.career.title)}</h2>
     <div class="noscript-site__grid">
       ${career
         .map(
@@ -94,8 +96,8 @@ export function renderNoscriptFallback(content = defaultContent) {
     </div>
   </section>
   <section aria-labelledby="noscript-projects-title">
-    <h2 id="noscript-projects-title">Маркетплейс моих разработок</h2>
-    <p>Проекты, которые я самостоятельно прошёл от бизнес-задачи до запуска.</p>
+    <h2 id="noscript-projects-title">${escapeHtml(sectionCopy.marketplace.title)}</h2>
+    <p>${escapeHtml(sectionCopy.marketplace.description)}</p>
     <div class="noscript-site__grid">
       ${projects
         .map(
@@ -119,6 +121,7 @@ export function renderNoscriptFallback(content = defaultContent) {
   </section>
   <section aria-labelledby="noscript-contact-title">
     <h2 id="noscript-contact-title">${escapeHtml(contact.title)}</h2>
+    ${contact.body ? `<p>${escapeHtml(contact.body)}</p>` : ""}
     <p>${escapeHtml(contact.handle)}</p>
     ${renderLink({ ...contact, label: contact.ctaLabel })}
   </section>

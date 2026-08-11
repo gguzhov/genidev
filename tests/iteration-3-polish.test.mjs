@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [navCss, profileCss, sectionsCss, finalContactCss, cardSource, contentSource, marketplaceCss] =
+const [navCss, navSource, profileCss, sectionsCss, finalContactCss, cardSource, contentSource, marketplaceCss] =
   await Promise.all([
     readFile("src/components/CardNav/CardNav.css", "utf8"),
+    readFile("src/components/CardNav/CardNav.jsx", "utf8"),
     readFile("src/components/ProfileCard/ProfileCard.css", "utf8"),
     readFile("src/styles/sections.css", "utf8"),
     readFile("src/components/FinalContact/FinalContact.css", "utf8"),
@@ -13,14 +14,17 @@ const [navCss, profileCss, sectionsCss, finalContactCss, cardSource, contentSour
     readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
   ]);
 
-test("keeps the sticky CTA hidden until 560px and preserves the compact header grid", () => {
-  assert.match(navCss, /@media \(max-width:\s*559px\)[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+48px/);
+test("keeps the closed contact CTA visible and bounded on 375px and 430px", () => {
+  assert.match(navSource, /className="card-nav__cta"/);
+  assert.match(navSource, /\{cta\?\.label\s*\?\?\s*"Решить проблему"\}/);
   assert.match(
     navCss,
-    /@media \(min-width:\s*560px\)[\s\S]*\.card-nav__cta\s*\{[^}]*display:\s*inline-flex/s,
+    /\.card-nav__cta\s*\{[^}]*min-height:\s*(?:44|48)px[^}]*max-width:\s*100%/s,
   );
-  const wideMobileBlock = navCss.match(/@media \(min-width:\s*430px\)\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
-  assert.doesNotMatch(wideMobileBlock, /\.card-nav__cta/);
+  assert.match(
+    navCss,
+    /@media \(max-width:\s*559px\)[\s\S]*grid-template-columns:\s*48px\s+minmax\(0,\s*1fr\)\s+48px[\s\S]*\.card-nav__cta\s*\{[^}]*display:\s*inline-flex/s,
+  );
 });
 
 test("keeps the compact ProfileCard action sized within the card", () => {

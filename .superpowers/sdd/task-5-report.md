@@ -93,3 +93,25 @@
 - `npm test`: `166/166 PASS`.
 - `npm run build`: PASS; main JS `337.07 kB` (`111.33 kB` gzip), warning отсутствует.
 - Пользовательские `.npmrc`, `tmp/` и старые untracked evidence-папки не изменялись.
+
+## Final whole-branch review fixes
+
+### RED → GREEN
+
+- Initial targeted RED: `12/16 PASS`, ожидаемые четыре падения — stale no-JS copy, скрытый mobile CardNav CTA и отсутствующие hover/focus scan contracts/helper.
+- Targeted GREEN после минимальной реализации и обновления shared-copy contracts: `46/46 PASS`.
+- Дополнительный renderer edge RED воспроизвёл вывод `<p>undefined</p>` при пользовательском content без `contact.body`; GREEN условно выводит optional body, production fallback использует полный shared contact contract.
+
+### Исправления
+
+- `sectionCopy` стал единым источником заголовков problems/career и title/description marketplace для React и no-JS fallback. В no-JS contact добавлен точный `contact.body`; stale fallback copy запрещён тестами.
+- Closed CardNav на 375/430 показывает «Связаться» в сетке `48px / minmax(0, 1fr) / 48px`; CTA не меньше `44×44px`, не пересекает logo/menu и не создаёт overflow.
+- Passport barcode scan re-keyed ровно один раз на `pointerenter` панели и keyboard focus задачи. Таймеров и persistent loop нет; reduced motion остаётся статичным.
+
+### Browser и evidence
+
+- Chrome/CDP 375/430: CTA `120.86×48px`, logo `44×44px`, menu `48×48px`, page `scrollWidth === innerWidth`, пересечений нет.
+- Scan runtime на обеих ширинах: hover revision `+1`, focus revision `+1`, `animation-iteration-count: 1`; reduced motion `animation-name: none`.
+- Fresh capture: `30/30` PNG и `6/6` contact sheets, manifest captured at `2026-08-11T11:31:10.359Z`; evidence verifier PASS. 375/430 hero и полные ленты визуально проверены без тесноты header, обрезки или overflow.
+- Финальный единый gate: `npm test` — `167/167 PASS`; production build — PASS, main JS `337.36 kB` (`111.57 kB` gzip), chunk warning отсутствует; built no-JS HTML содержит все четыре точные строки; evidence verifier и `git diff --check` — PASS.
+- Impeccable не запускался. Защищённые `.npmrc`, `tmp/` и старые untracked evidence-папки не изменялись.

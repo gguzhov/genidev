@@ -2,7 +2,7 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { career, contact } from "../src/content/siteContent.js";
+import { career, contact, sectionCopy } from "../src/content/siteContent.js";
 
 const read = (path) => readFile(path, "utf8");
 
@@ -41,7 +41,8 @@ test("keeps confirmed career facts and presents responsibility separately from p
     "Патент на систему охлаждения",
     "Инвестиционный запрос: 87 млн ₽",
   ]);
-  assert.match(careerComponent, /От торговли и экономики — к цифровым продуктам/);
+  assert.equal(sectionCopy.career.title, "От торговли и экономики — к цифровым продуктам");
+  assert.match(careerComponent, /sectionCopy\.career\.title/);
   assert.match(careerComponent, /Ответственность/);
   assert.match(careerComponent, /Подтверждено/);
 });

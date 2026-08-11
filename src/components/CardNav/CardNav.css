@@ -79,6 +79,8 @@
 .card-nav__cta {
   display: none;
   min-height: 48px;
+  max-width: 100%;
+  min-width: 0;
   padding-inline: 17px;
   align-items: center;
   justify-content: center;
@@ -88,6 +90,7 @@
   color: var(--color-on-accent);
   font-size: 0.82rem;
   font-weight: 720;
+  white-space: nowrap;
   transition: background var(--motion-fast) var(--motion-ease),
     transform var(--motion-fast) var(--motion-ease);
 }
@@ -154,17 +157,25 @@
 @media (max-width: 559px) {
   .card-nav__top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 48px;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
   }
 
   .card-nav__menu-button {
-    grid-column: 2;
+    grid-column: 3;
   }
 
   .card-nav__brand {
     grid-row: 1;
     grid-column: 1;
     justify-self: start;
+  }
+
+  .card-nav__cta {
+    display: inline-flex;
+    grid-row: 1;
+    grid-column: 2;
+    padding-inline: 12px;
+    justify-self: center;
   }
 }
 

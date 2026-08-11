@@ -13,6 +13,20 @@ export const hero = {
   },
 };
 
+export const sectionCopy = {
+  problems: {
+    title: "В чем могу быть полезен?",
+  },
+  career: {
+    title: "От торговли и экономики — к цифровым продуктам",
+  },
+  marketplace: {
+    title: "Маркетплейс моих разработок",
+    description:
+      "В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска.",
+  },
+};
+
 export const problems = [
   {
     id: "launch",

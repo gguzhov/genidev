@@ -55,7 +55,7 @@ test("keeps the live region mounted while keyed inner content transitions", () =
 });
 
 test("explains each task through actions and outcomes without a redundant section lead", () => {
-  assert.match(componentSource, /В чем могу быть полезен\?/);
+  assert.match(componentSource, /sectionCopy\.problems\.title/);
   assert.doesNotMatch(componentSource, /От запуска продукта до AI-автоматизации/);
   assert.match(componentSource, />Что беру на себя</);
   assert.match(componentSource, /На выходе/);
