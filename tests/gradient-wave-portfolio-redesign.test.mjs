@@ -146,7 +146,7 @@ test("прямой project-route возвращает фокус к первой
   assert.match(routeHook, /returnFocusRef\.current\?\.isConnected[\s\S]*focus\(\{ preventScroll: true \}\)[\s\S]*fallbackTarget\.scrollIntoView\(\{ block: "center" \}\)[\s\S]*fallbackTarget\.focus\(\{ preventScroll: true \}\)/s);
 });
 
-test("анимация фона, дуги и CTA не использует бесконечный цикл", () => {
+test("ограниченные CSS-анимации дуги и CTA не используют бесконечный цикл", () => {
   const sources = [
     "../src/components/GradientWave/GradientWave.css",
     "../src/components/WorkSequence/WorkSequence.css",

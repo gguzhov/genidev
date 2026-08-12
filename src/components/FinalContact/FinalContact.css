@@ -1,6 +1,6 @@
 .final-contact {
   padding: 72px 0 max(72px, env(safe-area-inset-bottom));
-  background: var(--color-surface);
+  background: color-mix(in oklch, var(--color-surface) 90%, transparent);
 }
 
 .final-contact__inner {

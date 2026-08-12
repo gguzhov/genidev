@@ -1,6 +1,6 @@
 .marketplace {
   overflow: clip;
-  background: var(--color-surface);
+  background: color-mix(in oklch, var(--color-surface) 90%, transparent);
 }
 
 .marketplace__heading h2 {

@@ -1,0 +1,47 @@
+.animated-gradient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.animated-gradient__canvas,
+.animated-gradient__fallback,
+.animated-gradient__noise {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.animated-gradient__fallback {
+  background:
+    radial-gradient(circle at 78% 8%, var(--blue-a5), transparent 34%),
+    radial-gradient(circle at 18% 72%, var(--blue-a3), transparent 40%),
+    linear-gradient(154deg, var(--gradient-ice-light), var(--gradient-ice-base));
+}
+
+.animated-gradient__canvas {
+  z-index: 1;
+  display: block;
+}
+
+.animated-gradient[data-webgl="fallback"] .animated-gradient__canvas {
+  display: none;
+}
+
+.animated-gradient__noise {
+  z-index: 2;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAAAAAAAAAAAAAAAAAAAAAADgKxmiAAAABnRSTlMCCgkGBAVJOAVJAAAASklEQVQ4y2NgGAWjYBSMglEwCgY/YGRgZBQUYmJiZGQEkYwMjIyMgoKCjIyMIJKBgRFIMjIyAklGRkYGRkFBYEcwMDIyMjAOUQAA1I4HwVwZAkYAAAAASUVORK5CYII=");
+  background-repeat: repeat;
+  background-size: var(--gradient-noise-size);
+  mix-blend-mode: multiply;
+  opacity: var(--gradient-noise-opacity);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-gradient__canvas {
+    opacity: 0.82;
+  }
+}

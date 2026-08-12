@@ -35,7 +35,7 @@
 }
 
 .problem-section {
-  background: var(--color-surface);
+  background: color-mix(in oklch, var(--color-surface) 90%, transparent);
 }
 
 @media (min-width: 768px) {

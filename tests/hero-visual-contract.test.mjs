@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("replaces the continuous hero WebGL with the bounded work sequence", async () => {
+test("keeps the hero work sequence bounded and independent from the background shader", async () => {
   const app = await readFile("src/App.jsx", "utf8");
 
   assert.match(app, /<WorkSequence items=\{hero\.sequence\} reducedMotion=\{reducedMotion\}/);
