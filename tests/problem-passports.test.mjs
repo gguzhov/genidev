@@ -14,7 +14,7 @@ test("publishes six concrete business capabilities with solution projects", () =
     { id: "management", title: "Управление" },
     { id: "operations", title: "Операционные процессы" },
     { id: "ai-infrastructure", title: "AI-инфраструктура" },
-    { id: "enablement", title: "Технический консалтинг и обучение" },
+    { id: "enablement", title: "Консалтинг и обучение" },
   ]);
 
   for (const problem of problems) {

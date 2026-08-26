@@ -15,7 +15,7 @@ test("capability copy names six concrete business directions", async () => {
       ["management", "Управление"],
       ["operations", "Операционные процессы"],
       ["ai-infrastructure", "AI-инфраструктура"],
-      ["enablement", "Технический консалтинг и обучение"],
+      ["enablement", "Консалтинг и обучение"],
     ],
   );
 

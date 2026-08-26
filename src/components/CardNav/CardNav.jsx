@@ -268,8 +268,6 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
           </div>
         </div>
 
-        <ScrollProgress className="card-nav__scroll-progress" />
-
         <div
           className="card-nav__content"
           id="card-navigation-panel"
@@ -311,6 +309,9 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
           />
         </div>
       </nav>
+      <div className="card-nav__scroll-track">
+        <ScrollProgress className="card-nav__scroll-progress" />
+      </div>
     </header>
   );
 }

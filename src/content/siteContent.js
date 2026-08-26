@@ -168,7 +168,7 @@ export const problems = [
   },
   {
     id: "enablement",
-    title: "Технический консалтинг и обучение",
+    title: "Консалтинг и обучение",
     icon: "/images/capabilities/enablement-robot-v1.webp",
     solutions: [
       {

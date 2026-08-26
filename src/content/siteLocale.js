@@ -51,7 +51,7 @@ const englishProblems = [
   },
   {
     id: "enablement",
-    title: "Technical consulting and training",
+    title: "Consulting and training",
     solutions: [
       ["Process audit and AI roadmap", "I review systems, data and manual operations, calculate the economics and prioritise digital and AI projects.", "The company knows where to start and which outcome to test first."],
       ["A pilot on real company data", "I build a working prototype on company data, connect the required systems and test quality, security and business effect.", "The implementation decision is based on results rather than a presentation."],

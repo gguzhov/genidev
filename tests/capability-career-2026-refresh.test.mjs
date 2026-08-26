@@ -28,7 +28,7 @@ test("capability cards contain concrete solutions without a duplicated process l
     problemById.operations.solutions.slice(0, 3).map(({ title }) => title),
     ["AI-подбор сотрудников", "Онбординг новых сотрудников", "Закупки и счета без ручной работы"],
   );
-  assert.equal(problemById.enablement.title, "Технический консалтинг и обучение");
+  assert.equal(problemById.enablement.title, "Консалтинг и обучение");
 
   for (const problem of problems) {
     for (const solution of problem.solutions) {

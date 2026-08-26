@@ -51,7 +51,7 @@ test("drives the career route, airplane and checkpoints from one Motion spring",
   assert.doesNotMatch(component, /requestAnimationFrame|stroke-dashoffset/);
 });
 
-test("shows one reduced-motion-safe page progress line across the header", async () => {
+test("shows one reduced-motion-safe page progress line below the header", async () => {
   const [progress, navigation, css] = await Promise.all([
     read("src/components/core/ScrollProgress.jsx"),
     read("src/components/CardNav/CardNav.jsx"),
@@ -62,8 +62,15 @@ test("shows one reduced-motion-safe page progress line across the header", async
   assert.match(progress, /useSpring\s*\(scrollYProgress/);
   assert.match(progress, /reducedMotion\s*\?\s*scrollYProgress\s*:\s*smoothProgress/);
   assert.match(progress, /style=\{\{ scaleX: activeProgress \}\}/);
-  assert.match(navigation, /<ScrollProgress\s+className="card-nav__scroll-progress"\s*\/>/);
-  assert.match(css, /\.card-nav__scroll-progress\s*\{[^}]*top:\s*62px[^}]*left:\s*8px[^}]*width:\s*calc\(100% - 16px\)[^}]*height:\s*2px/s);
+  assert.match(
+    navigation,
+    /<\/nav>\s*<div className="card-nav__scroll-track">\s*<ScrollProgress\s+className="card-nav__scroll-progress"\s*\/>/s,
+  );
+  assert.match(
+    css,
+    /\.card-nav__scroll-track\s*\{[^}]*top:\s*calc\(100% \+ 4px\)[^}]*left:\s*0[^}]*width:\s*100%[^}]*height:\s*3px/s,
+  );
+  assert.match(css, /\.card-nav__scroll-progress\s*\{[^}]*inset:\s*0[^}]*width:\s*100%/s);
   assert.match(css, /transform-origin:\s*left center/);
 });
 
