@@ -32,7 +32,8 @@ test("keeps confirmed career facts with one strongest result", async () => {
   assert.match(career[0].body, /промышленного оборудования/);
   assert.doesNotMatch(careerCopy, /тамож/iu);
 
-  assert.match(career[1].body, /распределённой сети ЦОД/i);
+  assert.match(career[1].body, /венчурными фондами/i);
+  assert.match(career[1].body, /продолжает развиваться/i);
   assert.equal(career[0].result, "Могу помочь с логистикой из Европы и Китая");
   assert.equal(career[1].result, "Ищу инвестиции");
   assert.equal(sectionCopy.career.title, "Мой карьерный тернистый путь");

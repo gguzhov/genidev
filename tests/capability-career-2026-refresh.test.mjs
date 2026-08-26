@@ -77,6 +77,15 @@ test("career reflects current verified experience and optional outcomes", () => 
   assert.equal(career[0].result, "Могу помочь с логистикой из Европы и Китая");
   assert.equal(career[1].result, "Ищу инвестиции");
   assert.equal(career[1].highlightResult, true);
+  assert.match(career[1].body, /венчурными фондами/);
+  assert.match(career[1].body, /продолжает развиваться/);
+  assert.deepEqual(career[1].action, {
+    label: "Посмотреть",
+    projectSlug: "datoniks",
+  });
+  assert.deepEqual(career[1].logos.map(({ src }) => src), [
+    "/images/career/datoniks.webp",
+  ]);
   assert.equal("result" in career[2], false);
   assert.equal(
     career[2].body,
@@ -85,12 +94,42 @@ test("career reflects current verified experience and optional outcomes", () => 
   assert.match(career[3].body, /ОМС/);
   assert.match(career[3].body, /BI/);
   assert.doesNotMatch(career[3].body, /Подсвечиваю|сокращаю|разрабатываю|ищу/);
-  assert.match(career[4].body, /любой отрасли/);
   assert.equal(
-    career[4].result,
-    "Постоянно ищу точки роста и оптимизирую процессы с помощью AI",
+    career[3].result,
+    "Постоянно ищу точки роста и оптимизирую операционные процессы с помощью AI",
   );
-  assert.doesNotMatch(career[4].result, /Четыре запущенных продукта/);
+  assert.deepEqual(career[2].logos.map(({ src }) => src), [
+    "/images/career/hse.webp",
+    "/images/career/lse.webp",
+  ]);
+  assert.deepEqual(career[3].logos.map(({ src }) => src), [
+    "/images/career/gkb15.webp",
+  ]);
+  assert.match(career[4].body, /любой отрасли/);
+  assert.equal(career[4].ongoing, true);
+  assert.equal("result" in career[4], false);
+
+  for (const item of career.filter(({ logos }) => logos)) {
+    for (const logo of item.logos) {
+      assert.ok(existsSync(new URL(`../public${logo.src}`, import.meta.url)), logo.src);
+    }
+  }
+});
+
+test("career renders official logos, a DATONIKS case action and a reduced-motion-safe live signal", () => {
+  const component = readFileSync(
+    new URL("../src/components/CareerTimeline/CareerTimeline.jsx", import.meta.url),
+    "utf8",
+  );
+  const app = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+
+  assert.match(component, /item\.logos\?\.map/);
+  assert.match(component, /career-timeline__logo career-timeline__logo--/);
+  assert.match(component, /onOpenProject\?\.\(item\.action\.projectSlug\)/);
+  assert.match(component, /className="career-timeline__ongoing-signal"/);
+  assert.match(component, /useInView\s*\(/);
+  assert.match(component, /reducedMotion\s*\|\|\s*!isInView\s*\?\s*0\s*:\s*Infinity/);
+  assert.match(app, /<CareerTimeline[\s\S]*onOpenProject=\{openProject\}/);
 });
 
 test("each marketplace card uses a dedicated generated 3:2 technology background", () => {

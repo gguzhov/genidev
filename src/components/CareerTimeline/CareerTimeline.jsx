@@ -1,4 +1,4 @@
-import { Airplane01Icon } from "@hugeicons/core-free-icons";
+import { Airplane01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   useCallback,
@@ -11,6 +11,7 @@ import {
   motion,
   useMotionValue,
   useMotionValueEvent,
+  useInView,
   useScroll,
   useSpring,
 } from "motion/react";
@@ -22,7 +23,28 @@ const ROAD_PATH = "M50 0 C25 95 75 155 50 245 C25 335 75 405 50 500 C25 595 75 6
 const ROAD_VIEWBOX_WIDTH = 100;
 const ROAD_VIEWBOX_HEIGHT = 1000;
 
-export default function CareerTimeline({ items, copy }) {
+function OngoingSignal({ reducedMotion }) {
+  const signalRef = useRef(null);
+  const isInView = useInView(signalRef, { amount: "all" });
+  const shouldBlink = !reducedMotion && isInView;
+
+  return (
+    <motion.span
+      ref={signalRef}
+      className="career-timeline__ongoing-signal"
+      aria-hidden="true"
+      initial={false}
+      animate={{ opacity: shouldBlink ? [1, 0.24, 1] : 1 }}
+      transition={{
+        duration: 1.6,
+        ease: "easeInOut",
+        repeat: reducedMotion || !isInView ? 0 : Infinity,
+      }}
+    />
+  );
+}
+
+export default function CareerTimeline({ items, copy, onOpenProject }) {
   const reducedMotion = useReducedMotion();
   const routeRef = useRef(null);
   const roadRef = useRef(null);
@@ -167,15 +189,51 @@ export default function CareerTimeline({ items, copy }) {
               key={`${item.year}-${item.title}`}
             >
               <article className="career-timeline__entry">
-                <p className="career-timeline__year">{item.year}</p>
+                <div className="career-timeline__meta">
+                  <p className="career-timeline__year">
+                    {item.year}
+                    {item.ongoing ? <OngoingSignal reducedMotion={reducedMotion} /> : null}
+                  </p>
+                  {item.logos?.length ? (
+                    <div className="career-timeline__logos" aria-label={item.title}>
+                      {item.logos?.map((logo) => (
+                        <img
+                          className={`career-timeline__logo career-timeline__logo--${logo.id}`}
+                          src={logo.src}
+                          alt={logo.alt}
+                          width={logo.width}
+                          height={logo.height}
+                          loading="lazy"
+                          decoding="async"
+                          key={logo.id}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
                 <h3>{item.title}</h3>
                 <p className="career-timeline__body">{item.body}</p>
-                {item.result ? (
-                  <p
-                    className={`career-timeline__result${item.highlightResult ? " career-timeline__result--highlight" : ""}`}
-                  >
-                    {item.result}
-                  </p>
+                {item.result || item.action ? (
+                  <div className="career-timeline__footer">
+                    {item.result ? (
+                      <p
+                        className={`career-timeline__result${item.highlightResult ? " career-timeline__result--highlight" : ""}`}
+                      >
+                        {item.result}
+                      </p>
+                    ) : null}
+                    {item.action ? (
+                      <button
+                        className="career-timeline__action"
+                        type="button"
+                        onClick={() => onOpenProject?.(item.action.projectSlug)}
+                        aria-label={`${item.action.label}: ${item.title}`}
+                      >
+                        <span>{item.action.label}</span>
+                        <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
               </article>
             </li>

@@ -46,11 +46,11 @@ test("career copy is concise, concrete and outcome-led in both locales", async (
   const en = await read("../src/content/siteLocale.js");
 
   assert.match(ru, /Продавал товары на Wildberries и Avito/);
-  assert.match(ru, /Организовал стартап для серийного производства мобильных дата-центров/);
+  assert.match(ru, /Организовал разработку мобильного дата-центра и вёл переговоры с венчурными фондами/);
   assert.match(ru, /Разрабатываю цифровые и AI-продукты для бизнеса в любой отрасли/);
-  assert.match(ru, /Постоянно ищу точки роста и оптимизирую процессы с помощью AI/);
+  assert.match(ru, /Постоянно ищу точки роста и оптимизирую операционные процессы с помощью AI/);
   assert.match(en, /I sold products on Wildberries and Avito/);
-  assert.match(en, /I organised a startup for serial mobile data-centre production/);
+  assert.match(en, /I organised the development of a mobile data centre/);
   assert.match(en, /I develop digital and AI products for businesses in any industry/);
 });
 

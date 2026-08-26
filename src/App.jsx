@@ -66,7 +66,7 @@ export function App({ locale = "ru" }) {
         </section>
 
         <ProblemSelector problems={problems} sectionId="problems" copy={sectionCopy.problems} ui={ui} />
-        <CareerTimeline items={career} copy={sectionCopy.career} />
+        <CareerTimeline items={career} copy={sectionCopy.career} onOpenProject={openProject} />
         <ProjectMarketplace projects={projects} onOpenProject={openProject} copy={sectionCopy.marketplace} ui={ui} />
         <FinalContact contact={contact} />
       </main>
