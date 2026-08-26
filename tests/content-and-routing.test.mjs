@@ -40,7 +40,7 @@ test("publishes the approved positioning and six business capabilities", () => {
 
 test("keeps the approved career sequence", () => {
   assert.deepEqual(career.map(({ year }) => year), ["2021–2024", "2024", "2021–2025", "2025–наст. время", "Постоянно"]);
-  assert.match(career[1].title, /DATONIKS/i);
+  assert.equal(career[1].title, "Мобильные дата-центры");
   assert.match(career[2].title, /LSE/i);
   assert.match(career[3].title, /больница №15/i);
 });

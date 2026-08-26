@@ -62,7 +62,7 @@ test("problem selector uses a direct task rail and never mounts OptionWheel", ()
 
 test("career keeps every event readable and renders one strongest result", () => {
   assert.match(contentSource, /result:\s*"Могу помочь с логистикой из Европы и Китая"/);
-  assert.match(contentSource, /result:\s*"Ищу инвестиции"/);
+  assert.doesNotMatch(contentSource, /result:\s*"Ищу инвестиции"/);
   assert.match(careerComponentSource, /career-timeline__result/);
   assert.doesNotMatch(
     careerCssSource,

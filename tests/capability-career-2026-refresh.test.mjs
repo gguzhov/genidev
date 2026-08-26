@@ -75,8 +75,8 @@ test("career reflects current verified experience and optional outcomes", () => 
   assert.match(career[0].body, /Wildberries/);
   assert.match(career[0].body, /Avito/);
   assert.equal(career[0].result, "Могу помочь с логистикой из Европы и Китая");
-  assert.equal(career[1].result, "Ищу инвестиции");
-  assert.equal(career[1].highlightResult, true);
+  assert.equal(career[1].result, undefined);
+  assert.equal(career[1].highlightResult, undefined);
   assert.match(career[1].body, /венчурными фондами/);
   assert.match(career[1].body, /продолжает развиваться/);
   assert.deepEqual(career[1].action, {

@@ -40,12 +40,13 @@ test("шесть направлений содержат 4 конкретных 
 
 test("карьера не придумывает результат там, где достаточно подтверждённого факта", () => {
   career.forEach((event, index) => {
-    if (![2, 4].includes(index)) assert.ok(event.result.length > 5);
+    if (![1, 2, 4].includes(index)) assert.ok(event.result.length > 5);
     assert.equal(event.metrics, undefined);
   });
+  assert.equal("result" in career[1], false);
   assert.equal("result" in career[2], false);
   assert.equal("result" in career[4], false);
-  assert.equal(career[1].result, "Ищу инвестиции");
+  assert.equal(career[1].result, undefined);
 });
 
 test("каждый проект содержит ровно четыре результата и понятную бизнес-структуру", () => {
