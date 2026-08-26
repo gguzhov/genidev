@@ -60,7 +60,8 @@ jobs:
         run: |
           release="/srv/genidev/releases/${{ github.sha }}"
           ssh "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$release'"
-          rsync -az --delete dist/client/ "$DEPLOY_USER@$DEPLOY_HOST:$release/"
+          tar -C dist/client -czf - . | \
+            ssh "$DEPLOY_USER@$DEPLOY_HOST" "tar -xzf - -C '$release'"
 
       - name: Activate release
         env:
