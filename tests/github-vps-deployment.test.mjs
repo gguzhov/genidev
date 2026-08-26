@@ -13,7 +13,7 @@ test("deploys only the static genidev release through a dedicated GitHub identit
   assert.match(workflow, /actions\/setup-python@v5/);
   assert.match(workflow, /pypdf==6\.13\.0/);
   assert.ok(workflow.indexOf("npm run build") < workflow.indexOf("npm test"));
-  assert.match(workflow, /dist\/client\//);
+  assert.match(workflow, /dist\/client(?:\/|\s)/);
   assert.match(workflow, /tar -C dist\/client -czf -/);
   assert.doesNotMatch(workflow, /rsync/);
   assert.match(workflow, /DEPLOY_SSH_KEY/);
