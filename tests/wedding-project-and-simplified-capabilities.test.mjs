@@ -8,21 +8,20 @@ test("describes buildable systems in language a business owner can scan", () => 
   assert.deepEqual(
     problems.map(({ solutions }) => solutions.slice(0, 3).map(({ title }) => title)),
     [
-      ["Контент-план из запросов клиентов", "Ролики из одной съёмки", "Реклама до продажи"],
-      ["CRM, которая ведёт сделку", "AI проверяет все разговоры", "База знаний для продаж"],
+      ["Контент-завод", "Аналитика вирусности", "Дизайн постов и каруселей"],
+      ["Холодные звонки с помощью AI", "AI-руководитель продаж", "Магазин в Telegram и MAX"],
       ["Цифровой двойник бизнеса", "CRM и ERP для вашей отрасли", "Панель руководителя"],
-      ["Закупки под контролем", "Документы без ручного ввода", "Заявки не теряются"],
-      ["Локальный AI внутри компании", "AI-поиск по документам", "AI-агенты для рутинных задач"],
-      ["Найти задачи для AI", "Проверить AI на реальной задаче", "Обучить сотрудников работе с AI"],
+      ["AI-подбор сотрудников", "Онбординг новых сотрудников", "Закупки и счета без ручной работы"],
+      ["Локальный AI-контур", "Агентная разработка с AI", "GPU-инфраструктура под нагрузку"],
+      ["Аудит процессов и AI-дорожная карта", "Пилот на реальных данных", "Обучение команды и стандарты"],
     ],
   );
 
   for (const problem of problems) {
     for (const solution of problem.solutions.slice(0, 3)) {
-      assert.match(solution.process, /→/);
-      assert.ok(solution.process.length <= 52, `${solution.title}: process is too long`);
+      assert.equal("process" in solution, false);
       assert.ok(solution.project.length <= 120, `${solution.title}: solution is too long`);
-      assert.ok(solution.effect.length <= 80, `${solution.title}: result is too long`);
+      assert.ok(solution.effect.length <= 90, `${solution.title}: result is too long`);
     }
   }
 });

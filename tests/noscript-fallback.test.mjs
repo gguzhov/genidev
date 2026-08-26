@@ -22,7 +22,7 @@ test("renders all essential landing content from the shared content contract", a
 
   assert.match(html, new RegExp(hero.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(html, /Геннадий Гужов/);
-  assert.match(html, /Разработчик цифровых и AI-продуктов/);
+  assert.match(html, /Fullstack-разработчик цифровых и AI-продуктов/);
   assert.match(html, new RegExp(hero.promise));
   assert.equal(siteContent.sectionCopy.problems.title, "В чем могу быть полезен?");
   assert.equal(siteContent.sectionCopy.problems.description, undefined);
@@ -59,7 +59,7 @@ test("renders all essential landing content from the shared content contract", a
   for (const event of career) {
     assert.ok(html.includes(event.year));
     assert.ok(html.includes(event.title));
-    assert.ok(html.includes(event.result));
+    if (event.result) assert.ok(html.includes(event.result));
   }
   for (const project of projects) {
     assert.ok(html.includes(project.title));

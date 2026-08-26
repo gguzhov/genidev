@@ -22,10 +22,9 @@ test("capabilities are concrete business projects with a project and measurable 
 
     for (const solution of capability.solutions.slice(0, 3)) {
       assert.ok(solution.title.length >= 8);
-      assert.match(solution.process, /→/);
-      assert.ok(solution.process.length <= 64);
+      assert.equal("process" in solution, false);
       assert.ok(solution.project.length >= 8 && solution.project.length <= 120);
-      assert.ok(solution.effect.length >= 8 && solution.effect.length <= 76);
+      assert.ok(solution.effect.length >= 8 && solution.effect.length <= 90);
     }
     assert.equal(capability.solutions.at(-1).title, "И другое цифровое решение");
   }
@@ -33,29 +32,29 @@ test("capabilities are concrete business projects with a project and measurable 
   assert.deepEqual(
     problems.flatMap(({ solutions }) => solutions.map(({ title }) => title)),
     [
-      "Контент-план из запросов клиентов",
-      "Ролики из одной съёмки",
-      "Реклама до продажи",
+      "Контент-завод",
+      "Аналитика вирусности",
+      "Дизайн постов и каруселей",
       "И другое цифровое решение",
-      "CRM, которая ведёт сделку",
-      "AI проверяет все разговоры",
-      "База знаний для продаж",
+      "Холодные звонки с помощью AI",
+      "AI-руководитель продаж",
+      "Магазин в Telegram и MAX",
       "И другое цифровое решение",
       "Цифровой двойник бизнеса",
       "CRM и ERP для вашей отрасли",
       "Панель руководителя",
       "И другое цифровое решение",
-      "Закупки под контролем",
-      "Документы без ручного ввода",
-      "Заявки не теряются",
+      "AI-подбор сотрудников",
+      "Онбординг новых сотрудников",
+      "Закупки и счета без ручной работы",
       "И другое цифровое решение",
-      "Локальный AI внутри компании",
-      "AI-поиск по документам",
-      "AI-агенты для рутинных задач",
+      "Локальный AI-контур",
+      "Агентная разработка с AI",
+      "GPU-инфраструктура под нагрузку",
       "И другое цифровое решение",
-      "Найти задачи для AI",
-      "Проверить AI на реальной задаче",
-      "Обучить сотрудников работе с AI",
+      "Аудит процессов и AI-дорожная карта",
+      "Пилот на реальных данных",
+      "Обучение команды и стандарты",
       "И другое цифровое решение",
     ],
   );
@@ -63,12 +62,12 @@ test("capabilities are concrete business projects with a project and measurable 
   const copy = JSON.stringify(problems);
   for (const phrase of [
     "Цифровой двойник",
-    "реклам",
-    "звонки и чаты",
-    "согласование",
+    "Аналитика вирусности",
+    "Холодные звонки",
+    "счёт в ERP",
     "закупк",
-    "реальной задаче",
-    "Локальный AI внутри компании",
+    "Пилот на реальных данных",
+    "Локальный AI-контур",
   ]) {
     assert.match(copy, new RegExp(phrase, "i"));
   }

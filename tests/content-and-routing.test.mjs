@@ -9,7 +9,7 @@ test("publishes the approved positioning and six business capabilities", () => {
     "Геннадий Гужов",
   );
   assert.deepEqual(hero.nameLines, ["Геннадий", "Гужов"]);
-  assert.equal(hero.role, "Разработчик цифровых и AI-продуктов");
+  assert.equal(hero.role, "Fullstack-разработчик цифровых и AI-продуктов");
   assert.equal("description" in hero, false);
   assert.equal(
     hero.promise,
@@ -39,10 +39,10 @@ test("publishes the approved positioning and six business capabilities", () => {
 });
 
 test("keeps the approved career sequence", () => {
-  assert.deepEqual(career.map(({ year }) => year), ["2021–2024", "2024", "2025", "2025", "2026"]);
+  assert.deepEqual(career.map(({ year }) => year), ["2021–2024", "2024", "2021–2025", "2025–наст. время", "Постоянно"]);
   assert.match(career[1].title, /DATONIKS/i);
-  assert.match(career[2].body, /Лондонского университета/i);
-  assert.match(career[3].title, /ГКБ №15/i);
+  assert.match(career[2].title, /LSE/i);
+  assert.match(career[3].title, /больница №15/i);
 });
 
 test("ships complete project cases without a role field", () => {

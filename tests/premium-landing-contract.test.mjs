@@ -38,7 +38,7 @@ const [
 
 test("hero presents the approved personal wordmark without a duplicate work sequence", () => {
   assert.match(contentSource, /title:\s*"Геннадий Гужов"/);
-  assert.match(contentSource, /role:\s*"Разработчик цифровых и AI-продуктов"/);
+  assert.match(contentSource, /role:\s*"Fullstack-разработчик цифровых и AI-продуктов"/);
   assert.match(
     contentSource,
     /Создаю сервисы, связываю разрозненные процессы в системы/,
@@ -61,7 +61,8 @@ test("problem selector uses a direct task rail and never mounts OptionWheel", ()
 });
 
 test("career keeps every event readable and renders one strongest result", () => {
-  assert.match(contentSource, /result:\s*"3 млн ₽ заработано на собственных поставках"/);
+  assert.match(contentSource, /result:\s*"Могу помочь с логистикой из Европы и Китая"/);
+  assert.match(contentSource, /result:\s*"Ищу инвестиции"/);
   assert.match(careerComponentSource, /career-timeline__result/);
   assert.doesNotMatch(
     careerCssSource,

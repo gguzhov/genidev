@@ -244,13 +244,6 @@
   line-height: 1.48;
 }
 
-.problem-selector__solution-process dd {
-  color: var(--color-text);
-  font-size: 0.875rem;
-  font-weight: 720;
-  line-height: 1.42;
-}
-
 .problem-selector__solution-result {
   padding-top: 12px;
   border-top: 1px solid var(--color-border);

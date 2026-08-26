@@ -14,7 +14,7 @@ test("publishes six concrete business capabilities with solution projects", () =
     { id: "management", title: "Управление" },
     { id: "operations", title: "Операционные процессы" },
     { id: "ai-infrastructure", title: "AI-инфраструктура" },
-    { id: "enablement", title: "Обучение и сопровождение" },
+    { id: "enablement", title: "Технический консалтинг и обучение" },
   ]);
 
   for (const problem of problems) {
@@ -60,5 +60,5 @@ test("keeps essential solution copy at 14px or larger", () => {
   assert.match(stylesSource, /\.problem-selector__tab-title[\s\S]*font-size:\s*0\.(?:76|86)rem/s);
   assert.match(stylesSource, /\.problem-selector__solution h4\s*\{[^}]*font-size:\s*clamp\(1\.12rem/s);
   assert.match(stylesSource, /\.problem-selector__solution-details dd\s*\{[^}]*font-size:\s*0\.875rem/s);
-  assert.match(stylesSource, /\.problem-selector__solution-process dd\s*\{[^}]*font-size:\s*0\.875rem/s);
+  assert.doesNotMatch(componentSource, /solution\.process|businessProcess/);
 });

@@ -40,11 +40,11 @@ test("career copy is concise, concrete and outcome-led in both locales", async (
   const ru = await read("../src/content/siteContent.js");
   const en = await read("../src/content/siteLocale.js");
 
-  assert.match(ru, /Находил спрос и поставщиков, считал экономику и организовывал поставки/);
-  assert.match(ru, /Упаковал модульный ЦОД в инвестиционный продукт/);
+  assert.match(ru, /Продавал товары на Wildberries и Avito/);
+  assert.match(ru, /Организовал стартап для серийного производства мобильных дата-центров/);
   assert.match(ru, /Сам веду заказные продукты от бизнес-задачи и экономики до разработки, запуска и аналитики/);
-  assert.match(en, /I found demand and suppliers, modelled the economics and ran deliveries/);
-  assert.match(en, /I packaged a modular data centre as an investment product/);
+  assert.match(en, /I sold products on Wildberries and Avito/);
+  assert.match(en, /I organised a startup for serial mobile data-centre production/);
 });
 
 test("background uses one restrained iridescent layer with a static reduced-motion state", async () => {

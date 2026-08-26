@@ -189,7 +189,13 @@ export default function CareerTimeline({ items, copy }) {
                 <p className="career-timeline__year">{item.year}</p>
                 <h3>{item.title}</h3>
                 <p className="career-timeline__body">{item.body}</p>
-                <p className="career-timeline__result">{item.result}</p>
+                {item.result ? (
+                  <p
+                    className={`career-timeline__result${item.highlightResult ? " career-timeline__result--highlight" : ""}`}
+                  >
+                    {item.result}
+                  </p>
+                ) : null}
               </article>
             </li>
           ))}

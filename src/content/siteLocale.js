@@ -3,60 +3,60 @@ const englishProblems = [
     id: "marketing",
     title: "Marketing",
     solutions: [
-      ["A content plan from customer questions", "Customer questions → ideas → plan → publishing", "AI collects customer questions and search queries, suggests topics and prepares a publishing plan.", "The team knows what to publish and why customers need it."],
-      ["Short videos from one recording", "Recording → short videos → publishing", "The system selects strong clips, edits them and adds captions and covers.", "One recording supplies content for several channels."],
-      ["From advertising to a sale", "Ad → lead → deal → payment", "A dashboard connects spend, leads, CRM and payments and shows the result of every campaign.", "You see which ads create sales and which waste budget."],
-      ["Any other digital solution", "", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Content factory", "AI turns raw recordings into ready-to-publish short videos: it selects clips, edits, adds captions and motion graphics.", "The team publishes more video without expanding the editing department."],
+      ["Virality analytics", "AI analyses X, Instagram and Telegram, finds high-engagement themes and turns them into scripts and posts.", "Content is built around real audience response instead of random ideas."],
+      ["Post and carousel design", "The system creates posts, cards and carousels from the brand book and adapts layouts for every platform.", "The visual identity stays consistent while design production gets faster."],
+      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
     id: "management",
     title: "Management",
     solutions: [
-      ["A digital twin of your business", "Request → work → deadline → result", "The system shows the real process, team load, queues and bottlenecks.", "You see where the business loses time and what an improvement will change."],
-      ["CRM and ERP for your industry", "Customer → order → invoice → stock", "One system connects customers, documents, money, inventory and the rules of your business.", "Spreadsheets, chats and manual checks become one process."],
-      ["A dashboard for leaders", "Plan → actual → deviation → action", "The dashboard combines money, deadlines, workload and risks and highlights where a decision is needed.", "Problems appear before they become delays or losses."],
-      ["Any other digital solution", "", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["A digital twin of your business", "The system shows the real process, team load, queues and bottlenecks.", "You see where the business loses time and what an improvement will change."],
+      ["CRM and ERP for your industry", "One system connects customers, documents, money, inventory and the rules of your business.", "Spreadsheets, chats and manual checks become one process."],
+      ["A dashboard for leaders", "The dashboard combines money, deadlines, workload and risks and highlights where a decision is needed.", "Problems appear before they become delays or losses."],
+      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
     id: "sales",
     title: "Sales",
     solutions: [
-      ["CRM that moves every deal forward", "Lead → call → proposal → deal", "The system gathers enquiries, sets the next step and prepares information for calls and proposals.", "The rep works with the customer while CRM keeps the deal from disappearing."],
-      ["AI reviews every conversation", "Call → transcript → score → feedback", "AI reviews calls and chats against your method and finds missed questions and objections.", "A manager sees the quality of the whole team, not a few calls."],
-      ["A knowledge base for sales", "Question → search → answer → source", "Private AI search finds answers in products, policies and contracts and cites the source.", "Salespeople answer faster without waiting for an internal expert."],
-      ["Any other digital solution", "", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["AI-powered cold calls", "A voice AI works through a lead list, presents the service, asks natural questions and hands interested prospects to a salesperson.", "Salespeople join conversations that have already been qualified."],
+      ["AI head of sales", "AI reviews calls and chats, evaluates salespeople and creates coaching recommendations from objections and the company knowledge base.", "The manager sees growth opportunities for each person and the whole team."],
+      ["A shop in Telegram and MAX", "A chatbot presents products or services, answers from the knowledge base, takes payment and sends the order to CRM.", "Customers buy directly in the messenger without a separate website."],
+      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
     id: "operations",
     title: "Operations",
     solutions: [
-      ["Purchasing under control", "Request → approval → order → delivery", "The system collects quotes, compares terms and tracks the order and delivery dates.", "Buyers handle exceptions while statuses and risks stay visible."],
-      ["Documents without manual entry", "Document → validation → approval → ERP", "AI reads an invoice or act, verifies the contract and amount and sends approved data to accounting.", "People review exceptions instead of retyping documents."],
-      ["No request gets lost", "Request → owner → deadline → result", "A digital dispatcher accepts each request, assigns an owner and tracks the deadline and result.", "Every request has an owner, status and clear deadline."],
-      ["Any other digital solution", "", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["AI candidate screening", "AI reads CVs, matches experience to the role, ranks applicants and writes the result to CRM or ATS.", "Recruiters spend time on relevant candidates instead of manually scanning every response."],
+      ["New-employee onboarding", "An AI mentor answers from the knowledge base, guides the onboarding plan, checks assignments and tracks progress.", "New employees reach productive work faster and interrupt experienced colleagues less often."],
+      ["Purchasing and invoices without data entry", "The system requests supplier quotes, compares terms and sends the approved invoice to ERP ready for payment.", "The path from need to invoice runs without copying data, chasing emails or losing documents."],
+      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
     id: "ai-infrastructure",
     title: "AI infrastructure",
     solutions: [
-      ["Private AI inside the company", "Data → model → access → control", "I deploy models, search, permissions and logs inside company infrastructure.", "Corporate data stays inside a controlled environment."],
-      ["AI search across company documents", "Documents → search → answer → source", "The system searches policies, conversations, CRM and files and supports answers with sources.", "Employees find answers quickly and can verify the source."],
-      ["AI agents for routine work", "Event → action → review → log", "AI agents work with CRM, ERP and internal services under defined rules and permissions.", "Routine work runs automatically while important actions remain controlled."],
-      ["Any other digital solution", "", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Private AI environment", "I integrate GPUs and servers into company infrastructure, select Hugging Face models and configure access, data and monitoring.", "AI responds faster while sensitive data stays inside the company."],
+      ["Agentic development with AI", "I set up an AI-agent development workflow with Docker, Git, repositories, a task manager, Agile cadence, checks and releases.", "The team ships internal services faster while code and changes remain controlled."],
+      ["GPU infrastructure for real workloads", "I size GPUs, servers, networking and storage for model training, inference and concurrent employee use.", "The company gets predictable performance and can expand capacity without rebuilding the environment."],
+      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
     id: "enablement",
-    title: "Training and enablement",
+    title: "Technical consulting and training",
     solutions: [
-      ["Find the right tasks for AI", "Interviews → processes → economics → plan", "I review the team’s work, calculate the cost of manual operations and select valuable automation opportunities.", "The company gets a prioritised AI project plan."],
-      ["Test AI on a real task", "Task → prototype → test → metric → decision", "I build a working pilot with employees and test it on the real process and its exceptions.", "You know what to scale, improve or stop."],
-      ["Train employees to work with AI", "Role → practice → standard → control", "I train the team on its own documents and tasks and establish reusable scenarios and quality rules.", "Employees use AI consistently, safely and productively."],
-      ["Any other digital solution", "", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Process audit and AI roadmap", "I review systems, data and manual operations, calculate the economics and prioritise digital and AI projects.", "The company knows where to start and which outcome to test first."],
+      ["A pilot on real company data", "I build a working prototype on company data, connect the required systems and test quality, security and business effect.", "The implementation decision is based on results rather than a presentation."],
+      ["Team training and standards", "I train employees on their work, document scenarios, access rules, quality checks and the internal knowledge base.", "The team uses AI safely and consistently instead of depending on one enthusiast."],
+      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
 ];
@@ -66,11 +66,11 @@ const englishProblemsById = Object.fromEntries(
 );
 
 const englishCareer = [
-  ["2021–2024", "China sourcing and logistics", "I found demand and suppliers, modelled the economics and ran deliveries—from retail goods to equipment for Soldvig PRO.", "₽3M earned from my own supply operations"],
-  ["2024", "DATONIKS · investment venture", "I packaged a modular data centre as an investment product: market research, positioning, financial model, business plan and pitch.", "Looking for an investment partner to launch the series"],
-  ["2025", "HSE · Digital Product Management", "I combined product strategy, research, economics and analytics in a dual-degree programme.", "Two degrees: HSE and University of London"],
-  ["2025", "Moscow City Hospital No. 15 · analyst", "I translated clinical workflows and doctors’ requirements into BI and AI tools for daily work.", "32 → 80 automated checks per day"],
-  ["2026", "Digital and AI products", "I lead commissioned products from the business problem and economics through development, launch and analytics.", "Four launched products—from healthcare to EventTech"],
+  ["2021–2024", "Trade and logistics from China", "I sold products on Wildberries and Avito, found suppliers and organised sourcing—from trending goods to industrial equipment.", "I can help with logistics from Europe and China"],
+  ["2024", "DATONIKS · mobile data-centre startup", "I organised a startup for serial mobile data-centre production and a distributed data-centre network. I prepared the concept, economics and investment materials.", "Seeking investment"],
+  ["2021–2025", "HSE + LSE", "I completed the fully English-taught dual-degree programme in Enterprise Innovation Management."],
+  ["2025–present", "Moscow City Hospital No. 15 · analyst", "I surface data risks, reduce compulsory-medical-insurance underpayments, build BI reporting and explore safe AI analysis of anonymised medical histories.", "Made financial deviations and AI opportunities visible to leadership"],
+  ["Ongoing", "Digital and AI product development", "I lead commissioned products from the business problem and economics through development, launch and analytics.", "Four launched products across Medtech, SaaS, infrastructure and EventTech"],
 ];
 
 const projectEnglish = {
@@ -140,11 +140,14 @@ export function createEnglishContent(russian) {
   const problems = russian.problems.map((problem, index) => ({
     ...problem,
     title: englishProblemsById[problem.id].title,
-    solutions: englishProblemsById[problem.id].solutions.map(([title, process, project, effect]) => ({ title, process, project, effect })),
+    solutions: englishProblemsById[problem.id].solutions.map(([title, project, effect]) => ({ title, project, effect })),
   }));
   const career = russian.career.map((item, index) => {
     const [year, title, body, result] = englishCareer[index];
-    return { ...item, year, title, body, result };
+    const translated = { ...item, year, title, body };
+    if (result) translated.result = result;
+    else delete translated.result;
+    return translated;
   });
   const galleryEnglish = {
     "ostrov-zdoroviya": [
@@ -200,7 +203,7 @@ export function createEnglishContent(russian) {
       ...russian.hero,
       title: "Gennady Guzhov",
       nameLines: ["Gennady", "Guzhov"],
-      role: "Digital and AI product developer",
+      role: "Full-stack digital and AI product developer",
       promise: "I build services, connect fragmented operations into systems and take products to launch—until their value can be measured.",
       cta: { ...russian.hero.cta, label: "Discuss a project" },
     },
@@ -237,8 +240,7 @@ export const englishUi = {
   languageSwitch: [{ locale: "ru", label: "RU" }, { locale: "en", label: "EN" }],
   capabilitiesGroup: "Business capabilities",
   projectIdeas: "Project ideas for",
-  businessProcess: "Process",
-  digitalSolution: "Digital solution",
+  digitalSolution: "Example digital solution",
   businessResult: "What changes",
   previousCapabilityProjects: "Show the previous project",
   nextCapabilityProjects: "Show the next project",

@@ -15,12 +15,12 @@ test("publishes six research-backed business automation directions", () => {
 
   const titles = problems.flatMap(({ solutions }) => solutions.map(({ title }) => title));
   for (const required of [
-    "Контент-план из запросов клиентов",
+    "Контент-завод",
     "Цифровой двойник бизнеса",
-    "Закупки под контролем",
-    "AI-агенты для рутинных задач",
-    "Локальный AI внутри компании",
-    "AI проверяет все разговоры",
+    "AI-подбор сотрудников",
+    "Агентная разработка с AI",
+    "Локальный AI-контур",
+    "AI-руководитель продаж",
   ]) {
     assert.ok(titles.includes(required), `Missing capability project: ${required}`);
   }
@@ -29,10 +29,9 @@ test("publishes six research-backed business automation directions", () => {
 test("keeps capability cards concise and outcome-led", () => {
   for (const problem of problems) {
     for (const solution of problem.solutions.slice(0, 3)) {
-      assert.match(solution.process, /→/, `${solution.title} names a real process`);
-      assert.ok(solution.process.length <= 64, `${solution.title} process copy is too long`);
+      assert.equal("process" in solution, false, `${solution.title} has no duplicate process layer`);
       assert.ok(solution.project.length <= 120, `${solution.title} project copy is too long`);
-      assert.ok(solution.effect.length <= 76, `${solution.title} effect copy is too long`);
+      assert.ok(solution.effect.length <= 90, `${solution.title} effect copy is too long`);
     }
     assert.equal(problem.solutions.at(-1).title, "И другое цифровое решение");
   }

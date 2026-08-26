@@ -12,11 +12,11 @@ test("hero presents the localized name as a two-line personal wordmark", async (
 
   assert.equal(ru.title, "Геннадий Гужов");
   assert.deepEqual(ru.nameLines, ["Геннадий", "Гужов"]);
-  assert.equal(ru.role, "Разработчик цифровых и AI-продуктов");
+  assert.equal(ru.role, "Fullstack-разработчик цифровых и AI-продуктов");
 
   assert.equal(en.title, "Gennady Guzhov");
   assert.deepEqual(en.nameLines, ["Gennady", "Guzhov"]);
-  assert.equal(en.role, "Digital and AI product developer");
+  assert.equal(en.role, "Full-stack digital and AI product developer");
 });
 
 test("hero centers the portrait capsule over the name and keeps one visible role", async () => {
@@ -59,10 +59,10 @@ test("marketplace cards use dedicated gradient artwork with the official logo ab
   assert.deepEqual(
     projects.map((project) => project.cardCover),
     [
-      "/projects/ostrov-cover.webp",
-      "/projects/ilonmask-cover.webp",
-      "/projects/ice/datoniks-ice-v1.webp",
-      "/projects/wedding/wedding-display.png",
+      "/projects/covers/ostrov-tech-gradient-v2.webp",
+      "/projects/covers/ilonmask-tech-gradient-v2.webp",
+      "/projects/covers/datoniks-tech-gradient-v2.webp",
+      "/projects/covers/wedding-tech-gradient-v2.webp",
     ],
   );
   assert.ok(projects.every((project) => project.cardCoverWidth > 0));
@@ -81,12 +81,12 @@ test("capability ideas read as concrete buildable products and mobile navigation
   assert.deepEqual(
     ru.problems.map((problem) => problem.solutions[0].title),
     [
-      "Контент-план из запросов клиентов",
-      "CRM, которая ведёт сделку",
+      "Контент-завод",
+      "Холодные звонки с помощью AI",
       "Цифровой двойник бизнеса",
-      "Закупки под контролем",
-      "Локальный AI внутри компании",
-      "Найти задачи для AI",
+      "AI-подбор сотрудников",
+      "Локальный AI-контур",
+      "Аудит процессов и AI-дорожная карта",
     ],
   );
   assert.ok(ru.problems.every((problem) => problem.solutions.length === 4));

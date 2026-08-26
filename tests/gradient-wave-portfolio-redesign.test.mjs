@@ -15,7 +15,7 @@ const read = (path) => fs.readFileSync(new URL(path, import.meta.url), "utf8");
 
 test("hero представляет специалиста и профессию без дублирующего пути работ", () => {
   assert.equal(hero.title, "Геннадий Гужов");
-  assert.equal(hero.role, "Разработчик цифровых и AI-продуктов");
+  assert.equal(hero.role, "Fullstack-разработчик цифровых и AI-продуктов");
   assert.match(hero.promise, /разрозненные процессы в системы/i);
   assert.equal(hero.sequence, undefined);
 });
@@ -29,7 +29,7 @@ test("шесть направлений содержат 4 конкретных 
       "Управление",
       "Операционные процессы",
       "AI-инфраструктура",
-      "Обучение и сопровождение",
+      "Технический консалтинг и обучение",
     ],
   );
   problems.forEach((problem) => {
@@ -38,13 +38,13 @@ test("шесть направлений содержат 4 конкретных 
   });
 });
 
-test("каждый этап карьеры содержит один сильный результат", () => {
-  career.forEach((event) => {
-    assert.equal(typeof event.result, "string");
-    assert.ok(event.result.length > 5);
+test("карьера не придумывает результат там, где достаточно подтверждённого факта", () => {
+  career.forEach((event, index) => {
+    if (index !== 2) assert.ok(event.result.length > 5);
     assert.equal(event.metrics, undefined);
   });
-  assert.match(career[0].result, /3 млн ₽/);
+  assert.equal("result" in career[2], false);
+  assert.equal(career[1].result, "Ищу инвестиции");
 });
 
 test("каждый проект содержит ровно четыре результата и понятную бизнес-структуру", () => {

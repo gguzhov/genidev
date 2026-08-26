@@ -17,14 +17,14 @@ test("capabilities are three concise products plus an open digital solution", as
     for (const solution of capability.solutions.slice(0, 3)) {
       assert.ok(solution.project.length <= 150, `${capability.id}/${solution.title}: concise project`);
       assert.ok(solution.effect.length <= 115, `${capability.id}/${solution.title}: concise effect`);
-      assert.match(solution.process, /→/, `${capability.id}/${solution.title}: process flow`);
+      assert.equal("process" in solution, false, `${capability.id}/${solution.title}: no duplicate process`);
     }
   }
 
   const component = await read("src/components/ProblemSelector/ProblemSelector.jsx");
   assert.doesNotMatch(component, /problem-selector__tab-icon/);
   assert.doesNotMatch(component, /problem-selector__solution-top[\s\S]*selected\.icon/);
-  assert.match(component, /problem-selector__solution-process/);
+  assert.doesNotMatch(component, /problem-selector__solution-process/);
   assert.match(component, /problem-selector__solution-system/);
   assert.match(component, /problem-selector__solution-result/);
   assert.doesNotMatch(component, /<strong>\{solution\.effect\}<\/strong>/);

@@ -6,7 +6,7 @@ import { hero, identity, problems } from "../src/content/siteContent.js";
 test("publishes the product positioning without a redundant hero sequence", () => {
   assert.equal(identity, "Геннадий Гужов");
   assert.equal(hero.title, "Геннадий Гужов");
-  assert.equal(hero.role, "Разработчик цифровых и AI-продуктов");
+  assert.equal(hero.role, "Fullstack-разработчик цифровых и AI-продуктов");
   assert.equal("description" in hero, false);
   assert.equal(hero.sequence, undefined);
 });

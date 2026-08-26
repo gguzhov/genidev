@@ -120,10 +120,6 @@ export function renderNoscriptFallback(content = defaultContent, { activeProject
         <ul>${problem.solutions
           .map(
             (solution) => `<li><strong>${escapeHtml(solution.title)}</strong>${
-              solution.process
-                ? `<br><small>${escapeHtml(ui.businessProcess)}</small><br>${escapeHtml(solution.process)}`
-                : ""
-            }${
               solution.project
                 ? `<br><small>${escapeHtml(ui.digitalSolution)}</small><br>${escapeHtml(solution.project)}`
                 : ""
@@ -148,7 +144,7 @@ export function renderNoscriptFallback(content = defaultContent, { activeProject
         <p><strong>${escapeHtml(event.year)}</strong></p>
         <h3>${escapeHtml(event.title)}</h3>
         <p>${escapeHtml(event.body)}</p>
-        <p><strong>${escapeHtml(event.result)}</strong></p>
+        ${event.result ? `<p><strong>${escapeHtml(event.result)}</strong></p>` : ""}
       </article>`,
         )
         .join("")}

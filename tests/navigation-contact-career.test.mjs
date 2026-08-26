@@ -28,14 +28,13 @@ test("keeps confirmed career facts with one strongest result", async () => {
     [title, body, result].join(" "),
   ).join(" ");
 
-  assert.match(career[0].body, /Находил спрос и поставщиков/);
-  assert.match(career[0].body, /считал экономику и организовывал поставки/);
-  assert.match(career[0].body, /«Солдвиг ПРО»/);
+  assert.match(career[0].body, /Wildberries и Avito/);
+  assert.match(career[0].body, /промышленного оборудования/);
   assert.doesNotMatch(careerCopy, /тамож/iu);
 
-  assert.match(career[1].body, /финансовая модель, бизнес-план и питч/i);
-  assert.equal(career[0].result, "3 млн ₽ заработано на собственных поставках");
-  assert.equal(career[1].result, "Ищу инвестиционного партнёра для запуска серии");
+  assert.match(career[1].body, /распределённой сети ЦОД/i);
+  assert.equal(career[0].result, "Могу помочь с логистикой из Европы и Китая");
+  assert.equal(career[1].result, "Ищу инвестиции");
   assert.equal(sectionCopy.career.title, "Мой карьерный тернистый путь");
   assert.match(careerComponent, /\{copy\.title\}/);
   assert.match(careerComponent, /career-timeline__result/);

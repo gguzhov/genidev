@@ -15,7 +15,7 @@ test("capability copy names six concrete business directions", async () => {
       ["management", "Управление"],
       ["operations", "Операционные процессы"],
       ["ai-infrastructure", "AI-инфраструктура"],
-      ["enablement", "Обучение и сопровождение"],
+      ["enablement", "Технический консалтинг и обучение"],
     ],
   );
 
@@ -28,15 +28,15 @@ test("capability copy names six concrete business directions", async () => {
 
   const allCopy = JSON.stringify(problems);
   for (const phrase of [
-    "Контент-план из запросов клиентов",
-    "Реклама до продажи",
+    "Контент-завод",
+    "Аналитика вирусности",
     "Цифровой двойник бизнеса",
     "CRM",
     "ERP",
-    "AI проверяет все разговоры",
-    "Закупки под контролем",
-    "Локальный AI внутри компании",
-    "Найти задачи для AI",
+    "AI-руководитель продаж",
+    "AI-подбор сотрудников",
+    "Локальный AI-контур",
+    "Аудит процессов и AI-дорожная карта",
     "И другое цифровое решение",
   ]) {
     assert.match(allCopy, new RegExp(phrase, "i"));
@@ -61,10 +61,10 @@ test("career is a scroll-driven route with a plane and verified milestones", asy
   const css = read("src/components/CareerTimeline/CareerTimeline.css");
   const copy = JSON.stringify(career);
 
-  assert.match(copy, /3 млн ₽/);
-  assert.match(copy, /Солдвиг ПРО/);
-  assert.match(copy, /Лондонск/);
-  assert.match(copy, /32 → 80/);
+  assert.match(copy, /Wildberries/);
+  assert.match(copy, /промышленного оборудования/);
+  assert.match(copy, /LSE/);
+  assert.match(copy, /недоплаты ОМС/);
   assert.match(component, /career-route__plane/);
   assert.match(component, /requestAnimationFrame/);
   assert.match(css, /--career-scroll-progress/);

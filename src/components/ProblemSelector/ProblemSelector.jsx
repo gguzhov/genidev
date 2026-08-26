@@ -165,10 +165,6 @@ export default function ProblemSelector({ problems, sectionId, copy, ui }) {
                       <div className="problem-selector__solution-copy">
                         <h4>{solution.title}</h4>
                         <dl className="problem-selector__solution-details">
-                          <div className="problem-selector__solution-process">
-                            <dt>{ui.businessProcess}</dt>
-                            <dd>{solution.process}</dd>
-                          </div>
                           <div className="problem-selector__solution-system">
                             <dt>{ui.digitalSolution}</dt>
                             <dd>{solution.project}</dd>
