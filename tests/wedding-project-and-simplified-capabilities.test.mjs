@@ -30,7 +30,7 @@ test("publishes Wedding Vote as a complete bilingual route-backed case", () => {
   const project = projects.find(({ slug }) => slug === "wedding-vote");
   assert.ok(project);
   assert.equal(project.title, "Wedding Vote");
-  assert.deepEqual(project.tags, ["EventTech", "Web", "Realtime"]);
+  assert.deepEqual(project.tags, ["EventTech", "Web"]);
   assert.equal(project.metrics.length, 4);
   assert.equal(project.solution.length, 4);
   assert.equal(project.gallery.length, 3);

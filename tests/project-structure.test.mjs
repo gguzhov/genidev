@@ -80,10 +80,12 @@ test("uses the approved calm motion contract without a hero work sequence", asyn
   assert.match(app, /hero__name-line/);
   const heroCss = await readFile("src/styles/hero.css", "utf8");
   const careerCss = await readFile("src/components/CareerTimeline/CareerTimeline.css", "utf8");
+  const careerComponent = await readFile("src/components/CareerTimeline/CareerTimeline.jsx", "utf8");
   assert.match(heroCss, /@keyframes hero-letter-in/);
   assert.match(heroCss, /@keyframes hero-portrait-in/);
   assert.match(heroCss, /prefers-reduced-motion:\s*reduce/);
-  assert.match(careerCss, /--career-scroll-progress/);
+  assert.match(careerComponent, /useMotionValueEvent\s*\(activeProgress/);
+  assert.match(careerComponent, /style=\{\{ pathLength: activeProgress \}\}/);
   assert.match(careerCss, /prefers-reduced-motion:\s*reduce/);
 });
 

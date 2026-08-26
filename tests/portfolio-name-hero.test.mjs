@@ -59,10 +59,10 @@ test("marketplace cards use dedicated gradient artwork with the official logo ab
   assert.deepEqual(
     projects.map((project) => project.cardCover),
     [
-      "/projects/covers/ostrov-tech-gradient-v2.webp",
-      "/projects/covers/ilonmask-tech-gradient-v2.webp",
-      "/projects/covers/datoniks-tech-gradient-v2.webp",
-      "/projects/covers/wedding-tech-gradient-v2.webp",
+      "/projects/covers/ostrov-xray-dna-v4.webp",
+      "/projects/covers/ilonmask-xray-orbit-v4.webp",
+      "/projects/covers/datoniks-xray-compute-v4.webp",
+      "/projects/covers/wedding-xray-flora-v4.webp",
     ],
   );
   assert.ok(projects.every((project) => project.cardCoverWidth > 0));

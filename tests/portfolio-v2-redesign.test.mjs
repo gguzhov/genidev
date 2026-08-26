@@ -66,8 +66,9 @@ test("career is a scroll-driven route with a plane and verified milestones", asy
   assert.match(copy, /LSE/);
   assert.match(copy, /недоплаты ОМС/);
   assert.match(component, /career-route__plane/);
-  assert.match(component, /requestAnimationFrame/);
-  assert.match(css, /--career-scroll-progress/);
+  assert.match(component, /useScroll\s*\(/);
+  assert.match(component, /useSpring\s*\(scrollYProgress/);
+  assert.doesNotMatch(component, /requestAnimationFrame/);
   assert.match(css, /career-route__road/);
 });
 

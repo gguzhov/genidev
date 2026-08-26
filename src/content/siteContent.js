@@ -251,7 +251,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/ostrov-logo.png",
     },
-    cardCover: "/projects/covers/ostrov-tech-gradient-v2.webp",
+    cardCover: "/projects/covers/ostrov-xray-dna-v4.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/ostrov/ostrov-home-comet.webp",
@@ -344,7 +344,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/ilonmask-logo-card.webp",
     },
-    cardCover: "/projects/covers/ilonmask-tech-gradient-v2.webp",
+    cardCover: "/projects/covers/ilonmask-xray-orbit-v4.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/ilonmask-product-cover.png",
@@ -436,7 +436,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/datoniks-logo.png",
     },
-    cardCover: "/projects/covers/datoniks-tech-gradient-v2.webp",
+    cardCover: "/projects/covers/datoniks-xray-compute-v4.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/datoniks/datoniks-slide-03.webp",
@@ -507,10 +507,10 @@ export const projects = [
   {
     slug: "wedding-vote",
     title: "Wedding Vote",
-    tags: ["EventTech", "Web", "Realtime"],
-    category: "EventTech · Web · Realtime",
+    tags: ["EventTech", "Web"],
+    category: "EventTech · Web",
     summary:
-      "Свадебный интерактив: гости голосуют по QR, а общий экран меняется в реальном времени.",
+      "Свадебный интерактив: гости голосуют за мальчика или девочку по QR, а общий экран показывает результат в реальном времени.",
     deliveredAt: "Август 2026",
     metrics: [
       "3 синхронных интерфейса",
@@ -521,7 +521,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/wedding-vote-logo.png",
     },
-    cardCover: "/projects/covers/wedding-tech-gradient-v2.webp",
+    cardCover: "/projects/covers/wedding-xray-flora-v4.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/wedding/wedding-display.png",

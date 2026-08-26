@@ -120,8 +120,8 @@ const projectEnglish = {
     metrics: ["Facility operating in Irkutsk", "40HC · 10 racks × 12 kW", "Business plan, pitch and model ready", "Seeking an investment partner"],
   },
   "wedding-vote": {
-    tags: ["EventTech", "Web", "Realtime"],
-    summary: "A wedding interaction where guests vote by QR code and the shared screen updates in real time.",
+    tags: ["EventTech", "Web"],
+    summary: "A wedding interaction where guests vote for a boy or a girl by QR code and the shared screen shows the result in real time.",
     deliveredAt: "August 2026",
     challengeLabel: "Brief",
     challenge: "The wedding needed more than a conventional game: every guest had to join by QR code, connect a vote with an amount and see the shared result change live in the room.",

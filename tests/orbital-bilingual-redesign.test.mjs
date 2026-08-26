@@ -74,7 +74,9 @@ test("career plane follows the SVG road and career copy sells only confirmed evi
   assert.match(component, /getPointAtLength/);
   assert.match(component, /getTotalLength/);
   assert.doesNotMatch(component, /Math\.sin\(progress/);
-  assert.match(css, /--career-plane-angle/);
+  assert.match(component, /planeAngle\.set\(geometry\.angle\)/);
+  assert.match(component, /style=\{\{ x: planeX, y: planeY, rotate: planeAngle \}\}/);
+  assert.match(css, /will-change:\s*transform/);
   assert.match(JSON.stringify(career), /Wildberries/);
   assert.match(JSON.stringify(career), /недоплаты ОМС/);
   assert.doesNotMatch(JSON.stringify(career), /ответственно|полностью подтверждено/i);

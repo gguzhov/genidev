@@ -18,11 +18,16 @@ test("career route fill and airplane use the same normalized progress", async ()
   const jsx = await read("../src/components/CareerTimeline/CareerTimeline.jsx");
   const css = await read("../src/components/CareerTimeline/CareerTimeline.css");
 
-  assert.match(jsx, /strokeDasharray="1"/);
-  assert.match(jsx, /strokeDashoffset="1"/);
-  assert.match(jsx, /setAttribute\("stroke-dashoffset",\s*\(1 - progress\)\.toFixed\(4\)\)/);
-  assert.match(jsx, /deltaMs,\s*95,/);
-  assert.doesNotMatch(css.match(/\.career-route__road-progress\s*\{(?<body>[^}]*)\}/s)?.groups?.body ?? "", /stroke-dashoffset/);
+  assert.match(jsx, /useScroll\s*\(/);
+  assert.match(jsx, /useSpring\s*\(scrollYProgress/);
+  assert.match(jsx, /useMotionValueEvent\s*\(activeProgress,\s*"change",\s*syncProgress\)/);
+  assert.match(jsx, /style=\{\{ pathLength: activeProgress \}\}/);
+  assert.match(jsx, /style=\{\{ x: planeX, y: planeY, rotate: planeAngle \}\}/);
+  assert.doesNotMatch(jsx, /requestAnimationFrame|stroke-dashoffset/);
+  assert.doesNotMatch(
+    css.match(/\.career-route__road-progress\s*\{(?<body>[^}]*)\}/s)?.groups?.body ?? "",
+    /stroke-dashoffset/,
+  );
 });
 
 test("footer uses the channel name and contains no public-offer disclaimer", async () => {

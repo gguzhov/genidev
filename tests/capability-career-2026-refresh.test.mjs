@@ -84,10 +84,10 @@ test("career reflects current verified experience and optional outcomes", () => 
 
 test("each marketplace card uses a dedicated generated 3:2 technology background", () => {
   const expectedCovers = [
-    "/projects/covers/ostrov-tech-gradient-v2.webp",
-    "/projects/covers/ilonmask-tech-gradient-v2.webp",
-    "/projects/covers/datoniks-tech-gradient-v2.webp",
-    "/projects/covers/wedding-tech-gradient-v2.webp",
+    "/projects/covers/ostrov-xray-dna-v4.webp",
+    "/projects/covers/ilonmask-xray-orbit-v4.webp",
+    "/projects/covers/datoniks-xray-compute-v4.webp",
+    "/projects/covers/wedding-xray-flora-v4.webp",
   ];
   assert.deepEqual(projects.map(({ cardCover }) => cardCover), expectedCovers);
   for (const project of projects) {

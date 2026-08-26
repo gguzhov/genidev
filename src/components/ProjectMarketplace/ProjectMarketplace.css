@@ -171,6 +171,7 @@
   padding: 20px;
   align-content: start;
   gap: 14px;
+  grid-template-rows: auto auto 1fr auto;
 }
 
 .project-card__meta {
@@ -229,17 +230,21 @@
 
 .project-card__open {
   position: static;
-  justify-self: start;
-  min-height: 44px;
+  display: grid;
+  width: 100%;
+  min-height: 52px;
   margin-top: 6px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-control);
   padding: 0 15px;
+  place-items: center;
+  justify-self: stretch;
   background: var(--color-surface-raised);
   color: var(--color-text);
   cursor: pointer;
   font-size: 0.78rem;
   font-weight: 720;
+  text-align: center;
 }
 
 .project-card__open::after {

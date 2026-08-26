@@ -29,6 +29,20 @@
   column-gap: 8px;
 }
 
+.card-nav__scroll-progress {
+  position: absolute;
+  z-index: 4;
+  top: 62px;
+  left: 8px;
+  width: calc(100% - 16px);
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue-7), var(--color-accent) 68%, var(--blue-4));
+  box-shadow: 0 2px 9px var(--blue-a5);
+  pointer-events: none;
+  transform-origin: left center;
+}
+
 .card-nav__menu-button {
   display: grid;
   width: 48px;
@@ -241,6 +255,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .card-nav__scroll-progress,
   .card-nav__menu-button span,
   .card-nav__cta,
   .card-nav__link {
