@@ -47,9 +47,11 @@ test("career copy is concise, concrete and outcome-led in both locales", async (
 
   assert.match(ru, /Продавал товары на Wildberries и Avito/);
   assert.match(ru, /Организовал стартап для серийного производства мобильных дата-центров/);
-  assert.match(ru, /Сам веду заказные продукты от бизнес-задачи и экономики до разработки, запуска и аналитики/);
+  assert.match(ru, /Разрабатываю цифровые и AI-продукты для бизнеса в любой отрасли/);
+  assert.match(ru, /Постоянно ищу точки роста и оптимизирую процессы с помощью AI/);
   assert.match(en, /I sold products on Wildberries and Avito/);
   assert.match(en, /I organised a startup for serial mobile data-centre production/);
+  assert.match(en, /I develop digital and AI products for businesses in any industry/);
 });
 
 test("background uses one restrained iridescent layer with a static reduced-motion state", async () => {

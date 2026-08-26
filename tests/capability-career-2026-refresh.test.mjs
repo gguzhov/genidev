@@ -78,8 +78,19 @@ test("career reflects current verified experience and optional outcomes", () => 
   assert.equal(career[1].result, "Ищу инвестиции");
   assert.equal(career[1].highlightResult, true);
   assert.equal("result" in career[2], false);
+  assert.equal(
+    career[2].body,
+    "Закончил англоязычную программу двух дипломов «Управление инновациями на предприятии».",
+  );
   assert.match(career[3].body, /ОМС/);
   assert.match(career[3].body, /BI/);
+  assert.doesNotMatch(career[3].body, /Подсвечиваю|сокращаю|разрабатываю|ищу/);
+  assert.match(career[4].body, /любой отрасли/);
+  assert.equal(
+    career[4].result,
+    "Постоянно ищу точки роста и оптимизирую процессы с помощью AI",
+  );
+  assert.doesNotMatch(career[4].result, /Четыре запущенных продукта/);
 });
 
 test("each marketplace card uses a dedicated generated 3:2 technology background", () => {
