@@ -70,7 +70,7 @@ const englishCareer = [
   ["2024", "Mobile data centres", "I organised the development of a mobile data centre and held discussions with venture funds. The product is developed and continues to evolve; I am seeking funding to launch serial production."],
   ["2021–2025", "HSE + LSE", "I completed an English-taught dual-degree programme in Enterprise Innovation Management."],
   ["2025–present", "Moscow City Hospital No. 15 · analyst", "I identified data risks, reduced compulsory-medical-insurance underpayments, built BI reporting and explored safe AI analysis of anonymised medical histories.", "I continually look for growth opportunities and optimise operational processes with AI"],
-  ["Ongoing", "Digital and AI product development", "I develop digital and AI products for businesses in any industry—from framing the problem and calculating economics to development, launch and analytics."],
+  ["Ongoing", "Consulting", "I develop digital and AI products for businesses in any industry—from framing the problem and calculating economics to development, launch and analytics."],
 ];
 
 const projectEnglish = {
