@@ -33,15 +33,21 @@ test("publishes the real intrinsic dimensions for every project cover", () => {
       coverWidth: 1920,
       coverHeight: 1080,
     },
+    "wedding-vote": {
+      cover: "/projects/wedding/wedding-display.png",
+      coverWidth: 1280,
+      coverHeight: 720,
+    },
   });
 });
 
-test("uses truthful intrinsic dimensions in the full case while cards use exact logos", () => {
+test("uses truthful intrinsic dimensions in the full case and evidence plus exact logos in cards", () => {
   assert.match(caseSource, /width=\{project\.coverWidth \?\? 1536\}/);
   assert.match(caseSource, /height=\{project\.coverHeight \?\? 1024\}/);
   assert.doesNotMatch(caseSource, /width="1536"|height="1024"/);
   assert.match(visualSource, /src=\{project\.visual\.logo\}/);
-  assert.doesNotMatch(visualSource, /project\.cover/);
+  assert.match(visualSource, /src=\{project\.cardCover \?\? project\.cover\}/);
+  assert.match(visualSource, /project-visual__logo-plate/);
 });
 
 test("shows the complete ProjectCase cover at its metadata aspect ratio", () => {

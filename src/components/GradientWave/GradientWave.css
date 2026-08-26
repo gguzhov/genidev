@@ -8,7 +8,8 @@
 }
 
 .gradient-wave__shader {
-  opacity: 0.88;
+  opacity: 0.86;
+  filter: saturate(1.08) contrast(1.04);
 }
 
 .gradient-wave__veil {
@@ -16,22 +17,22 @@
   z-index: 3;
   inset: 0;
   background:
-    linear-gradient(180deg, var(--gradient-ice-veil-top), transparent 32%),
-    linear-gradient(0deg, var(--gradient-ice-veil-bottom), transparent 26%);
+    radial-gradient(ellipse at 50% -12%, color-mix(in oklch, var(--gradient-ice-veil-top) 46%, transparent), transparent 58%),
+    linear-gradient(0deg, color-mix(in oklch, var(--gradient-ice-veil-bottom) 38%, transparent), transparent 34%);
 }
 
 @media (max-width: 767px) {
   .gradient-wave__shader {
-    opacity: 0.72;
+    opacity: 0.76;
   }
 
   .gradient-wave__veil {
-    background: linear-gradient(180deg, var(--gradient-ice-veil-top), transparent 42%);
+    background: radial-gradient(ellipse at 50% -8%, color-mix(in oklch, var(--gradient-ice-veil-top) 54%, transparent), transparent 58%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .gradient-wave__shader {
-    opacity: 0.76;
+    opacity: 0.72;
   }
 }

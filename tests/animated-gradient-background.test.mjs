@@ -24,6 +24,7 @@ test("uses the supplied WebGL shader as a full-landing UI component", async () =
   assert.match(component, /webglcontextlost/);
   assert.match(component, /webglcontextrestored/);
   assert.match(component, /contextRevision/);
+  assert.match(component, /contextLost \|\| gl\.isContextLost\?\.\(\)/);
   assert.match(component, /const DEFAULT_CONFIG = Object\.freeze/);
   assert.match(component, /config = DEFAULT_CONFIG/);
   assert.match(wave, /components\/ui\/animated-gradient|\.\.\/ui\/animated-gradient/);
@@ -33,7 +34,7 @@ test("uses the supplied WebGL shader as a full-landing UI component", async () =
   assert.match(waveCss, /pointer-events:\s*none/);
 });
 
-test("adapts the shader to the Evidence-first Ice palette and keeps a CSS fallback", async () => {
+test("adapts the shader to the Ice palette and keeps resilient layered surfaces", async () => {
   const [component, tokens, design, sections, marketplace, contact] = await Promise.all([
     read("../src/components/ui/animated-gradient.jsx"),
     read("../src/styles/tokens.css"),
@@ -53,9 +54,10 @@ test("adapts the shader to the Evidence-first Ice palette and keeps a CSS fallba
   assert.match(component, /animated-gradient__fallback/);
   assert.match(design, /WebGL/);
   assert.match(design, /останавливается, когда вкладка скрыта/);
-  assert.match(sections, /color-mix\(in oklch, var\(--color-surface\) 90%, transparent\)/);
-  assert.match(marketplace, /color-mix\(in oklch, var\(--color-surface\) 90%, transparent\)/);
-  assert.match(contact, /color-mix\(in oklch, var\(--color-surface\) 90%, transparent\)/);
+  assert.match(sections, /\.section__heading h2\s*\{[^}]*max-width:\s*none/s);
+  assert.match(marketplace, /\.project-visual__cover/);
+  assert.match(marketplace, /\.project-visual__logo-plate/);
+  assert.match(contact, /color-mix\(in oklch, var\(--color-surface-raised\) 92%, transparent\)/);
 });
 
 test("releases every WebGL and browser lifecycle resource", async () => {

@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, copyFile, mkdtemp, readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import test from "node:test";
 
 const MANIFEST_PATH = "public/documents/datoniks-pitch-deck-public.manifest.json";
@@ -7,7 +9,7 @@ const VERIFY_SCRIPT = "scripts/verify-datoniks-public-deck.mjs";
 const VERIFY_CONTACTS_SCRIPT = "scripts/verify-pdf-public-privacy.mjs";
 const SOURCE_PATH = "/Users/gguzhov/Downloads/Питч-дек_DATONIKS.pdf";
 
-test("ties the public deck to source pages 1-17 and excludes private slide 18", async (t) => {
+test("ties the public deck to approved source pages and excludes private team/contact slides", async (t) => {
   await assert.doesNotReject(access(VERIFY_SCRIPT));
   await assert.doesNotReject(access(MANIFEST_PATH));
 
@@ -18,17 +20,18 @@ test("ties the public deck to source pages 1-17 and excludes private slide 18", 
   const inspection = inspectPublicDeck(manifest.publicPath);
 
   assert.equal(manifest.sourcePageCount, 18);
-  assert.deepEqual(manifest.includedSourcePages, Array.from({ length: 17 }, (_, index) => index + 1));
-  assert.deepEqual(manifest.excludedSourcePages, [18]);
-  assert.equal(manifest.publicPageCount, 17);
-  assert.equal(manifest.publicPageFingerprints.length, 17);
-  assert.equal(manifest.excludedSourcePageFingerprints.length, 1);
-  assert.match(manifest.excludedSourcePageFingerprints[0], /^[a-f0-9]{64}$/);
-  assert.equal(
-    manifest.publicPageFingerprints.includes(manifest.excludedSourcePageFingerprints[0]),
-    false,
-  );
-  assert.equal(inspection.pageCount, 17);
+  assert.deepEqual(manifest.includedSourcePages, [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17,
+  ]);
+  assert.deepEqual(manifest.excludedSourcePages, [16, 18]);
+  assert.equal(manifest.publicPageCount, 16);
+  assert.equal(manifest.publicPageFingerprints.length, 16);
+  assert.equal(manifest.excludedSourcePageFingerprints.length, 2);
+  for (const fingerprint of manifest.excludedSourcePageFingerprints) {
+    assert.match(fingerprint, /^[a-f0-9]{64}$/);
+    assert.equal(manifest.publicPageFingerprints.includes(fingerprint), false);
+  }
+  assert.equal(inspection.pageCount, 16);
   assert.deepEqual(inspection.pageFingerprints, manifest.publicPageFingerprints);
   assert.match(manifest.sourceSha256, /^[a-f0-9]{64}$/);
 
@@ -43,7 +46,7 @@ test("ties the public deck to source pages 1-17 and excludes private slide 18", 
     });
     assert.equal(sourceVerification.valid, true, sourceVerification.errors.join("\n"));
   } else {
-    t.diagnostic("Source PDF unavailable; durable excluded-page fingerprint verified instead.");
+    t.diagnostic("Source PDF unavailable; durable private-slide fingerprints verified instead.");
   }
 });
 
@@ -58,4 +61,43 @@ test("scans every published DATONIKS PDF for contacts and participant data", asy
     "public/documents/datoniks-business-plan.pdf",
   ]);
   assert.deepEqual(findings, []);
+});
+
+test("fails closed when a raster deck has not declared every non-public source slide", async () => {
+  const manifest = JSON.parse(await readFile(MANIFEST_PATH, "utf8"));
+  assert.deepEqual(manifest.excludedSourcePages, [16, 18]);
+  assert.equal(manifest.excludedSourcePageFingerprints.length, 2);
+  for (const fingerprint of manifest.excludedSourcePageFingerprints) {
+    assert.equal(manifest.publicPageFingerprints.includes(fingerprint), false);
+  }
+});
+
+test("updating an already sanitized raster manifest keeps both private fingerprints", async () => {
+  const { updateManifestFromPublishedDeck } = await import(
+    "../scripts/verify-datoniks-public-deck.mjs"
+  );
+  const tempDirectory = await mkdtemp(path.join(tmpdir(), "datoniks-public-manifest-"));
+  const manifestPath = path.join(tempDirectory, "manifest.json");
+  await copyFile(MANIFEST_PATH, manifestPath);
+  const before = JSON.parse(await readFile(manifestPath, "utf8"));
+
+  updateManifestFromPublishedDeck({
+    manifestPath,
+    publicPath: "public/documents/datoniks-pitch-deck-public.pdf",
+  });
+  const afterFirstRun = JSON.parse(await readFile(manifestPath, "utf8"));
+  updateManifestFromPublishedDeck({
+    manifestPath,
+    publicPath: "public/documents/datoniks-pitch-deck-public.pdf",
+  });
+  const afterSecondRun = JSON.parse(await readFile(manifestPath, "utf8"));
+
+  assert.deepEqual(
+    afterFirstRun.excludedSourcePageFingerprints,
+    before.excludedSourcePageFingerprints,
+  );
+  assert.deepEqual(
+    afterSecondRun.excludedSourcePageFingerprints,
+    before.excludedSourcePageFingerprints,
+  );
 });

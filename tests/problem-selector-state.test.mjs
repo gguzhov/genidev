@@ -46,35 +46,38 @@ test("keeps the live region mounted while keyed inner content transitions", () =
   );
   assert.match(
     stylesSource,
-    /\.problem-selector__panel-content\s*\{[^}]*animation:\s*problem-panel-enter/s,
+    /\.problem-selector__panel-content\s*\{[^}]*animation:\s*capability-panel-enter/s,
   );
   assert.doesNotMatch(
     stylesSource,
-    /\.problem-selector__panel\s*\{[^}]*animation:\s*problem-panel-enter/s,
+    /\.problem-selector__panel\s*\{[^}]*animation:\s*capability-panel-enter/s,
   );
 });
 
-test("explains each task through actions and outcomes without a redundant section lead", () => {
-  assert.match(componentSource, /sectionCopy\.problems\.title/);
+test("explains each direction through three concise projects and one open solution", () => {
+  assert.match(componentSource, /\{copy\.title\}/);
   assert.doesNotMatch(componentSource, /От запуска продукта до AI-автоматизации/);
-  assert.match(componentSource, />Что сделаю</);
-  assert.match(componentSource, /Что получите/);
+  assert.match(componentSource, /featuredSolutions\.map/);
+  assert.match(componentSource, /openSolution/);
+  assert.doesNotMatch(componentSource, /selected\.solutions\.map/);
+  assert.match(componentSource, /problem-selector__solutions/);
+  assert.doesNotMatch(componentSource, /Что можно автоматизировать|Что изменится в работе/);
   assert.doesNotMatch(componentSource, /Разбираю задачу, считаю эффект/);
   for (const problem of problems) {
-    assert.equal(problem.actions.length, 4);
-    assert.equal(problem.outcomes.length, 4);
+    assert.equal(problem.solutions.length, 4);
+    assert.ok(problem.solutions.every(({ project, effect }) => project && effect));
   }
 });
 
-test("uses a mobile snap rail, a vertical desktop rail and restrained state motion", () => {
+test("uses a compact category filter, a project snap rail and restrained state motion", () => {
   assert.match(stylesSource, /scroll-snap-type:\s*x mandatory/);
   assert.match(stylesSource, /\.problem-selector__tab\s*\{[^}]*min-height:\s*(?:4[4-9]|[5-9]\d)px/s);
   assert.match(
     stylesSource,
-    /@media \(min-width:\s*768px\)[\s\S]*\.problem-selector__rail\s*\{[^}]*flex-direction:\s*column/s,
+    /@media \(min-width:\s*1024px\)[\s\S]*\.problem-selector__rail\s*\{[^}]*grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/s,
   );
   assert.match(stylesSource, /var\(--motion-state\)/);
-  assert.match(stylesSource, /@keyframes problem-panel-enter/);
+  assert.match(stylesSource, /@keyframes capability-panel-enter/);
   assert.match(stylesSource, /prefers-reduced-motion:\s*reduce/);
   assert.doesNotMatch(stylesSource, /transition:\s*all/);
 });

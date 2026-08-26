@@ -5,42 +5,41 @@ import { projects } from "../src/content/siteContent.js";
 
 const expectedMetrics = {
   "ostrov-zdoroviya": [
-    "+72% к посещаемости за месяц",
-    "4 целевые записи",
-    "CMS для самостоятельного обновления",
-    "AI-ассистент и единая воронка",
+    "+72% посещаемости за месяц",
+    "4 записи с первых рекламных кампаний",
+    "Контент обновляется без разработчика",
+    "AI отвечает по базе клиники",
   ],
   "ilonmask-vpn": [
     "300+ регистраций в месяц",
-    "100+ активных платящих клиентов",
-    "Оплата и подключение без администратора",
-    "Автосинхронизация оплаты и VPN-доступа",
+    "100+ платящих клиентов",
+    "Оплата и доступ без оператора",
+    "Кабинет, Telegram и email — единый путь",
   ],
   datoniks: [
-    "Прототип реализован в Иркутске",
-    "Патент на систему охлаждения",
-    "Бизнес-план и финансовая модель",
-    "87 млн ₽ — инвестиционный запрос",
+    "Объект работает в Иркутске",
+    "40HC · 10 стоек × 12 кВт",
+    "Бизнес-план, питч и финмодель готовы",
+    "Ищу партнёра для запуска серии",
+  ],
+  "wedding-vote": [
+    "3 синхронных интерфейса",
+    "2 048 уникальных псевдонимов",
+    "Результаты без перезагрузки",
+    "Голоса защищены от дублей",
   ],
 };
 
-test("publishes four strongest outcomes and hybrid visual assets", async () => {
+test("publishes four strongest outcomes and exact local brand assets", async () => {
   for (const project of projects) {
     assert.deepEqual(project.metrics, expectedMetrics[project.slug]);
-    if (project.slug === "datoniks") {
-      assert.equal(project.visual.background, "/projects/ice/datoniks-ice-v1.webp");
-      assert.equal(project.cover, "/projects/datoniks/datoniks-slide-03.webp");
-      assert.equal(project.visual.logo, "/projects/datoniks/datoniks-logo.webp");
-    } else {
-      assert.match(project.visual.background, /^\/projects\/ice\/.+\.webp$/);
-      assert.match(project.visual.logo, /^\/projects\/brands\//);
-    }
-    await access(`public${project.visual.background}`);
+    assert.match(project.visual.logo, /^\/projects\/brands\/.+\.(?:png|webp)$/);
+    assert.equal(project.visual.background, undefined);
     await access(`public${project.visual.logo}`);
   }
 });
 
-test("uses one media ratio and keeps real interface evidence", async () => {
+test("uses one media ratio and keeps real interface evidence with a logo plate", async () => {
   const card = await readFile("src/components/ProjectMarketplace/ProjectCard.jsx", "utf8");
   const css = await readFile(
     "src/components/ProjectMarketplace/ProjectMarketplace.css",
@@ -48,9 +47,12 @@ test("uses one media ratio and keeps real interface evidence", async () => {
   );
   assert.match(card, /ProjectVisual/);
   assert.match(card, /<article/);
-  assert.match(card, /Открыть кейс:/);
+  assert.match(card, /ui\?\.case\?\.open/);
   assert.doesNotMatch(css, /nth-child\(2\).*aspect-ratio/s);
   assert.match(css, /aspect-ratio:\s*3\s*\/\s*2/);
+  const visual = await readFile("src/components/ProjectMarketplace/ProjectVisual.jsx", "utf8");
+  assert.match(visual, /src=\{project\.cardCover \?\? project\.cover\}/);
+  assert.match(visual, /project-visual__logo-plate/);
 });
 
 test("limits reactive ice depth to fine hover input and reduced-motion-safe CSS", async () => {

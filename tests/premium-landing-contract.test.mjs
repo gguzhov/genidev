@@ -36,14 +36,17 @@ const [
   readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
 ]);
 
-test("hero presents the approved product title and complete work sequence", () => {
-  assert.match(contentSource, /title:\s*"Разработка цифровых продуктов и AI-автоматизация\."/);
+test("hero presents the approved personal wordmark without a duplicate work sequence", () => {
+  assert.match(contentSource, /title:\s*"Геннадий Гужов"/);
+  assert.match(contentSource, /role:\s*"Разработчик цифровых и AI-продуктов"/);
   assert.match(
     contentSource,
-    /Создаю новые сервисы, превращаю ручные процессы в системы/,
+    /Создаю сервисы, связываю разрозненные процессы в системы/,
   );
-  assert.match(appSource, /<WorkSequence/);
-  assert.match(appSource, /hero__title-line">\{hero\.title\}/);
+  assert.doesNotMatch(appSource, /<WorkSequence/);
+  assert.match(appSource, /hero__name-line/);
+  assert.match(appSource, /variant="capsule"/);
+  assert.doesNotMatch(appSource, /PointerHighlight/);
   assert.doesNotMatch(appSource, /hero\.description|\{identity\}/);
   assert.doesNotMatch(appSource, /<LiquidEther/);
 });
@@ -58,7 +61,7 @@ test("problem selector uses a direct task rail and never mounts OptionWheel", ()
 });
 
 test("career keeps every event readable and renders one strongest result", () => {
-  assert.match(contentSource, /result:\s*"3 млн ₽ заработано суммарно"/);
+  assert.match(contentSource, /result:\s*"3 млн ₽ заработано на собственных поставках"/);
   assert.match(careerComponentSource, /career-timeline__result/);
   assert.doesNotMatch(
     careerCssSource,
@@ -85,10 +88,10 @@ test("shared radii shape navigation, profile and final CTA surfaces", () => {
   assert.match(tokensSource, /--radius-surface:\s*18px/);
   assert.match(tokensSource, /--radius-feature:\s*24px/);
   assert.match(navCssSource, /border-radius:\s*var\(--radius-surface\)/);
-  assert.match(heroCssSource, /border-radius:\s*var\(--radius-control\)/);
+  assert.match(heroCssSource, /\.hero__scroll\s*\{[^}]*width:\s*48px[^}]*background:\s*transparent/s);
   assert.match(profileCssSource, /border-radius:\s*var\(--radius-feature\)/);
   assert.match(finalContactCssSource, /border-radius:\s*var\(--radius-feature\)/);
-  assert.match(problemSelectorCssSource, /border-radius:\s*var\(--radius-surface\)/);
+  assert.match(problemSelectorCssSource, /border-radius:\s*var\(--radius-feature\)/);
   assert.match(marketplaceCssSource, /border-radius:\s*var\(--radius-feature\)/);
 });
 
@@ -124,9 +127,6 @@ test("motion-sensitive surfaces use shared durations and retain reduced-motion f
 
 test("muted copy stays readable and the contact invitation is exact", () => {
   assert.match(tokensSource, /--color-text-muted:\s*var\(--blue-11\)/);
-  assert.match(contentSource, /title:\s*"Есть задача, которая застряла между идеей и запуском\?"/);
-  assert.match(
-    contentSource,
-    /Покажите, где теряются время, деньги или пользователи\./,
-  );
+  assert.match(contentSource, /title:\s*"Заменим человека на AI\?"/);
+  assert.doesNotMatch(contentSource, /Покажите, где теряются время, деньги или пользователи\./);
 });

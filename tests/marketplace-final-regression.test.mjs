@@ -29,54 +29,16 @@ test("does not use a global 0.01ms reduced-motion kill switch", () => {
 test("keeps all shared motion bounded and token-driven", () => {
   const changedMotionSurfaces = [globalStyles, sections, marketplace, problems].join("\n");
   assert.doesNotMatch(changedMotionSurfaces, /animation-iteration-count\s*:\s*infinite|\binfinite\b/i);
-  assert.match(marketplace, /var\(--motion-reveal\)\s+var\(--motion-ease\)/);
-  assert.match(problems, /problem-passport-scan\s+var\(--motion-state\)\s+var\(--motion-ease\)/);
+  assert.doesNotMatch(marketplace, /\.project-card:hover\s*\{[^}]*transform:/s);
+  assert.match(problems, /capability-panel-enter var\(--motion-state\) var\(--motion-ease\) both/);
 });
 
-test("progressively enhances project reveals and always settles reduced motion", async () => {
+test("keeps project cards visible without a reveal lifecycle", async () => {
   await access("src/components/ProjectMarketplace/marketplaceRevealLifecycle.js");
-  assert.match(marketplaceSource, /createMarketplaceRevealLifecycle/);
-  assert.match(marketplaceSource, /ref=\{gridRef\}/);
-  assert.match(
-    marketplace,
-    /\.marketplace__grid\.is-reveal-ready:not\(\.is-revealed\)\s+\.project-card/,
-  );
-  assert.match(
-    marketplace,
-    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.marketplace__grid\.is-reveal-ready\s+\.project-card\s*\{[^}]*opacity:\s*1[^}]*transform:\s*none/s,
-  );
-
-  const { createMarketplaceRevealLifecycle } = await import(
-    "../src/components/ProjectMarketplace/marketplaceRevealLifecycle.js"
-  );
-  const root = createClassedElement();
-  const items = [createStyledElement(), createStyledElement(), createStyledElement()];
-  let observerCallback;
-  let disconnectCount = 0;
-  class Observer {
-    constructor(callback) {
-      observerCallback = callback;
-    }
-    observe(element) {
-      assert.equal(element, root);
-    }
-    disconnect() {
-      disconnectCount += 1;
-    }
-  }
-
-  const cleanup = createMarketplaceRevealLifecycle({ root, items, Observer });
-  assert.equal(root.classList.has("is-reveal-ready"), true);
-  assert.equal(root.classList.has("is-revealed"), false);
-  assert.deepEqual(items.map((item) => item.style.values.get("--reveal-index")), ["0", "1", "2"]);
-
-  observerCallback([{ isIntersecting: true }]);
-  assert.equal(root.classList.has("is-revealed"), true);
-  assert.equal(disconnectCount, 1);
-
-  cleanup();
-  observerCallback([{ isIntersecting: true }]);
-  assert.equal(disconnectCount, 1);
+  assert.doesNotMatch(marketplaceSource, /createMarketplaceRevealLifecycle/);
+  assert.match(marketplaceSource, /ref=\{trackRef\}/);
+  assert.doesNotMatch(marketplace, /is-reveal-ready|is-revealed/);
+  assert.doesNotMatch(marketplace, /opacity:\s*0\.001|clip-path:/);
 });
 
 test("leaves project content visible when reveal enhancement is unavailable", async () => {
@@ -149,7 +111,7 @@ test("keeps the published DATONIKS deck and built assets free of personal data",
     { encoding: "utf8" },
   );
   assert.equal(pageCount.status, 0, pageCount.stderr);
-  assert.equal(pageCount.stdout.trim(), "17");
+  assert.equal(pageCount.stdout.trim(), "16");
 
   const files = await collectTextFiles("dist/client", [".html", ".js", ".css", ".json"]);
   const builtSource = (await Promise.all(files.map((file) => readFile(file, "utf8")))).join("\n");

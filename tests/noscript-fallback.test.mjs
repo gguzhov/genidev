@@ -21,31 +21,23 @@ test("renders all essential landing content from the shared content contract", a
   const html = renderNoscriptFallback();
 
   assert.match(html, new RegExp(hero.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.doesNotMatch(html, /Геннадий Гужов/);
+  assert.match(html, /Геннадий Гужов/);
+  assert.match(html, /Разработчик цифровых и AI-продуктов/);
   assert.match(html, new RegExp(hero.promise));
-  assert.deepEqual(siteContent.sectionCopy, {
-    problems: {
-      title: "В чем могу быть полезен?",
-    },
-    career: {
-      title: "От торговли и экономики — к цифровым продуктам",
-    },
-    marketplace: {
-      title: "Маркетплейс моих разработок",
-      description:
-        "В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска.",
-    },
-  });
+  assert.equal(siteContent.sectionCopy.problems.title, "В чем могу быть полезен?");
+  assert.equal(siteContent.sectionCopy.problems.description, undefined);
+  assert.equal(siteContent.sectionCopy.career.title, "Мой карьерный тернистый путь");
+  assert.equal(siteContent.sectionCopy.marketplace.title, "Маркетплейс моих разработок");
   assert.match(html, /<h2 id="noscript-problems-title">В чем могу быть полезен\?<\/h2>/);
   assert.match(
     html,
-    /<h2 id="noscript-career-title">От торговли и экономики — к цифровым продуктам<\/h2>/,
+    /<h2 id="noscript-career-title">Мой карьерный тернистый путь<\/h2>/,
   );
   assert.match(
     html,
     /<p>В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска\.<\/p>/,
   );
-  assert.match(html, new RegExp(`<p>${contact.body.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<\\/p>`));
+  assert.doesNotMatch(html, />undefined</);
   assert.doesNotMatch(html, /От бизнес-проблемы до измеримого результата/);
   assert.doesNotMatch(html, /<h2 id="noscript-career-title">Карьерный путь<\/h2>/);
   assert.doesNotMatch(
@@ -58,17 +50,21 @@ test("renders all essential landing content from the shared content contract", a
 
   for (const problem of problems) {
     assert.ok(html.includes(problem.title));
-    for (const action of problem.actions) assert.ok(html.includes(action));
-    for (const outcome of problem.outcomes) assert.ok(html.includes(outcome));
+    for (const solution of problem.solutions) {
+      assert.ok(html.includes(solution.title));
+      assert.ok(html.includes(solution.project));
+      assert.ok(html.includes(solution.effect));
+    }
   }
   for (const event of career) {
     assert.ok(html.includes(event.year));
     assert.ok(html.includes(event.title));
-    for (const metric of event.metrics ?? []) assert.ok(html.includes(metric));
+    assert.ok(html.includes(event.result));
   }
   for (const project of projects) {
     assert.ok(html.includes(project.title));
-    assert.ok(html.includes(project.duration));
+    assert.ok(html.includes(project.tags.join(" · ")));
+    assert.match(html, new RegExp(`href="/projects/${project.slug}"`));
     for (const metric of project.metrics) assert.ok(html.includes(metric));
   }
 
@@ -77,20 +73,24 @@ test("renders all essential landing content from the shared content contract", a
   assert.match(html, /rel="noreferrer"/);
 });
 
-test("renders the shared hero sequence as a semantic no-JS list", async () => {
+test("renders a localized no-JS shell without a legacy hero sequence", async () => {
   const { renderNoscriptFallback } = await import(`../${RENDERER_PATH}`);
   const html = renderNoscriptFallback();
-  const sequenceStart = html.indexOf(
-    '<ol class="noscript-site__sequence" aria-label="Этапы комплексной работы">',
-  );
-  const sequenceEnd = html.indexOf("</ol>", sequenceStart);
+  const english = siteContent.getSiteContent("en");
+  const englishHtml = renderNoscriptFallback(english);
+  assert.doesNotMatch(html, /noscript-site__sequence/);
+  assert.match(html, /hreflang="en" lang="en">EN</);
+  assert.match(englishHtml, /hreflang="ru" lang="ru">RU</);
+  assert.match(englishHtml, /Product marketplace/);
+  for (const project of english.projects) {
+    assert.match(englishHtml, new RegExp(`href="/en/projects/${project.slug}"`));
+  }
+  assert.doesNotMatch(`${html}${englishHtml}`, />undefined</);
 
-  assert.ok(sequenceStart >= 0, "Missing semantic hero sequence");
-  assert.ok(sequenceEnd > sequenceStart, "Hero sequence list is not closed");
-
-  const sequenceHtml = html.slice(sequenceStart, sequenceEnd);
-  assert.equal((sequenceHtml.match(/<li>/g) ?? []).length, hero.sequence.length);
-  for (const item of hero.sequence) assert.ok(sequenceHtml.includes(item));
+  const ruCase = renderNoscriptFallback(siteContent.getSiteContent("ru"), { activeProject: projects[0] });
+  const enCase = renderNoscriptFallback(english, { activeProject: english.projects[0] });
+  assert.match(ruCase, /href="\/en\/projects\/ostrov-zdoroviya"/);
+  assert.match(enCase, /href="\/projects\/ostrov-zdoroviya"/);
 });
 
 test("escapes no-JS text and external-link attributes", async () => {

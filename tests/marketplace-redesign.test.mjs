@@ -17,12 +17,12 @@ test("publishes the approved marketplace heading without the obsolete eyebrow", 
     sectionCopy.marketplace.description,
     "В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска.",
   );
-  assert.match(marketplaceSource, /sectionCopy\.marketplace\.title/);
-  assert.match(marketplaceSource, /sectionCopy\.marketplace\.description/);
+  assert.match(marketplaceSource, /<h2 id="projects-title">\{copy\.title\}<\/h2>/);
+  assert.match(marketplaceSource, /<p>\{copy\.description\}<\/p>/);
   assert.doesNotMatch(marketplaceSource, /Реализованные проекты/);
 });
 
-test("uses one, two and three equal columns at the approved breakpoints", () => {
+test("uses a snap slider whose cards grow deliberately across breakpoints", () => {
   const tablet = marketplaceCss.slice(
     marketplaceCss.indexOf("@media (min-width: 768px)"),
     marketplaceCss.indexOf("@media (min-width: 1024px)"),
@@ -32,186 +32,67 @@ test("uses one, two and three equal columns at the approved breakpoints", () => 
     marketplaceCss.indexOf("@media (hover: hover)"),
   );
 
-  assert.match(marketplaceCss, /\.marketplace__grid\s*\{[^}]*display:\s*grid/s);
-  assert.match(tablet, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.doesNotMatch(tablet, /nth-child\(3\)|grid-column:\s*span/);
-  assert.match(desktop, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(marketplaceCss, /\.marketplace__viewport\s*\{[^}]*scroll-snap-type:\s*x mandatory/s);
+  assert.match(marketplaceCss, /\.marketplace__track\s*\{[^}]*display:\s*flex/s);
+  assert.match(tablet, /\.marketplace__track\s*\{[^}]*--marketplace-card-width:\s*min\(54vw,\s*460px\)/s);
+  assert.match(desktop, /\.marketplace__track\s*\{[^}]*--marketplace-card-width:\s*min\(39vw,\s*500px\)/s);
+  assert.match(marketplaceCss, /\.marketplace__track::after\s*\{[^}]*100vw[^}]*--marketplace-card-width/s);
   assert.match(marketplaceCss, /\.project-card__media,[\s\S]*?aspect-ratio:\s*3\s*\/\s*2/);
 });
 
-test("equalizes complete tablet cards across both grid rows", () => {
-  const tablet = marketplaceCss.slice(
-    marketplaceCss.indexOf("@media (min-width: 768px)"),
-    marketplaceCss.indexOf("@media (min-width: 1024px)"),
-  );
-
-  assert.match(
-    tablet,
-    /\.marketplace__grid\s*\{[^}]*grid-auto-rows:\s*1fr/s,
-  );
-  assert.match(marketplaceCss, /\.project-card\s*\{[^}]*height:\s*100%/s);
+test("keeps slider cards keyboard-operable and uses a stable media ratio", () => {
+  assert.match(cardSource, /type="button"/);
+  assert.match(cardSource, /aria-label=\{`\$\{ui\?\.case\?\.open/);
+  assert.match(marketplaceCss, /aspect-ratio:\s*3\s*\/\s*2/);
 });
 
-test("shows exactly four rectangular evidence results and a truthful status row", () => {
-  assert.equal(projects.length, 3);
+test("keeps minimal marketplace cards while full cases retain four results", () => {
+  assert.equal(projects.length, 4);
   for (const project of projects) assert.equal(project.metrics.length, 4);
 
-  assert.match(cardSource, /project-card__meta/);
-  assert.match(cardSource, /project\.status\s*\?\?\s*"Реализованный продукт"/);
-  assert.match(cardSource, /project\.duration/);
-  assert.match(cardSource, /project\.metrics\.map/);
+  assert.match(cardSource, /project-card__tags/);
+  assert.match(cardSource, /project\.summary/);
+  assert.doesNotMatch(cardSource, /project\.duration|project\.status|project\.metrics\.map/);
   assert.match(cardSource, /onClick=\{\(\) => onOpenProject\(project\.slug\)\}/);
   assert.equal((cardSource.match(/<button/g) ?? []).length, 1);
-  assert.match(
-    marketplaceCss,
-    /\.project-card__metrics\s*>\s*li\s*\{[^}]*border-radius:\s*var\(--radius-control\)/s,
-  );
-
   const datoniks = projects.find(({ slug }) => slug === "datoniks");
-  assert.equal(datoniks?.status, "Инвестиционный проект · ищу партнёра");
+  assert.deepEqual(datoniks?.tags, ["Телеком", "Дата-центр"]);
 });
 
-test("keeps DATONIKS exact logo centered over a project gradient", async () => {
+test("keeps DATONIKS evidence cover with an exact logo plate", async () => {
   const datoniks = projects.find(({ slug }) => slug === "datoniks");
   assert.deepEqual(
     {
-      atmosphere: datoniks?.visual.background,
       evidence: datoniks?.cover,
       logo: datoniks?.visual.logo,
     },
     {
-      atmosphere: "/projects/ice/datoniks-ice-v1.webp",
       evidence: "/projects/datoniks/datoniks-slide-03.webp",
-      logo: "/projects/datoniks/datoniks-logo.webp",
+      logo: "/projects/brands/datoniks-logo.png",
     },
   );
   await Promise.all([
-    access("public/projects/ice/datoniks-ice-v1.webp"),
     access("public/projects/datoniks/datoniks-slide-03.webp"),
-    access("public/projects/datoniks/datoniks-logo.webp"),
+    access("public/projects/brands/datoniks-logo.png"),
   ]);
   assert.match(visualSource, /project-visual__gradient/);
+  assert.doesNotMatch(visualSource, /project\.visual\.background|project-visual__background/);
   assert.doesNotMatch(visualSource, /project-visual__product/);
   assert.match(visualSource, /project-visual__logo/);
+  assert.match(visualSource, /project-visual__cover/);
+  assert.match(visualSource, /project-visual__logo-plate/);
 });
 
-test("gives the exact light DATONIKS logo a project-palette contrast surface", () => {
+test("uses a distinct CSS gradient for the DATONIKS visual surface", () => {
   assert.match(
     marketplaceCss,
-    /\.project-visual--datoniks \.project-visual__logo\s*\{[^}]*background:\s*var\(--color-accent\)/s,
+    /\.project-visual--datoniks\s*\{[^}]*background:/s,
   );
 });
 
-test("activates layer compositing only during allowed pointer interaction", async () => {
-  const { createProjectPointerLifecycle } = await import(
-    "../src/components/ProjectMarketplace/projectVisualPointerLifecycle.js"
-  );
-  const cardListeners = new Map();
-  const classes = new Set();
-  const media = {
-    fine: createMedia(true),
-    reduced: createMedia(false),
-  };
-  const visual = {
-    classList: {
-      add: (className) => classes.add(className),
-      remove: (className) => classes.delete(className),
-    },
-  };
-  const card = {
-    addEventListener: (type, handler) => cardListeners.set(type, handler),
-    removeEventListener(type, handler) {
-      if (cardListeners.get(type) === handler) cardListeners.delete(type);
-    },
-  };
-  const cleanup = createProjectPointerLifecycle({
-    card,
-    visual,
-    interactive: true,
-    matchMedia: (query) => (query.includes("prefers-reduced") ? media.reduced : media.fine),
-    onPointerMove: () => {},
-    resetDepth: () => {},
-  });
-
-  assert.deepEqual([...cardListeners.keys()].sort(), ["pointerleave", "pointermove"]);
-  assert.equal(classes.has("project-visual--depth-active"), false);
-  cardListeners.get("pointermove")({ clientX: 0, clientY: 0 });
-  assert.equal(classes.has("project-visual--depth-active"), true);
-  cardListeners.get("pointerleave")();
-  assert.equal(classes.has("project-visual--depth-active"), false);
-
-  media.reduced.setMatches(true);
-  assert.equal(cardListeners.size, 0);
-  assert.equal(classes.has("project-visual--depth-active"), false);
-  cleanup();
-
-  assert.match(
-    marketplaceCss,
-    /\.project-visual--depth-active\s+\.project-visual__(?:gradient|logo)[\s\S]*will-change:\s*transform/,
-  );
-  assert.equal((marketplaceCss.match(/will-change:\s*transform/g) ?? []).length, 1);
+test("keeps marketplace artwork static instead of attaching pointer compositing", () => {
+  assert.match(cardSource, /<ProjectVisual project=\{project\} interactive=\{false\}/);
+  assert.doesNotMatch(marketplaceCss, /project-visual--depth-active|will-change:\s*transform/);
+  assert.doesNotMatch(marketplaceCss, /\.project-card:hover\s*\{[^}]*transform:/s);
+  assert.match(marketplaceCss, /\.project-visual__logo-plate\s*\{[^}]*transform:\s*translate\(-50%,\s*-50%\)/s);
 });
-
-test("starts without pointer listeners or compositing when fine hover is unavailable", async () => {
-  const { createProjectPointerLifecycle } = await import(
-    "../src/components/ProjectMarketplace/projectVisualPointerLifecycle.js"
-  );
-  const cardListeners = new Map();
-  const classes = new Set();
-  const media = {
-    fine: createMedia(false),
-    reduced: createMedia(false),
-  };
-  const visual = {
-    classList: {
-      add: (className) => classes.add(className),
-      remove: (className) => classes.delete(className),
-    },
-  };
-  const card = {
-    addEventListener: (type, handler) => cardListeners.set(type, handler),
-    removeEventListener(type, handler) {
-      if (cardListeners.get(type) === handler) cardListeners.delete(type);
-    },
-  };
-  const cleanup = createProjectPointerLifecycle({
-    card,
-    visual,
-    interactive: true,
-    matchMedia: (query) => (query.includes("prefers-reduced") ? media.reduced : media.fine),
-    onPointerMove: () => {},
-    resetDepth: () => {},
-  });
-
-  assert.equal(cardListeners.size, 0);
-  assert.equal(classes.has("project-visual--depth-active"), false);
-  assert.match(
-    marketplaceCss,
-    /\.project-visual--depth-active\s+\.project-visual__gradient,[\s\S]*will-change:\s*transform/,
-  );
-  assert.equal((marketplaceCss.match(/will-change:\s*transform/g) ?? []).length, 1);
-
-  cleanup();
-  assert.equal(cardListeners.size, 0);
-  assert.equal(classes.has("project-visual--depth-active"), false);
-});
-
-function createMedia(initialMatches) {
-  let matches = initialMatches;
-  const listeners = new Set();
-  return {
-    get matches() {
-      return matches;
-    },
-    addEventListener(_type, listener) {
-      listeners.add(listener);
-    },
-    removeEventListener(_type, listener) {
-      listeners.delete(listener);
-    },
-    setMatches(nextMatches) {
-      matches = nextMatches;
-      for (const listener of listeners) listener({ matches });
-    },
-  };
-}

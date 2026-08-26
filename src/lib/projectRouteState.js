@@ -1,4 +1,4 @@
-import { projectPath, projectSlugFromPath } from "./projectRouting.js";
+import { localizedHomePath, projectPath, projectSlugFromPath, resolveLocale } from "./projectRouting.js";
 
 const PROJECT_ROUTE_STATE_KEY = "__genidevProjectRoute";
 
@@ -33,6 +33,7 @@ export function planProjectOpen({
   slug,
   slugs,
   sessionId,
+  locale = resolveLocale(pathname),
 }) {
   if (!slugs.includes(slug)) {
     return null;
@@ -43,10 +44,10 @@ export function planProjectOpen({
 
   return {
     method: currentRoute.slug ? "replace" : "push",
-    pathname: projectPath(slug),
+    pathname: projectPath(slug, locale),
     state: {
       ...objectState(historyState),
-      [PROJECT_ROUTE_STATE_KEY]: { sessionId, slug, origin },
+      [PROJECT_ROUTE_STATE_KEY]: { sessionId, slug, origin, locale },
     },
   };
 }
@@ -62,5 +63,5 @@ export function planProjectClose({ pathname, historyState, slugs, sessionId }) {
     return { method: "back" };
   }
 
-  return { method: "replace", pathname: "/", state: {} };
+  return { method: "replace", pathname: localizedHomePath(resolveLocale(pathname)), state: {} };
 }

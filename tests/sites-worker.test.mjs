@@ -18,7 +18,7 @@ test("serves existing static assets without a fallback", async () => {
   assert.deepEqual(calls, ["/assets/app.js"]);
 });
 
-test("falls back to index.html for an unknown app route", async () => {
+test("checks a route shell before falling back to the localized app shell", async () => {
   const calls = [];
   const response = await worker.fetch(
     new Request("https://example.test/flow/step-two?source=share", {
@@ -38,7 +38,28 @@ test("falls back to index.html for an unknown app route", async () => {
   );
 
   assert.equal(response.status, 200);
-  assert.deepEqual(calls, ["/flow/step-two?source=share", "/index.html"]);
+  assert.deepEqual(calls, ["/flow/step-two?source=share", "/flow/step-two/index.html", "/index.html"]);
+});
+
+test("uses the English shell for missing English routes after the route-shell lookup", async () => {
+  const calls = [];
+  const response = await worker.fetch(
+    new Request("https://example.test/en/projects/missing", { headers: { accept: "text/html" } }),
+    {
+      ASSETS: {
+        fetch: async (request) => {
+          const path = new URL(request.url).pathname;
+          calls.push(path);
+          return new Response(path === "/en/index.html" ? "english app" : "missing", {
+            status: path === "/en/index.html" ? 200 : 404,
+          });
+        },
+      },
+    },
+  );
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(calls, ["/en/projects/missing", "/en/projects/missing/index.html", "/en/index.html"]);
 });
 
 test("does not turn missing API or write requests into the app shell", async () => {

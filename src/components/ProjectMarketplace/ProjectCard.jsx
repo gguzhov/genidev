@@ -6,6 +6,7 @@ export default function ProjectCard({
   decorative = false,
   variant = "grid",
   tabIndex = decorative ? -1 : 0,
+  ui,
 }) {
   return (
     <article
@@ -14,32 +15,26 @@ export default function ProjectCard({
       }`}
       aria-hidden={decorative ? "true" : undefined}
     >
-      <ProjectVisual project={project} interactive={!decorative} />
+      <ProjectVisual project={project} interactive={false} />
 
       <div className="project-card__body">
-        <p className="project-card__category">{project.category}</p>
+        <div className="project-card__meta">
+        <ul className="project-card__tags" aria-label={ui?.projectCategories}>
+          {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+        </ul>
+        <time>{project.deliveredAt}</time>
+        </div>
         <h3 className="project-card__title">{project.title}</h3>
         <p className="project-card__summary">{project.summary}</p>
-        <div className="project-card__meta" aria-label="Статус и срок проекта">
-          <span className="project-card__status">
-            {project.status ?? "Реализованный продукт"}
-          </span>
-          <span className="project-card__duration">{project.duration}</span>
-        </div>
-        <ul className="project-card__metrics" aria-label="Результаты проекта">
-          {project.metrics.map((metric) => (
-            <li key={metric}>{metric}</li>
-          ))}
-        </ul>
         {!decorative && (
           <button
             className="project-card__open"
             type="button"
-            aria-label={`Открыть кейс: ${project.title}`}
+            aria-label={`${ui?.case?.open ?? "Открыть кейс"}: ${project.title}`}
             tabIndex={tabIndex}
             onClick={() => onOpenProject(project.slug)}
           >
-            Открыть кейс
+            {ui?.more ?? "Подробнее"}
           </button>
         )}
       </div>

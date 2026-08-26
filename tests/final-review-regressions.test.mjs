@@ -3,41 +3,16 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { problems } from "../src/content/siteContent.js";
 
-const expectedOutcomes = {
-  launch: [
-    "Рабочая версия вместо презентации с идеей.",
-    "Понятно, за что платит пользователь.",
-    "Экономика собрана до масштабирования затрат.",
-    "Первые данные показывают, что развивать дальше.",
-  ],
-  automate: [
-    "Меньше копирования, сверок и ручных напоминаний.",
-    "Заявка, заказ или документ проходят путь быстрее.",
-    "Ошибки не теряются и попадают ответственному.",
-    "Руководитель видит статус процесса в одной системе.",
-  ],
-  ai: [
-    "Рутинная часть работы выполняется автоматически.",
-    "AI работает внутри процесса, а не отдельным чатом.",
-    "Качество видно по тестам, логам и обратной связи.",
-    "Нестандартные решения остаются под контролем человека.",
-  ],
-  growth: [
-    "Понятна конкретная причина просадки.",
-    "В продукте появляется изменение, а не только отчёт.",
-    "Есть сравнение поведения до и после запуска.",
-    "Решение о масштабировании принимается по данным.",
-  ],
-};
-
-test("publishes the approved operational outcomes exactly", () => {
-  assert.deepEqual(
-    Object.fromEntries(problems.map(({ id, outcomes }) => [id, outcomes])),
-    expectedOutcomes,
-  );
+test("publishes concrete solution projects for every business function", () => {
+  assert.deepEqual(problems.map(({ id }) => id), ["marketing", "sales", "management", "operations", "ai-infrastructure", "enablement"]);
+  for (const problem of problems) {
+    assert.equal(problem.solutions.length, 4);
+    assert.ok(problem.solutions.slice(0, 3).every(({ project, effect }) => project.length > 7 && effect.length > 7));
+    assert.equal(problem.solutions.at(-1).title, "И другое цифровое решение");
+  }
 });
 
-test("keeps tablet project results in one column without breaking words", async () => {
+test("keeps tablet slider cards readable without aggressive word breaking", async () => {
   const css = await readFile(
     "src/components/ProjectMarketplace/ProjectMarketplace.css",
     "utf8",
@@ -48,13 +23,10 @@ test("keeps tablet project results in one column without breaking words", async 
   );
   const desktop = css.slice(css.indexOf("@media (min-width: 1024px)"));
 
-  assert.doesNotMatch(tablet, /project-card__metrics[\s\S]*grid-template-columns/);
-  assert.match(
-    desktop,
-    /\.project-card__metrics\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s,
-  );
+  assert.match(tablet, /\.marketplace__track\s*\{[^}]*--marketplace-card-width:\s*min\(54vw,\s*460px\)/s);
+  assert.match(desktop, /\.marketplace__track\s*\{[^}]*--marketplace-card-width:\s*min\(39vw,\s*500px\)/s);
   assert.doesNotMatch(css, /overflow-wrap:\s*anywhere/);
-  assert.match(css, /word-break:\s*normal/);
+  assert.doesNotMatch(css, /word-break:\s*break-all|overflow-wrap:\s*anywhere/);
 });
 
 test("sequences the 500ms signal before nodes with an exact CustomEase", async () => {
@@ -68,12 +40,11 @@ test("sequences the 500ms signal before nodes with an exact CustomEase", async (
   assert.match(source, /context\.revert\(\)/);
 });
 
-test("delays outcomes until the 280ms action reveal has completed", async () => {
+test("keeps capability state motion bounded and reduced-motion safe", async () => {
   const css = await readFile("src/components/ProblemSelector/ProblemSelector.css", "utf8");
-  assert.match(
-    css,
-    /animation-delay:\s*calc\(var\(--motion-state\)\s*\+\s*var\(--outcome-index\)\s*\*\s*45ms\)/,
-  );
+  assert.match(css, /animation:\s*capability-panel-enter var\(--motion-state\) var\(--motion-ease\) both/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.doesNotMatch(css, /\binfinite\b/);
 });
 
 test("pointer lifecycle attaches only while fine-hover motion is allowed", async () => {

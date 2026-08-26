@@ -8,7 +8,17 @@ export default {
     }
 
     const indexUrl = new URL(request.url);
-    indexUrl.pathname = "/index.html";
+    const cleanPath = indexUrl.pathname.replace(/\/+$/, "");
+    if (cleanPath) {
+      indexUrl.pathname = `${cleanPath}/index.html`;
+      indexUrl.search = "";
+      const routeShell = await env.ASSETS.fetch(new Request(indexUrl, request));
+      if (routeShell.status !== 404) return routeShell;
+    }
+
+    indexUrl.pathname = cleanPath === "/en" || cleanPath.startsWith("/en/")
+      ? "/en/index.html"
+      : "/index.html";
     indexUrl.search = "";
     return env.ASSETS.fetch(new Request(indexUrl, request));
   },

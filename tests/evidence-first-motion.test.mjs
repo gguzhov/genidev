@@ -76,21 +76,22 @@ test("reveals immediately without motion or observer support", async () => {
   }
 });
 
-test("reveals actions before four outcome chips", async () => {
+test("uses a bounded enter transition for the capability panel", async () => {
   const jsx = await readFile("src/components/ProblemSelector/ProblemSelector.jsx", "utf8");
   const css = await readFile("src/components/ProblemSelector/ProblemSelector.css", "utf8");
-  assert.match(jsx, /--outcome-index/);
-  assert.match(css, /problem-outcome-enter/);
+  assert.match(jsx, /featuredSolutions\.map/);
+  assert.match(css, /capability-panel-enter/);
   assert.match(css, /var\(--motion-state\)/);
-  assert.match(css, /45ms/);
+  assert.match(css, /prefers-reduced-motion/);
 });
 
-test("keeps both project media blocks on the same grid and ratio", async () => {
+test("keeps project media in a horizontally scrollable slider with one ratio", async () => {
   const css = await readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8");
   assert.doesNotMatch(css, /margin-top:\s*88px/);
   assert.doesNotMatch(css, /span 7|span 5/);
-  assert.match(css, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(css, /translateY\(-2px\)/);
+  assert.match(css, /\.marketplace__viewport\s*\{[^}]*overflow-x:\s*auto/s);
+  assert.match(css, /\.marketplace__track\s*\{[^}]*display:\s*flex/s);
+  assert.doesNotMatch(css, /\.project-card:hover\s*\{[^}]*transform:/s);
 });
 
 test("does not attach project pointer depth to decorative cards", async () => {
@@ -100,7 +101,7 @@ test("does not attach project pointer depth to decorative cards", async () => {
     "src/components/ProjectMarketplace/projectVisualPointerLifecycle.js",
     "utf8",
   );
-  assert.match(card, /interactive=\{!decorative\}/);
+  assert.match(card, /interactive=\{false\}/);
   assert.match(visual, /interactive\s*=\s*true/);
   assert.match(lifecycle, /if \(!interactive/);
 });

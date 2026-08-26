@@ -3,7 +3,7 @@ import "./GradientWave.css";
 
 const iceGradient = {
   preset: "Ice",
-  speed: 7,
+  speed: 11,
 };
 
 export default function GradientWave() {
@@ -12,7 +12,9 @@ export default function GradientWave() {
       <AnimatedGradient
         className="gradient-wave__shader"
         config={iceGradient}
-        noise={{ opacity: 0.08, scale: 0.7 }}
+        noise={{ opacity: 0.045, scale: 0.8 }}
+        amplitude={0.08}
+        mouseReact
       />
       <div className="gradient-wave__veil" />
     </div>

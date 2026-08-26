@@ -1,5 +1,5 @@
 .section {
-  padding: 72px 0;
+  padding: 80px 0;
 }
 
 .section[id],
@@ -13,14 +13,14 @@
 }
 
 .section__heading {
-  max-width: 760px;
-  margin-bottom: 38px;
+  max-width: none;
+  margin-bottom: 34px;
 }
 
 .section__heading h2 {
-  max-width: 19ch;
+  max-width: none;
   margin: 0;
-  font-size: clamp(2rem, 8.7vw, 3.2rem);
+  font-size: clamp(2.1rem, 9.4vw, 4rem);
   letter-spacing: -0.04em;
   line-height: 1;
   text-wrap: balance;
@@ -34,10 +34,6 @@
   line-height: 1.62;
 }
 
-.problem-section {
-  background: color-mix(in oklch, var(--color-surface) 90%, transparent);
-}
-
 @media (min-width: 768px) {
   .section[id],
   .final-contact[id] {
@@ -45,20 +41,20 @@
   }
 
   .section {
-    padding: 96px 0;
+    padding: 104px 0;
   }
 
   .section__heading {
-    margin-bottom: 54px;
+    margin-bottom: 48px;
   }
 
   .section__heading h2 {
-    font-size: clamp(2.7rem, 5.7vw, 4rem);
+    font-size: clamp(3rem, 5.4vw, 4.5rem);
   }
 }
 
 @media (min-width: 1280px) {
   .section {
-    padding: 120px 0;
+    padding: 112px 0;
   }
 }

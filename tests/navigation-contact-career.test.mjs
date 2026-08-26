@@ -2,25 +2,24 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { career, contact, sectionCopy } from "../src/content/siteContent.js";
+import { career, contact, navigation, sectionCopy } from "../src/content/siteContent.js";
 
 const read = (path) => readFile(path, "utf8");
 
-test("keeps the header navigation flat, personal and focused on contact", async () => {
+test("keeps four compact navigation links, a separate contact CTA and language control", async () => {
   const [app, nav] = await Promise.all([
     read("src/App.jsx"),
     read("src/components/CardNav/CardNav.jsx"),
   ]);
 
-  for (const label of ["Задачи", "Опыт", "Проекты", "Связаться"]) {
-    assert.match(app, new RegExp(`label: "${label}"`));
-  }
+  assert.deepEqual(navigation.map(({ label }) => label), ["Обо мне", "Возможности", "Проекты", "Статьи"]);
   assert.doesNotMatch(app, /label: "Разделы"/);
   assert.doesNotMatch(nav, /card-nav__label|<span>Геннадий Гужов<\/span>/);
   assert.match(nav, /normalizeNavigationItems/);
   assert.match(nav, /alt=""/);
   assert.match(app, /navigationCta/);
-  assert.match(app, /label: "Связаться"/);
+  assert.match(app, /label: locale === "en" \? "Contact" : "Связаться"/);
+  assert.match(nav, /<LanguageSwitcher/);
 });
 
 test("keeps confirmed career facts with one strongest result", async () => {
@@ -29,17 +28,16 @@ test("keeps confirmed career facts with one strongest result", async () => {
     [title, body, result].join(" "),
   ).join(" ");
 
-  assert.match(career[0].body, /трендовых товаров для розничных клиентов/);
-  assert.match(career[0].body, /промышленного оборудования/);
+  assert.match(career[0].body, /Находил спрос и поставщиков/);
+  assert.match(career[0].body, /считал экономику и организовывал поставки/);
   assert.match(career[0].body, /«Солдвиг ПРО»/);
-  assert.match(career[0].body, /Проверял спрос и считал экономику поставок/);
-  assert.doesNotMatch(careerCopy, /поставщик|тамож/iu);
+  assert.doesNotMatch(careerCopy, /тамож/iu);
 
-  assert.match(career[1].body, /Поиск инвестиционного партнёра продолжается/);
-  assert.equal(career[0].result, "3 млн ₽ заработано суммарно");
-  assert.equal(career[1].result, "Прототип реализован в Иркутске");
-  assert.equal(sectionCopy.career.title, "От торговли и экономики — к цифровым продуктам");
-  assert.match(careerComponent, /sectionCopy\.career\.title/);
+  assert.match(career[1].body, /финансовая модель, бизнес-план и питч/i);
+  assert.equal(career[0].result, "3 млн ₽ заработано на собственных поставках");
+  assert.equal(career[1].result, "Ищу инвестиционного партнёра для запуска серии");
+  assert.equal(sectionCopy.career.title, "Мой карьерный тернистый путь");
+  assert.match(careerComponent, /\{copy\.title\}/);
   assert.match(careerComponent, /career-timeline__result/);
   assert.doesNotMatch(careerComponent, /Ответственность|Подтверждено/);
 });
@@ -50,24 +48,21 @@ test("renders the human contact invitation before the existing portrait", async 
     read("src/components/FinalContact/FinalContact.css"),
   ]);
 
-  assert.equal(contact.title, "Есть задача, которая застряла между идеей и запуском?");
-  assert.equal(
-    contact.body,
-    "Покажите, где теряются время, деньги или пользователи. Предложу, как превратить это в продукт, систему или AI-сценарий.",
-  );
-  assert.equal(contact.ctaLabel, "Разобрать задачу");
+  assert.equal(contact.title, "Заменим человека на AI?");
+  assert.equal(contact.body, undefined);
+  assert.equal(contact.ctaLabel, "Обсудить в Telegram");
   assert.equal(contact.handle, undefined);
   assert.match(contactComponent, /FinalContact\(\{ contact \}\)/);
   assert.doesNotMatch(contactComponent, /cta\.label|cta\?\.label/);
-  assert.match(contactComponent, /contact\.body/);
+  assert.doesNotMatch(contactComponent, /contact\.body/);
   assert.match(contactComponent, /contact\.ctaLabel/);
-  assert.match(contactComponent, /src="\/images\/gennady-profile\.webp"/);
+  assert.match(contactComponent, /src="\/images\/gennady-cyborg-v2\.webp"/);
   assert.ok(
     contactComponent.indexOf("final-contact__copy") <
-      contactComponent.indexOf("final-contact__portrait"),
+      contactComponent.indexOf("final-contact__visual"),
     "Contact copy and CTA must precede the portrait in mobile DOM order",
   );
-  assert.match(contactCss, /grid-template-columns:\s*minmax\(0, 1fr\)\s+minmax\(\d+px, [^)]+\)/);
+  assert.match(contactCss, /grid-template-columns:\s*minmax\(0, 1\.18fr\)\s+minmax\(300px, 0\.82fr\)/);
 });
 
 test("loads the restrained expanded-menu image only from the 1024px desktop breakpoint", async () => {

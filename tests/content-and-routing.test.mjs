@@ -3,37 +3,45 @@ import test from "node:test";
 import { career, contact, hero, problems, projects } from "../src/content/siteContent.js";
 import { projectPath, projectSlugFromPath } from "../src/lib/projectRouting.js";
 
-test("publishes the approved positioning and four business problems", () => {
+test("publishes the approved positioning and six business capabilities", () => {
   assert.equal(
     hero.title,
-    "Разработка цифровых продуктов и AI-автоматизация.",
+    "Геннадий Гужов",
   );
+  assert.deepEqual(hero.nameLines, ["Геннадий", "Гужов"]);
+  assert.equal(hero.role, "Разработчик цифровых и AI-продуктов");
   assert.equal("description" in hero, false);
   assert.equal(
     hero.promise,
-    "Создаю новые сервисы, превращаю ручные процессы в системы и встраиваю AI там, где он сокращает время, ошибки или стоимость.",
+    "Создаю сервисы, связываю разрозненные процессы в системы и довожу решения до запуска, где их ценность можно измерить.",
   );
-  assert.deepEqual(hero.sequence, [
-    "Проблема",
-    "Решение",
-    "Экономика",
-    "Разработка",
-    "Запуск",
-    "Аналитика",
-  ]);
+  assert.equal(hero.sequence, undefined);
   assert.equal(hero.cta.label, "Обсудить задачу");
   assert.equal(hero.cta.href, "https://t.me/gguzhov");
   assert.equal(hero.cta.target, "_blank");
   assert.equal(hero.cta.rel, "noreferrer");
   assert.equal(contact.target, "_blank");
   assert.equal(contact.rel, "noreferrer");
-  assert.deepEqual(problems.map(({ id }) => id), ["launch", "automate", "ai", "growth"]);
+  assert.deepEqual(problems.map(({ id }) => id), ["marketing", "sales", "management", "operations", "ai-infrastructure", "enablement"]);
+  for (const problem of problems) {
+    assert.match(problem.icon, /^\/images\/capabilities\/.+\.webp$/);
+    assert.equal(problem.solutions.length, 4);
+    assert.equal(problem.actions, undefined);
+    assert.equal(problem.outcomes, undefined);
+    assert.equal(problem.situation, undefined);
+    for (const solution of problem.solutions.slice(0, 3)) {
+      assert.ok(solution.title.length > 4);
+      assert.ok(solution.project.length > 7);
+      assert.ok(solution.effect.length > 7);
+    }
+    assert.equal(problem.solutions.at(-1).title, "И другое цифровое решение");
+  }
 });
 
 test("keeps the approved career sequence", () => {
   assert.deepEqual(career.map(({ year }) => year), ["2021–2024", "2024", "2025", "2025", "2026"]);
-  assert.match(career[1].title, /модульные дата-центры/i);
-  assert.match(career[2].body, /Лондонским университетом/i);
+  assert.match(career[1].title, /DATONIKS/i);
+  assert.match(career[2].body, /Лондонского университета/i);
   assert.match(career[3].title, /ГКБ №15/i);
 });
 
@@ -42,13 +50,15 @@ test("ships complete project cases without a role field", () => {
     "ostrov-zdoroviya",
     "ilonmask-vpn",
     "datoniks",
+    "wedding-vote",
   ]);
   for (const project of projects) {
-    assert.ok(project.problem.length > 80);
-    assert.ok(project.actions.length >= 5);
-    assert.ok(project.result.length >= 3);
+    assert.ok(project.challenge.length > 80);
+    assert.equal(project.solution.length, 4);
+    assert.equal(project.metrics.length, 4);
+    assert.ok(project.benefit.length > 80);
     assert.equal(project.technical, undefined);
-    assert.ok(project.skills.length >= 4);
+    assert.equal(project.skills, undefined);
     assert.equal("role" in project, false);
   }
 });

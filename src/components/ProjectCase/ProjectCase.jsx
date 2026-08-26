@@ -16,16 +16,14 @@ function Paragraphs({ text }) {
   return text.split("\n\n").map((paragraph) => <p key={paragraph}>{paragraph}</p>);
 }
 
-function ExternalActions({ actions }) {
+function ExternalActions({ actions, label }) {
   if (!actions?.length) return null;
 
   return (
-    <div className="project-case__external-actions" aria-label="Действия проекта">
-      {actions.map((action, index) => (
+    <div className="project-case__external-actions" aria-label={label}>
+      {actions.map((action) => (
         <a
-          className={`button project-case__external-action${
-            index === 0 ? " button--primary" : ""
-          }`}
+          className="button button--primary project-case__external-action"
           href={action.href}
           target={action.target}
           rel={action.rel}
@@ -45,7 +43,7 @@ function ExternalActions({ actions }) {
   );
 }
 
-export default function ProjectCase({ project, projects, onClose, onOpenProject }) {
+export default function ProjectCase({ project, projects, onClose, onOpenProject, ui, languageSwitcher }) {
   const dialogRef = useRef(null);
   const surfaceRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -106,10 +104,11 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
     >
       <article className="project-case__surface" ref={surfaceRef}>
         <div className="project-case__topbar">
+          {languageSwitcher}
           <button
             className="project-case__close"
             type="button"
-            aria-label="Закрыть кейс"
+            aria-label={ui.case.close}
             ref={closeButtonRef}
             onClick={onClose}
           >
@@ -119,18 +118,18 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
 
         <header className="project-case__hero">
           <div className="project-case__intro">
-            <p className="project-case__eyebrow">{project.category}</p>
+            <ul className="project-case__tags" aria-label={ui.projectCategories}>
+              {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+            </ul>
             <h2 className="project-case__title" id="project-title">{project.title}</h2>
-            {project.status && <p className="project-case__status">{project.status}</p>}
-            <p className="project-case__duration">{project.duration}</p>
+            <time className="project-case__date">{project.deliveredAt}</time>
             <p className="project-case__summary">{project.summary}</p>
-            <ExternalActions actions={project.primaryAction ? [project.primaryAction] : undefined} />
           </div>
           {project.videoEmbed ? (
             <div className="project-case__video">
               <iframe
                 src={project.videoEmbed}
-                title={`Видео проекта «${project.title}»`}
+                title={`${ui.case.video}: ${project.title}`}
                 allow="autoplay; encrypted-media"
                 loading="lazy"
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -149,7 +148,7 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
               {!coverFailed && (
                 <img
                   src={project.cover}
-                  alt={`Обложка проекта «${project.title}»`}
+                  alt={`${ui.case.cover}: ${project.title}`}
                   width={project.coverWidth ?? 1536}
                   height={project.coverHeight ?? 1024}
                   decoding="async"
@@ -162,65 +161,69 @@ export default function ProjectCase({ project, projects, onClose, onOpenProject 
         </header>
 
         <section className="project-case__section" aria-labelledby="project-problem-title">
-          <h2 id="project-problem-title">Проблема</h2>
-          <div className="project-case__prose"><Paragraphs text={project.problem} /></div>
+          <h2 id="project-problem-title">{project.challengeLabel}</h2>
+          <div className="project-case__prose"><Paragraphs text={project.challenge} /></div>
         </section>
 
         <section className="project-case__section" aria-labelledby="project-actions-title">
-          <h2 id="project-actions-title">Что я сделал</h2>
-          <ul className="project-case__prose project-case__list">
-            {project.actions.map((action) => <li key={action}>{action}</li>)}
+          <h2 id="project-actions-title">{ui.case.solution}</h2>
+          <ul className="project-case__solution-grid">
+            {project.solution.map(({ label, text }, index) => (
+              <li key={label}>
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <strong>{label}</strong>
+                <p>{text}</p>
+              </li>
+            ))}
           </ul>
         </section>
 
-        <section className="project-case__section" aria-labelledby="project-result-title">
-          <h2 id="project-result-title">Результат</h2>
+        <section className="project-case__section project-case__section--results" aria-labelledby="project-result-title">
+          <h2 id="project-result-title">{ui.case.benefit}</h2>
           <div className="project-case__result">
-            <ul className="project-case__metrics" aria-label="Ключевые результаты проекта">
-              {project.metrics.map((metric) => (
-                <li key={metric}><strong>{metric}</strong></li>
+            <p className="project-case__benefit">{project.benefit}</p>
+            <ul className="project-case__metrics" aria-label={ui.case.metrics}>
+              {project.metrics.map((metric, index) => (
+                <li key={metric}>
+                  <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{metric}</strong>
+                </li>
               ))}
             </ul>
-            <p className="project-case__result-summary">{project.resultSummary}</p>
           </div>
         </section>
 
         {project.gallery.length > 0 && (
           <section className="project-case__gallery-section" aria-labelledby="project-gallery-title">
-            <h2 id="project-gallery-title">Галерея</h2>
+            <h2 id="project-gallery-title">{ui.case.gallery}</h2>
             <ProjectGallery
               key={project.slug}
               images={project.gallery}
-              title={`Галерея проекта ${project.title}`}
+              title={`${ui.case.galleryLabel}: ${project.title}`}
+              ui={ui}
             />
           </section>
         )}
 
-        <section className="project-case__section" aria-labelledby="project-stack-title">
-          <h2 id="project-stack-title">Навыки и инструменты</h2>
-          <div className="project-case__stack-wrap">
-            <ul className="project-case__stack">
-              {project.skills.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-            <ExternalActions actions={project.externalActions} />
-          </div>
-        </section>
-
-        {project.url && (
-          <div className="project-case__product-link-wrap">
+        {(project.externalActions?.length || project.url) && (
+          <section className="project-case__section project-case__section--links" aria-labelledby="project-links-title">
+            <h2 id="project-links-title">{ui.case.links}</h2>
+            <ExternalActions actions={project.externalActions} label={ui.case.actions} />
+            {project.url && (
             <a
               className="button button--primary project-case__product-link"
               href={project.url}
               target="_blank"
               rel="noreferrer"
             >
-              Открыть публичный продукт
+              {ui.case.product}
               <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
             </a>
-          </div>
+            )}
+          </section>
         )}
 
-        <OtherProjects projects={otherProjects} onOpenProject={onOpenProject} />
+        <OtherProjects projects={otherProjects} onOpenProject={onOpenProject} ui={ui} />
       </article>
     </div>
   );

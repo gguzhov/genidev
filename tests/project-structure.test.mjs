@@ -55,11 +55,13 @@ test("uses the approved identity and component paths", async () => {
   assert.equal(await exists("src/components/LiquidEther/LiquidEther.css"), true);
 
   const app = await readFile("src/App.jsx", "utf8");
+  const content = await readFile("src/content/siteContent.js", "utf8");
   const cardNav = await readFile("src/components/CardNav/CardNav.jsx", "utf8").catch(() => "");
-  assert.match(app, /Геннадий Гужов/);
+  assert.match(content, /title:\s*"Геннадий Гужов"/);
+  assert.match(app, /aria-label=\{hero\.title\}/);
   assert.doesNotMatch(app, /Георгий Гужов/);
-  assert.match(cardNav, /src="\/images\/gennady-logo\.webp"/);
-  assert.match(app, /components\/WorkSequence\/WorkSequence/);
+  assert.doesNotMatch(cardNav, /gennady-logo\.webp|card-nav__brand/);
+  assert.doesNotMatch(app, /components\/WorkSequence\/WorkSequence/);
   assert.doesNotMatch(app, /components\/LiquidEther\/LiquidEther/);
 
   const html = await readFile("index.html", "utf8");
@@ -70,19 +72,19 @@ test("uses the approved identity and component paths", async () => {
   assert.doesNotMatch(html, /Георгий Гужов/);
 });
 
-test("uses the approved calm motion contract", async () => {
+test("uses the approved calm motion contract without a hero work sequence", async () => {
   const app = await readFile("src/App.jsx", "utf8");
-  assert.match(app, /<WorkSequence items=\{hero\.sequence\} reducedMotion=\{reducedMotion\}/);
+  assert.doesNotMatch(app, /<WorkSequence/);
   assert.doesNotMatch(app, /<LiquidEther/);
 
-  assert.match(app, /hero__title-line/);
+  assert.match(app, /hero__name-line/);
   const heroCss = await readFile("src/styles/hero.css", "utf8");
-  const sequenceCss = await readFile("src/components/WorkSequence/WorkSequence.css", "utf8");
-  assert.match(heroCss, /@keyframes hero-reveal/);
+  const careerCss = await readFile("src/components/CareerTimeline/CareerTimeline.css", "utf8");
+  assert.match(heroCss, /@keyframes hero-letter-in/);
+  assert.match(heroCss, /@keyframes hero-portrait-in/);
   assert.match(heroCss, /prefers-reduced-motion:\s*reduce/);
-  assert.match(sequenceCss, /stroke-dashoffset:\s*1/);
-  assert.match(sequenceCss, /var\(--motion-reveal\)/);
-  assert.match(sequenceCss, /prefers-reduced-motion:\s*reduce/);
+  assert.match(careerCss, /--career-scroll-progress/);
+  assert.match(careerCss, /prefers-reduced-motion:\s*reduce/);
 });
 
 test("keeps portfolio content and route state in focused modules", async () => {
@@ -103,7 +105,8 @@ test("composes the approved navigation and portrait hero", async () => {
   const app = await readFile("src/App.jsx", "utf8");
   assert.match(app, /<CardNav/);
   assert.match(app, /<ProfileCard/);
-  assert.match(app, /hero__title-line">\{hero\.title\}/);
+  assert.match(app, /hero__name-line/);
+  assert.match(app, /variant="capsule"/);
 });
 
 test("renders the four-problem selector", async () => {
@@ -235,8 +238,9 @@ test("keeps landing landmarks, section navigation and floating-header offsets co
 
   assert.equal((app.match(/<main(?:\s|>)/g) ?? []).length, 1);
   assert.equal((app.match(/<h1(?:\s|>)/g) ?? []).length, 1);
-  for (const href of ["#problems", "#career", "#projects", "#contact"]) {
-    assert.ok(app.includes(`href: "${href}"`), `Missing CardNav link ${href}`);
+  const content = await readFile("src/content/siteContent.js", "utf8");
+  for (const href of ["#problems", "#career", "#projects"]) {
+    assert.ok(content.includes(`href: "${href}"`), `Missing CardNav link ${href}`);
   }
   assert.match(app, /sectionId="problems"/);
   assert.match(career, /id="career"/);
@@ -250,7 +254,7 @@ test("keeps the landing h1 unique when a project dialog is present", async () =>
   const projectCaseCss = await readFile("src/components/ProjectCase/ProjectCase.css", "utf8");
 
   assert.equal((app.match(/<h1(?:\s|>)/g) ?? []).length, 1);
-  assert.match(app, /<h1 id="hero-title">/);
+  assert.match(app, /<h1 className="hero__name" id="hero-title" aria-label=\{hero\.title\}>/);
   assert.doesNotMatch(projectCase, /<h1(?:\s|>)/);
   assert.match(projectCase, /<h2 className="project-case__title" id="project-title">/);
   assert.match(projectCase, /aria-labelledby="project-title"/);
@@ -267,8 +271,6 @@ test("keeps the marketplace free from decorative duplicate cards", async () => {
   assert.doesNotMatch(marketplace, /DriftWall/);
   assert.match(marketplace, /projects\.map/);
   assert.match(marketplaceCss, /\.project-card:hover/);
-  assert.match(
-    marketplaceCss,
-    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.project-card:hover[\s\S]*transform:\s*none/s,
-  );
+  assert.doesNotMatch(marketplaceCss, /\.project-card:hover\s*\{[^}]*transform:/s);
+  assert.doesNotMatch(marketplace, /createMarketplaceRevealLifecycle/);
 });

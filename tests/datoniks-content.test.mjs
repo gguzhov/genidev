@@ -5,30 +5,32 @@ import { projects } from "../src/content/siteContent.js";
 import { renderNoscriptFallback } from "../src/content/renderNoscriptFallback.js";
 
 const EXPECTED_METRICS = [
-  "Прототип реализован в Иркутске",
-  "Патент на систему охлаждения",
-  "Бизнес-план и финансовая модель",
-  "87 млн ₽ — инвестиционный запрос",
+  "Объект работает в Иркутске",
+  "40HC · 10 стоек × 12 кВт",
+  "Бизнес-план, питч и финмодель готовы",
+  "Ищу партнёра для запуска серии",
 ];
 
-test("publishes DATONIKS as the third, explicitly in-development investment project", () => {
+test("publishes DATONIKS as the third investment case with a clear business benefit", () => {
   assert.deepEqual(projects.map(({ slug }) => slug), [
     "ostrov-zdoroviya",
     "ilonmask-vpn",
     "datoniks",
+    "wedding-vote",
   ]);
 
   const datoniks = projects.find(({ slug }) => slug === "datoniks");
   assert.ok(datoniks);
-  assert.equal(datoniks.status, "Инвестиционный проект · ищу партнёра");
+  assert.deepEqual(datoniks.tags, ["Телеком", "Дата-центр"]);
   assert.deepEqual(datoniks.metrics, EXPECTED_METRICS);
   assert.equal(datoniks.metrics.length, 4);
 
-  const actions = datoniks.actions.join(" ");
-  assert.match(actions, /исследовал рынок prefab-ЦОД/i);
-  assert.match(actions, /разработал бизнес-план/i);
-  assert.match(actions, /финансовую модель/i);
-  assert.match(actions, /инвестиционн(?:ый|ого) питч/i);
+  const solution = datoniks.solution.map(({ label, text }) => `${label} ${text}`).join(" ");
+  assert.match(solution, /исследовал спрос.*prefab-ЦОД/i);
+  assert.match(solution, /бизнес-план/i);
+  assert.match(solution, /финансовую модель/i);
+  assert.match(solution, /инвестиционн(?:ый|ого) питч/i);
+  assert.match(datoniks.benefit, /предсобранный объект/i);
 
   assert.equal(datoniks.modelMetrics, undefined);
   assert.match(datoniks.videoEmbed, /drive\.google\.com.*\/preview/);
@@ -42,14 +44,12 @@ test("exposes the three requested investor materials", () => {
       href: "/documents/datoniks-pitch-deck-public.pdf",
       target: "_blank",
       rel: "noreferrer",
-      download: true,
     },
     {
       label: "Бизнес-план",
       href: "/documents/datoniks-business-plan.pdf",
       target: "_blank",
       rel: "noreferrer",
-      download: true,
     },
     {
       label: "Финансовая модель",
@@ -65,22 +65,21 @@ test("exposes the three requested investor materials", () => {
   assert.doesNotMatch(publicData, /(?:юридическ(?:ий|ого) адрес|бизнес-план[_\s-]*DATONIKS\.pdf)/i);
 });
 
-test("includes all three projects and DATONIKS actions in the no-JS fallback", () => {
+test("includes all four projects and DATONIKS actions in the no-JS fallback", () => {
   const html = renderNoscriptFallback();
-  assert.equal((html.match(/data-noscript-project/g) ?? []).length, 3);
+  assert.equal((html.match(/data-noscript-project/g) ?? []).length, 4);
   assert.match(html, /DATONIKS/);
-  assert.match(html, /Инвестиционный проект · ищу партнёра/);
+  assert.match(html, /Ищу партнёра для запуска серии/);
   assert.match(html, /href="\/documents\/datoniks-pitch-deck-public\.pdf"/);
   assert.match(html, />Питч-дек</);
   assert.match(html, />Бизнес-план</);
   assert.match(html, />Финансовая модель</);
 });
 
-test("keeps the primary presentation action visually distinct from the secondary action", async () => {
+test("uses one primary control language for every external project material", async () => {
   const css = await readFile("src/components/ProjectCase/ProjectCase.css", "utf8");
-  assert.match(css, /\.project-case__external-action:not\(\.button--primary\)/);
-  assert.doesNotMatch(
-    css,
-    /\.project-case__external-action\s*\{[^}]*background:\s*var\(--color-surface-raised\)/s,
-  );
+  const component = await readFile("src/components/ProjectCase/ProjectCase.jsx", "utf8");
+  assert.match(component, /className="button button--primary project-case__external-action"/);
+  assert.match(component, /actions\.map\(\(action\)/);
+  assert.doesNotMatch(css, /external-action:not\(\.button--primary\)/);
 });

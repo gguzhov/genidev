@@ -1,9 +1,6 @@
-import { useCallback, useId, useRef, useState } from "react";
-import { sectionCopy } from "../../content/siteContent";
-import {
-  getProblemScanKey,
-  nextProblemScanRevision,
-} from "./problemPassportScanState";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { transitionSelectedIndex } from "./problemSelectionState";
 import "./ProblemSelector.css";
 
@@ -14,10 +11,12 @@ const DIRECTION_KEYS = {
   ArrowDown: 1,
 };
 
-export default function ProblemSelector({ problems, sectionId }) {
+export default function ProblemSelector({ problems, sectionId, copy, ui }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scanRevision, setScanRevision] = useState(0);
   const buttonRefs = useRef([]);
+  const carouselRef = useRef(null);
+  const scrollFrameRef = useRef();
+  const [activeSolutionIndex, setActiveSolutionIndex] = useState(0);
   const instanceId = useId();
   const resolvedSectionId = sectionId ?? `${instanceId}-section`;
   const headingId = `${instanceId}-heading`;
@@ -31,10 +30,18 @@ export default function ProblemSelector({ problems, sectionId }) {
     },
     [problems.length],
   );
-  const retriggerScan = useCallback(() => {
-    setScanRevision(nextProblemScanRevision);
-  }, []);
   const selected = problems[selectedIndex];
+  const featuredSolutions = selected?.solutions.slice(0, 3) ?? [];
+  const openSolution = selected?.solutions.at(-1);
+
+  useEffect(() => {
+    carouselRef.current?.scrollTo({ left: 0, behavior: "auto" });
+    setActiveSolutionIndex(0);
+  }, [selected?.id]);
+
+  useEffect(() => () => {
+    if (scrollFrameRef.current !== undefined) cancelAnimationFrame(scrollFrameRef.current);
+  }, []);
 
   if (!selected) return null;
 
@@ -53,6 +60,39 @@ export default function ProblemSelector({ problems, sectionId }) {
     buttonRefs.current[nextIndex]?.focus();
   };
 
+  const scrollToSolution = (nextIndex) => {
+    const carousel = carouselRef.current;
+    const cards = carousel?.querySelectorAll(".problem-selector__solution");
+    const resolvedIndex = Math.max(0, Math.min(featuredSolutions.length - 1, nextIndex));
+    const card = cards?.[resolvedIndex];
+    if (!carousel || !card) return;
+
+    carousel.scrollTo({
+      left: card.offsetLeft,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+    setActiveSolutionIndex(resolvedIndex);
+  };
+
+  const updateActiveSolution = () => {
+    if (scrollFrameRef.current !== undefined) return;
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = undefined;
+      const carousel = carouselRef.current;
+      const cards = [...(carousel?.querySelectorAll(".problem-selector__solution") ?? [])];
+      if (!carousel || !cards.length) return;
+      const closestIndex = cards.reduce((best, card, index) => (
+        Math.abs(card.offsetLeft - carousel.scrollLeft)
+          < Math.abs(cards[best].offsetLeft - carousel.scrollLeft)
+          ? index
+          : best
+      ), 0);
+      setActiveSolutionIndex(closestIndex);
+    });
+  };
+
   return (
     <section
       className="section problem-section"
@@ -61,11 +101,11 @@ export default function ProblemSelector({ problems, sectionId }) {
     >
       <div className="section__inner">
         <header className="section__heading">
-          <h2 id={headingId}>{sectionCopy.problems.title}</h2>
+          <h2 id={headingId}>{copy.title}</h2>
         </header>
 
         <div className="problem-selector">
-          <div className="problem-selector__rail" role="group" aria-label="Бизнес-задачи">
+          <div className="problem-selector__rail" role="group" aria-label={ui.capabilitiesGroup}>
             {problems.map((problem, index) => {
               const isSelected = selectedIndex === index;
 
@@ -82,12 +122,8 @@ export default function ProblemSelector({ problems, sectionId }) {
                   aria-pressed={selectedIndex === index}
                   aria-controls={panelId}
                   onClick={() => selectProblem(index)}
-                  onFocus={retriggerScan}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                 >
-                  <span className="problem-selector__tab-code" aria-hidden="true">
-                    {problem.code}
-                  </span>
                   <span className="problem-selector__tab-title">{problem.title}</span>
                 </button>
               );
@@ -108,49 +144,68 @@ export default function ProblemSelector({ problems, sectionId }) {
             id={panelId}
             role="region"
             aria-labelledby={panelHeadingId}
-            onPointerEnter={retriggerScan}
           >
             <div className="problem-selector__panel-content" key={selected.id}>
-              <div className="problem-selector__barcode">
-                <span className="problem-selector__code">{selected.code}</span>
-                <span className="problem-selector__barcode-bars" aria-hidden="true">
-                  <span
-                    className="problem-selector__scan"
-                    key={getProblemScanKey(selected.id, scanRevision)}
-                    data-scan-revision={scanRevision}
-                    aria-hidden="true"
-                  />
-                </span>
+              <div className="problem-selector__panel-title">
+                <img src={selected.icon} alt="" width="128" height="128" aria-hidden="true" />
+                <h3 id={panelHeadingId}>{selected.title}</h3>
               </div>
-              <h3 id={panelHeadingId}>{selected.title}</h3>
-              <p className="problem-selector__situation">{selected.situation}</p>
-
-              <div className="problem-selector__actions">
-                <p className="problem-selector__label">Что сделаю</p>
+              <div className="problem-selector__carousel">
                 <ul
-                  className="problem-selector__actions-list"
-                  aria-label={`Действия для задачи «${selected.title}»`}
+                  className="problem-selector__solutions"
+                  aria-label={`${ui.projectIdeas} «${selected.title}»`}
+                  ref={carouselRef}
+                  onScroll={updateActiveSolution}
                 >
-                  {selected.actions.map((action) => (
-                    <li key={action}>{action}</li>
-                  ))}
-                </ul>
-                <p className="problem-selector__label problem-selector__label--outcomes">
-                  Что получите
-                </p>
-                <ul
-                  className="problem-selector__outcomes"
-                  aria-label={`Результаты задачи «${selected.title}»`}
-                >
-                  {selected.outcomes.map((outcome, outcomeIndex) => (
-                    <li
-                      key={outcome}
-                      style={{ "--outcome-index": outcomeIndex }}
-                    >
-                      {outcome}
+                  {featuredSolutions.map((solution, index) => (
+                    <li className="problem-selector__solution" key={solution.title}>
+                      <span className="problem-selector__solution-number">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div className="problem-selector__solution-copy">
+                        <h4>{solution.title}</h4>
+                        <dl className="problem-selector__solution-details">
+                          <div className="problem-selector__solution-process">
+                            <dt>{ui.businessProcess}</dt>
+                            <dd>{solution.process}</dd>
+                          </div>
+                          <div className="problem-selector__solution-system">
+                            <dt>{ui.digitalSolution}</dt>
+                            <dd>{solution.project}</dd>
+                          </div>
+                          <div className="problem-selector__solution-result">
+                            <dt>{ui.businessResult}</dt>
+                            <dd>{solution.effect}</dd>
+                          </div>
+                        </dl>
+                      </div>
                     </li>
                   ))}
                 </ul>
+                <div className="problem-selector__slider-controls">
+                  <button
+                    type="button"
+                    aria-label={ui.previousCapabilityProjects ?? ui.previousProject}
+                    disabled={activeSolutionIndex === 0}
+                    onClick={() => scrollToSolution(activeSolutionIndex - 1)}
+                  >
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+                  </button>
+                  <span aria-live="polite">
+                    {String(activeSolutionIndex + 1).padStart(2, "0")} / {String(featuredSolutions.length).padStart(2, "0")}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label={ui.nextCapabilityProjects}
+                    disabled={activeSolutionIndex === featuredSolutions.length - 1}
+                    onClick={() => scrollToSolution(activeSolutionIndex + 1)}
+                  >
+                    <HugeiconsIcon icon={ArrowRight01Icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+                  </button>
+                </div>
+                {openSolution ? (
+                  <p className="problem-selector__open-solution">{openSolution.title}</p>
+                ) : null}
               </div>
             </div>
           </article>

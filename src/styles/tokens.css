@@ -47,6 +47,8 @@
   --color-accent-hover: var(--blue-10);
   --color-on-accent: var(--blue-contrast);
   --color-focus: var(--blue-8);
+  --glass-soft: color-mix(in oklch, var(--color-surface-raised) 76%, transparent);
+  --glass-strong: color-mix(in oklch, var(--color-surface-raised) 88%, transparent);
   --font-primary: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Consolas, monospace;
   --layout-max: 1280px;
   --layout-gutter: 16px;

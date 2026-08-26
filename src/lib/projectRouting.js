@@ -1,7 +1,15 @@
-const PROJECT_ROUTE = /^\/projects\/([a-z0-9-]+)\/?$/;
+const PROJECT_ROUTE = /^\/(?:en\/)?projects\/([a-z0-9-]+)\/?$/;
 
-export function projectPath(slug) {
-  return `/projects/${slug}`;
+export function resolveLocale(pathname = "/") {
+  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "ru";
+}
+
+export function localizedHomePath(locale = "ru") {
+  return locale === "en" ? "/en" : "/";
+}
+
+export function projectPath(slug, locale = "ru") {
+  return `${locale === "en" ? "/en" : ""}/projects/${slug}`;
 }
 
 export function projectSlugFromPath(pathname) {

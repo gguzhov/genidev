@@ -18,18 +18,19 @@
     13,
     14,
     15,
-    16,
     17
   ],
   "excludedSourcePages": [
+    16,
     18
   ],
   "excludedSourcePageFingerprints": [
+    "e9c2c6d3145eaab99b21c20dfcc2920309ffdc89ad94101f84a4f0a7cda21498",
     "1df106246354690181e28711abda15f70131abcab9659a33a754fa07a5d8a448"
   ],
   "publicPath": "public/documents/datoniks-pitch-deck-public.pdf",
-  "publicSha256": "45756bb30e13679c7ddb23cfdd046859234ba3c7fc6346ea369c2902ccf213d1",
-  "publicPageCount": 17,
+  "publicSha256": "854e34d2d1095b930a0816fecf96fcb94971fb3d91977be1781e3dbd76881a8d",
+  "publicPageCount": 16,
   "publicPageFingerprints": [
     "7f69a0d598c90ae1e76d87cb37aeb76ce96efc196eb08b8e508277bd7a20dd63",
     "0e64bd689f33ae222383d98ec09d071f20c5d5f805925c1d7cbddd1693d2b1ef",
@@ -46,7 +47,6 @@
     "216296556428c0ee7ede4a47b5403d8d9d1481411aaeebc1c219ac0da014da7b",
     "60e122e2749663e337d6f01f36ca8e328f822dca2e82467f8b8ad5c6bdbec5b2",
     "c7508bbd2a0aa859158318a7086a409e97d75ffd8501a724019d90efb311022a",
-    "e9c2c6d3145eaab99b21c20dfcc2920309ffdc89ad94101f84a4f0a7cda21498",
     "fba473db4cfdfb3e086f2d21b590932eb6ddb1aa3a8a850b1db552af68005c44"
   ]
 }

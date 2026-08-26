@@ -36,23 +36,18 @@ const [
   readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
 ]);
 
-test("orders the mobile hero as copy, CTA, portrait, then work sequence", () => {
+test("orders the mobile hero as name, portrait and role without a duplicate sequence", () => {
   assert.match(
     appSource,
-    /<div className="hero__copy">[\s\S]*?<a[\s\S]*?className="button button--primary"[\s\S]*?<\/div>\s*<ProfileCard[\s\S]*?<div className="hero__sequence">\s*<WorkSequence/,
+    /<div className="hero__stage">[\s\S]*?hero__name[\s\S]*?hero__portrait[\s\S]*?<ProfileCard[\s\S]*?variant="capsule"/,
   );
-  assert.match(
-    heroCss,
-    /@media \(min-width:\s*768px\)[\s\S]*grid-template-areas:[^;]*"copy profile"[^;]*"sequence profile"/,
-  );
+  assert.match(appSource, /<p className="hero__role">\{hero\.role\}<\/p>/);
+  assert.match(heroCss, /\.hero__inner\s*\{[^}]*grid-template-rows:/s);
 });
 
-test("keeps the work sequence vertical until the left hero column can fit six labels", () => {
-  assert.doesNotMatch(sequenceCss, /@media \(min-width:\s*768px\)/);
-  assert.match(
-    sequenceCss,
-    /@media \(min-width:\s*1024px\)[\s\S]*\.work-sequence__track\s*\{[^}]*display:\s*block/,
-  );
+test("keeps the hero free of the legacy work-sequence component", () => {
+  assert.doesNotMatch(appSource, /<WorkSequence/);
+  assert.match(heroCss, /@media \(min-width:\s*768px\)/);
 });
 
 test("keeps the ProfileCard action in a single unobstructed overlay", () => {
@@ -74,21 +69,18 @@ test("caches portrait bounds outside pointermove and coalesces updates into one 
   assert.match(pointerMoveBody, /animationFrameRef\.current != null\) return/);
 });
 
-test("uses the exact approved task and marketplace copy", () => {
+test("uses concise capability and marketplace copy", () => {
+  assert.match(contentSource, /title:\s*"В чем могу быть полезен\?"/);
   assert.match(
     contentSource,
-    /Выберу участок работы и измеримый критерий успеха\./,
+    /Цифровой двойник бизнеса/,
   );
-  assert.match(
-    contentSource,
-    /Рабочая версия вместо презентации с идеей\./,
-  );
-  assert.match(contentSource, /duration:\s*"1 неделя до запуска"/);
+  assert.doesNotMatch(contentSource, /duration:\s*"1 неделя до запуска"/);
   assert.match(
     contentSource,
     /В каждом проекте я прошёл путь от постановки проблемы и анализа бизнес-процессов до разработки и запуска\./,
   );
-  assert.match(marketplaceSource, /sectionCopy\.marketplace\.description/);
+  assert.match(marketplaceSource, /<p>\{copy\.description\}<\/p>/);
 });
 
 test("announces only a concise selected-task status instead of the large panel", () => {
@@ -101,44 +93,39 @@ test("announces only a concise selected-task status instead of the large panel",
   assert.match(problemSource, /\{selected\.title\}/);
 });
 
-test("keeps the desktop task selector compact and removes card-like action pills", () => {
+test("keeps the capability selector compact and uses a readable project carousel", () => {
   assert.doesNotMatch(
     problemCss,
     /\.problem-selector__panel\s*\{[^}]*box-shadow/s,
   );
   assert.match(
     problemCss,
-    /@media \(min-width:\s*768px\)[\s\S]*\.problem-selector__tab\s*\{[^}]*min-height:\s*(?:68|69|70|71|72)px/s,
+    /@media \(min-width:\s*768px\)[\s\S]*\.problem-selector__tab\s*\{[^}]*min-height:\s*58px/s,
   );
-  assert.match(
-    problemCss,
-    /\.problem-selector__actions-list\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s,
-  );
-  assert.match(problemCss, /\.problem-selector__actions-list li\s*\{[^}]*border-bottom:/s);
-  assert.doesNotMatch(
-    problemCss,
-    /\.problem-selector__actions-list li\s*\{[^}]*border-radius:\s*999px/s,
-  );
+  assert.match(problemCss, /\.problem-selector__solutions\s*\{[^}]*overflow-x:\s*auto/s);
+  assert.match(problemCss, /\.problem-selector__solution\s*\{[^}]*border-radius:\s*var\(--radius-feature\)/s);
+  assert.match(problemCss, /scroll-snap-type:\s*x mandatory/);
 });
 
-test("keeps career reached markers contiguous through the furthest milestone", async () => {
-  const { getContiguousReachedIndexes } = await import(
+test("keeps career checkpoints contiguous along the shared route progress", async () => {
+  const { getReachedCareerIndexesByProgress } = await import(
     "../src/components/CareerTimeline/careerTimelineState.js"
   );
 
-  assert.deepEqual(getContiguousReachedIndexes(3), [0, 1, 2, 3]);
-  assert.deepEqual(getContiguousReachedIndexes(-1), []);
-  assert.match(careerSource, /getContiguousReachedIndexes\(furthestReached\)/);
+  assert.deepEqual(getReachedCareerIndexesByProgress(0.5, [0, 0.25, 0.5, 0.75, 1]), [0, 1, 2]);
+  assert.deepEqual(getReachedCareerIndexesByProgress(0, [0, 0.25]), [0]);
+  assert.match(careerSource, /getReachedCareerIndexesByProgress\(progress, checkpointProgresses\)/);
+  assert.match(careerSource, /career-route__checkpoint/);
 });
 
-test("uses the approved compact desktop career geometry", () => {
+test("uses a desktop route with alternating career entries", () => {
   assert.match(
     careerCss,
-    /@media \(min-width:\s*1024px\)[\s\S]*\.career-timeline\s*\{[^}]*margin-left:\s*(?:[0-4]?\d)px/s,
+    /@media \(min-width:\s*768px\)[\s\S]*\.career-route__road\s*\{[^}]*left:\s*50%/s,
   );
   assert.match(
     careerCss,
-    /@media \(min-width:\s*1024px\)[\s\S]*\.career-timeline__entry\s*\{[^}]*grid-template-columns:\s*1(?:2\d|3\d|40)px/s,
+    /@media \(min-width:\s*768px\)[\s\S]*\.career-timeline__event\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s,
   );
 });
 
@@ -173,8 +160,8 @@ test("uses truthful product-specific covers and readable project labels", async 
   assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-comet\.webp"/);
   assert.match(contentSource, /cover:\s*"\/projects\/ilonmask-product-cover\.png"/);
   assert.equal(await exists("public/projects/ilonmask-product-cover.png"), true);
-  assert.match(marketplaceCss, /\.project-card__category\s*\{[^}]*font-size:\s*0\.75rem/s);
-  assert.match(marketplaceCss, /\.project-card__metrics > li\s*\{[^}]*font-size:\s*0\.8rem/s);
+  assert.match(marketplaceCss, /\.project-card__tags li\s*\{[^}]*font-size:\s*0\.72rem/s);
+  assert.match(marketplaceCss, /\.project-card__summary\s*\{[^}]*font-size:\s*0\.875rem/s);
   assert.match(marketplaceCss, /\.project-card__media,[\s\S]*aspect-ratio:\s*3\s*\/\s*2/s);
   assert.doesNotMatch(marketplaceCss, /nth-child\(2\).*aspect-ratio/s);
 });

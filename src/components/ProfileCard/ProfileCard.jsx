@@ -12,6 +12,9 @@ function ProfileCardComponent({
   name,
   onContactClick,
   enableTilt = true,
+  showContact = true,
+  profileLabel = "Профиль",
+  variant = "card",
 }) {
   const [hasFinePointer, setHasFinePointer] = useState(false);
   const wrapperRef = useRef(null);
@@ -115,12 +118,12 @@ function ProfileCardComponent({
   return (
     <div
       ref={wrapperRef}
-      className={`profile-card-wrapper${tiltEnabled ? " profile-card-wrapper--tilt" : ""}`}
+      className={`profile-card-wrapper profile-card-wrapper--${variant}${tiltEnabled ? " profile-card-wrapper--tilt" : ""}`}
       onPointerEnter={handlePointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      <article ref={frameRef} className="profile-card" aria-label={`Профиль ${name}`}>
+      <article ref={frameRef} className="profile-card" aria-label={`${profileLabel} ${name}`}>
         <div className="profile-card__markers" aria-hidden="true">
           <span />
           <span />
@@ -136,7 +139,7 @@ function ProfileCardComponent({
           loading="eager"
           fetchPriority="high"
         />
-        <div className="profile-card__action-layer">
+        {showContact && <div className="profile-card__action-layer">
           <button
             className="profile-card__contact"
             type="button"
@@ -146,7 +149,7 @@ function ProfileCardComponent({
             Связаться
             <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
           </button>
-        </div>
+        </div>}
       </article>
     </div>
   );

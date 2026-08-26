@@ -5,5 +5,8 @@ import "./styles/tokens.css";
 import "./styles/global.css";
 import "./styles/hero.css";
 import "./styles/sections.css";
+import { resolveLocale } from "./lib/projectRouting.js";
 
-createRoot(document.getElementById("root")).render(<App />);
+const locale = resolveLocale(window.location.pathname);
+document.documentElement.lang = locale;
+createRoot(document.getElementById("root")).render(<App locale={locale} />);

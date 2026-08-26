@@ -16,13 +16,13 @@ const presets = {
     color2: "var(--gradient-ice-light)",
     color3: "var(--gradient-ice-signal)",
     rotation: -24,
-    proportion: 42,
+    proportion: 58,
     scale: 0.34,
     speed: 7,
     distortion: 3,
     swirl: 34,
     swirlIterations: 5,
-    softness: 100,
+    softness: 42,
     offset: -180,
     shape: "Edge",
     shapeSize: 62,
@@ -95,6 +95,8 @@ function createShader(gl, type, source) {
 export default function AnimatedGradient({
   config = DEFAULT_CONFIG,
   noise = { opacity: 0.08, scale: 0.7 },
+  amplitude = 0.065,
+  mouseReact = true,
   radius = "0px",
   style,
   className = "",
@@ -104,6 +106,7 @@ export default function AnimatedGradient({
   const frameIdRef = useRef(undefined);
   const elapsedRef = useRef(0);
   const lastFrameRef = useRef(undefined);
+  const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const [webglAvailable, setWebglAvailable] = useState(true);
   const [contextRevision, setContextRevision] = useState(0);
   const params = useMemo(() => getParams(config), [config]);
@@ -114,14 +117,18 @@ export default function AnimatedGradient({
     if (!canvas || !container) return undefined;
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let contextLost = false;
     const handleContextLost = (event) => {
       event.preventDefault();
+      contextLost = true;
       if (frameIdRef.current !== undefined) cancelAnimationFrame(frameIdRef.current);
       frameIdRef.current = undefined;
       lastFrameRef.current = undefined;
       setWebglAvailable(false);
     };
     const handleContextRestored = () => {
+      contextLost = false;
       setWebglAvailable(true);
       setContextRevision((revision) => revision + 1);
     };
@@ -206,6 +213,8 @@ export default function AnimatedGradient({
         "u_distortion",
         "u_swirl",
         "u_swirlIterations",
+        "u_mouse",
+        "u_amplitude",
       ].map((name) => [name, gl.getUniformLocation(program, name)]),
     );
 
@@ -224,6 +233,7 @@ export default function AnimatedGradient({
     };
 
     const draw = () => {
+      if (contextLost || gl.isContextLost?.()) return;
       const speed = (params.speed / 100) * 5;
       gl.uniform1f(uniforms.u_time, elapsedRef.current * speed + params.offset * 0.01);
       gl.uniform2f(uniforms.u_resolution, canvas.width, canvas.height);
@@ -243,6 +253,8 @@ export default function AnimatedGradient({
         uniforms.u_swirlIterations,
         params.swirl === 0 ? 0 : params.swirlIterations,
       );
+      gl.uniform2f(uniforms.u_mouse, mouseRef.current.x, mouseRef.current.y);
+      gl.uniform1f(uniforms.u_amplitude, amplitude);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
 
@@ -253,6 +265,10 @@ export default function AnimatedGradient({
     };
 
     const animate = (time) => {
+      if (contextLost || gl.isContextLost?.()) {
+        stop();
+        return;
+      }
       if (lastFrameRef.current === undefined) {
         lastFrameRef.current = time;
       } else {
@@ -268,8 +284,34 @@ export default function AnimatedGradient({
       frameIdRef.current = requestAnimationFrame(animate);
     };
 
+    let pointerAttached = false;
+    const resetPointer = () => {
+      mouseRef.current = { x: 0.5, y: 0.5 };
+    };
+    const handlePointerMove = (event) => {
+      const bounds = container.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return;
+      mouseRef.current = {
+        x: Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width)),
+        y: Math.max(0, Math.min(1, 1 - (event.clientY - bounds.top) / bounds.height)),
+      };
+    };
+    const syncPointerReaction = () => {
+      const shouldAttach = mouseReact && hoverQuery.matches && !motionQuery.matches;
+      if (shouldAttach === pointerAttached) return;
+      pointerAttached = shouldAttach;
+      if (pointerAttached) {
+        window.addEventListener("pointermove", handlePointerMove, { passive: true });
+      } else {
+        window.removeEventListener("pointermove", handlePointerMove);
+        resetPointer();
+        draw();
+      }
+    };
+
     const syncAnimation = () => {
       stop();
+      if (contextLost || gl.isContextLost?.()) return;
       draw();
       if (document.visibilityState === "visible" && !motionQuery.matches) {
         frameIdRef.current = requestAnimationFrame(animate);
@@ -283,21 +325,30 @@ export default function AnimatedGradient({
     });
     resizeObserver.observe(container);
     document.addEventListener("visibilitychange", syncAnimation);
-    motionQuery.addEventListener("change", syncAnimation);
+    const handleMotionPreference = () => {
+      syncPointerReaction();
+      syncAnimation();
+    };
+    motionQuery.addEventListener("change", handleMotionPreference);
+    hoverQuery.addEventListener("change", syncPointerReaction);
+    syncPointerReaction();
     syncAnimation();
 
     return () => {
       stop();
       resizeObserver.disconnect();
       document.removeEventListener("visibilitychange", syncAnimation);
-      motionQuery.removeEventListener("change", syncAnimation);
+      motionQuery.removeEventListener("change", handleMotionPreference);
+      hoverQuery.removeEventListener("change", syncPointerReaction);
+      window.removeEventListener("pointermove", handlePointerMove);
+      resetPointer();
       removeContextListeners();
       gl.deleteProgram(program);
       gl.deleteShader(vertexShader);
       gl.deleteShader(fragmentShader);
       gl.deleteBuffer(positionBuffer);
     };
-  }, [contextRevision, params]);
+  }, [amplitude, contextRevision, mouseReact, params]);
 
   return (
     <div
@@ -346,94 +397,52 @@ uniform float u_shapeScale;
 uniform float u_distortion;
 uniform float u_swirl;
 uniform float u_swirlIterations;
+uniform vec2 u_mouse;
+uniform float u_amplitude;
 out vec4 fragColor;
-
-#define TWO_PI 6.28318530718
-#define PI 3.14159265358979323846
 
 vec2 rotate(vec2 uv, float th) {
   return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
 }
 
-float random(vec2 st) {
-  return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-}
-
-float noise(vec2 st) {
-  vec2 i = floor(st);
-  vec2 f = fract(st);
-  float a = random(i);
-  float b = random(i + vec2(1.0, 0.0));
-  float c = random(i + vec2(0.0, 1.0));
-  float d = random(i + vec2(1.0, 1.0));
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
-}
-
-vec4 blendColors(vec4 c1, vec4 c2, vec4 c3, float mixer, float edgesWidth, float edgeBlur) {
-  vec3 color1 = c1.rgb * c1.a;
-  vec3 color2 = c2.rgb * c2.a;
-  vec3 color3 = c3.rgb * c3.a;
-  float r1 = smoothstep(.0 + .35 * edgesWidth, .7 - .35 * edgesWidth + .5 * edgeBlur, mixer);
-  float r2 = smoothstep(.3 + .35 * edgesWidth, 1. - .35 * edgesWidth + edgeBlur, mixer);
-  vec3 blendedColor = mix(color1, color2, r1);
-  float blendedOpacity = mix(c1.a, c2.a, r1);
-  return vec4(mix(blendedColor, color3, r2), mix(blendedOpacity, c3.a, r2));
-}
-
 void main() {
-  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-  float t = .5 * u_time;
-  float noiseScale = .0005 + .006 * u_scale;
-  uv -= .5;
-  uv *= noiseScale * u_resolution;
+  float mr = min(u_resolution.x, u_resolution.y);
+  vec2 uv = (gl_FragCoord.xy / u_resolution.xy * 2.0 - 1.0) * u_resolution.xy / mr;
   uv = rotate(uv, u_rotation);
-  uv /= u_pixelRatio;
-  uv += .5;
+  uv += (u_mouse - vec2(0.5)) * u_amplitude;
 
-  float n1 = noise(uv + t);
-  float n2 = noise(uv * 2. - t);
-  float angle = n1 * TWO_PI;
-  uv.x += 4. * u_distortion * n2 * cos(angle);
-  uv.y += 4. * u_distortion * n2 * sin(angle);
-
-  float iterationsNumber = ceil(clamp(u_swirlIterations, 1., 30.));
-  for (float i = 1.; i <= 30.; i++) {
-    if (i > iterationsNumber) break;
-    uv.x += clamp(u_swirl, 0., 2.) / i * cos(t + i * 1.5 * uv.y);
-    uv.y += clamp(u_swirl, 0., 2.) / i * cos(t + i * uv.x);
+  float d = -u_time * 0.5;
+  float a = 0.0;
+  for (float i = 0.0; i < 8.0; ++i) {
+    a += cos(i - d - a * uv.x);
+    d += sin(uv.y * i + a);
   }
+  d += u_time * 0.5;
 
-  float proportion = clamp(u_proportion, 0., 1.);
-  float mixer;
-  if (u_shape < .5) {
-    vec2 shapeUv = uv * (.5 + 3.5 * u_shapeScale);
-    float shape = .5 + .5 * sin(shapeUv.x) * cos(shapeUv.y);
-    mixer = shape + .48 * sign(proportion - .5) * pow(abs(proportion - .5), .5);
-  } else if (u_shape < 1.5) {
-    vec2 shapeUv = uv * (.25 + 3. * u_shapeScale);
-    float f = fract(shapeUv.y);
-    float shape = smoothstep(.0, .55, f) * smoothstep(1., .45, f);
-    mixer = shape + .48 * sign(proportion - .5) * pow(abs(proportion - .5), .5);
-  } else {
-    float shape = 1. - uv.y;
-    shape -= .5;
-    shape /= noiseScale * u_resolution.y;
-    shape += .5;
-    float shapeScaling = .2 * (1. - u_shapeScale);
-    mixer = smoothstep(
-      .45 - shapeScaling,
-      .55 + shapeScaling,
-      shape + .3 * (proportion - .5)
-    );
-  }
-
-  fragColor = blendColors(
-    u_color1,
-    u_color2,
-    u_color3,
-    mixer,
-    1. - clamp(u_softness, 0., 1.),
-    .01 + .01 * u_scale
+  vec3 field = vec3(
+    cos(uv * vec2(d, a)) * 0.6 + 0.4,
+    cos(a + d) * 0.5 + 0.5
   );
+  field = cos(field * cos(vec3(d, a, 2.5)) * 0.5 + 0.5) * 0.5 + 0.5;
+
+  float edgeWidth = mix(0.035, 0.14, clamp(u_softness, 0.0, 1.0));
+  float regionWave = 0.5 + 0.5 * sin(
+    uv.x * (0.82 + u_scale) - uv.y * 0.64 + d * 0.16 + sin(a * 0.12) * 0.26
+  );
+  float lightField = regionWave + (field.r - 0.5) * 0.16;
+  float signalField = (1.0 - regionWave) + (field.b - 0.5) * 0.14;
+  float lightMask = smoothstep(
+    u_proportion - edgeWidth,
+    u_proportion + edgeWidth,
+    lightField
+  );
+  float signalMask = smoothstep(
+    0.64 - edgeWidth * 0.2,
+    0.74 + edgeWidth * 0.2,
+    signalField
+  );
+
+  vec3 ice = mix(u_color1.rgb, u_color2.rgb, lightMask);
+  ice = mix(ice, u_color3.rgb, signalMask * 0.82);
+  fragColor = vec4(ice, 1.0);
 }`;

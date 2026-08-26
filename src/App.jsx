@@ -1,107 +1,92 @@
-import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
 import CareerTimeline from "./components/CareerTimeline/CareerTimeline";
 import FinalContact from "./components/FinalContact/FinalContact";
 import GradientWave from "./components/GradientWave/GradientWave";
+import LanguageSwitcher from "./components/LanguageSwitcher/LanguageSwitcher";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
 import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
 import SiteFooter from "./components/SiteFooter/SiteFooter";
-import WorkSequence from "./components/WorkSequence/WorkSequence";
-import { career, contact, hero, problems, projects, socialLinks } from "./content/siteContent";
+import { getSiteContent } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
-import useReducedMotion from "./hooks/useReducedMotion";
 
-const navigation = [
-  {
-    label: "Задачи",
-    href: "#problems",
-    ariaLabel: "Перейти к бизнес-задачам",
-  },
-  {
-    label: "Опыт",
-    href: "#career",
-    ariaLabel: "Перейти к карьерному пути",
-  },
-  {
-    label: "Проекты",
-    href: "#projects",
-    ariaLabel: "Перейти к проектам",
-  },
-  {
-    label: "Связаться",
-    href: "#contact",
-    ariaLabel: "Перейти к контактам",
-  },
-];
-
-const navigationCta = {
-  ...hero.cta,
-  label: "Связаться",
-};
-
-export function App() {
-  const reducedMotion = useReducedMotion();
+export function App({ locale = "ru" }) {
+  const { career, contact, hero, problems, projects, socialLinks, sectionCopy, navigation, ui } =
+    getSiteContent(locale);
+  const navigationCta = { ...hero.cta, label: locale === "en" ? "Contact" : "Связаться" };
   const { activeProject, openProject, closeProject } = useProjectRoute(projects);
-
-  const openContact = () => {
-    window.open(hero.cta.href, hero.cta.target, "noopener,noreferrer");
-  };
 
   return (
     <>
       <GradientWave />
-      <CardNav items={navigation} cta={navigationCta} />
+      <CardNav items={navigation} cta={navigationCta} locale={locale} ui={ui} />
       <main>
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero__inner">
-            <div className="hero__copy">
-              <h1 id="hero-title">
-                <span className="hero__title-line">{hero.title}</span>
+            <div className="hero__stage">
+              <h1 className="hero__name" id="hero-title" aria-label={hero.title}>
+                {hero.nameLines.map((line, lineIndex) => (
+                  <span className="hero__name-line" key={line} aria-hidden="true">
+                    {line.split("").map((character, letterIndex) => (
+                      <span
+                        className="hero__letter"
+                        key={`${character}-${letterIndex}`}
+                        style={{ "--letter-index": letterIndex, "--line-index": lineIndex }}
+                      >
+                        {character}
+                      </span>
+                    ))}
+                  </span>
+                ))}
               </h1>
-              <p className="hero__promise">{hero.promise}</p>
-              <a
-                className="button button--primary"
-                href={hero.cta.href}
-                target={hero.cta.target}
-                rel={hero.cta.rel}
-              >
-                {hero.cta.label}
-                <HugeiconsIcon
-                  icon={ArrowUpRight01Icon}
-                  size={20}
-                  strokeWidth={1.8}
-                  aria-hidden="true"
+
+              <div className="hero__portrait">
+                <ProfileCard
+                  avatarUrl="/images/gennady-profile.webp"
+                  name={hero.title}
+                  profileLabel={ui.profileLabel}
+                  showContact={false}
+                  variant="capsule"
                 />
-              </a>
+              </div>
             </div>
 
-            <ProfileCard
-              avatarUrl="/images/gennady-profile.webp"
-              name="Геннадий Гужов"
-              onContactClick={openContact}
-            />
-
-            <div className="hero__sequence">
-              <WorkSequence items={hero.sequence} reducedMotion={reducedMotion} />
+            <div className="hero__footer">
+              <p className="hero__role">{hero.role}</p>
+              <a className="hero__scroll" href="#problems" aria-label={ui.scrollToCapabilities}>
+                <span className="hero__scroll-icon" aria-hidden="true">
+                  <HugeiconsIcon icon={ArrowDown01Icon} size={30} strokeWidth={1.8} />
+                </span>
+              </a>
             </div>
           </div>
         </section>
 
-        <ProblemSelector problems={problems} sectionId="problems" />
-        <CareerTimeline items={career} />
-        <ProjectMarketplace projects={projects} onOpenProject={openProject} />
+        <ProblemSelector problems={problems} sectionId="problems" copy={sectionCopy.problems} ui={ui} />
+        <CareerTimeline items={career} copy={sectionCopy.career} />
+        <ProjectMarketplace projects={projects} onOpenProject={openProject} copy={sectionCopy.marketplace} ui={ui} />
         <FinalContact contact={contact} />
       </main>
-      <SiteFooter links={socialLinks} />
+      <SiteFooter links={socialLinks} ui={ui} />
       {activeProject && (
         <ProjectCase
           project={activeProject}
           projects={projects}
           onClose={closeProject}
           onOpenProject={openProject}
+          ui={ui}
+          locale={locale}
+          languageSwitcher={
+            <LanguageSwitcher
+              locale={locale}
+              options={ui.languageSwitch}
+              label={ui.languageSwitchLabel}
+              activeProjectSlug={activeProject.slug}
+            />
+          }
         />
       )}
     </>

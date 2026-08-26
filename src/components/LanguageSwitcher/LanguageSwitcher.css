@@ -1,0 +1,27 @@
+.language-switcher {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 44px);
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-control);
+  background: var(--glass-soft);
+}
+
+.language-switcher a {
+  display: grid;
+  min-width: 44px;
+  min-height: 44px;
+  place-items: center;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 760;
+}
+
+.language-switcher a[aria-current="page"] {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .language-switcher a { transition: none; }
+}

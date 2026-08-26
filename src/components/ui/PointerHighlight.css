@@ -1,0 +1,106 @@
+.pointer-highlight {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.pointer-highlight__content {
+  position: relative;
+  z-index: 1;
+}
+
+.pointer-highlight__frame {
+  position: absolute;
+  z-index: -1;
+  inset: -0.08em -0.12em -0.04em;
+  border-radius: 0.14em;
+  background: var(--blue-a2);
+  opacity: 0;
+  transform: scale(0.94);
+  transform-origin: center;
+  transition:
+    opacity var(--motion-state) var(--motion-ease),
+    transform var(--motion-reveal) var(--motion-ease),
+    background var(--motion-fast) var(--motion-ease);
+}
+
+.pointer-highlight.is-visible .pointer-highlight__frame {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pointer-highlight__corner {
+  position: absolute;
+  width: 0.28em;
+  height: 0.28em;
+  border-color: var(--color-focus);
+  border-style: solid;
+  border-width: 0;
+}
+
+.pointer-highlight__corner--tl {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.pointer-highlight__corner--tr {
+  top: 0;
+  right: 0;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.pointer-highlight__corner--br {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.pointer-highlight__corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.pointer-highlight__cursor {
+  position: absolute;
+  right: -0.18em;
+  bottom: -0.2em;
+  width: 0;
+  height: 0;
+  border-top: 0.28em solid var(--color-accent);
+  border-right: 0.15em solid transparent;
+  border-left: 0.15em solid transparent;
+  filter: drop-shadow(0 0.08em 0.14em var(--blue-a6));
+  opacity: 0;
+  transform: translate(0.24em, 0.24em) rotate(-42deg);
+  transition:
+    opacity var(--motion-fast) var(--motion-ease) 180ms,
+    transform var(--motion-reveal) var(--motion-ease) 180ms;
+}
+
+.pointer-highlight.is-visible .pointer-highlight__cursor {
+  opacity: 1;
+  transform: translate(0, 0) rotate(-42deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pointer-highlight:hover .pointer-highlight__frame {
+    background: var(--blue-a4);
+  }
+
+  .pointer-highlight:hover .pointer-highlight__cursor {
+    transform: translate(-0.08em, -0.08em) rotate(-42deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pointer-highlight__frame,
+  .pointer-highlight__cursor {
+    transition: none;
+  }
+}

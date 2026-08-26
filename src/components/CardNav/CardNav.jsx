@@ -4,6 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import useReducedMotion from "../../hooks/useReducedMotion";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import {
   CARD_NAV_EASE,
   CARD_NAV_INITIAL_STATE,
@@ -25,7 +26,7 @@ export const normalizeNavigationItems = (items) =>
     return item?.href ? [item] : [];
   });
 
-export default function CardNav({ items = [], cta, className = "", ease = cardNavEase }) {
+export default function CardNav({ items = [], cta, locale = "ru", ui, className = "", ease = cardNavEase }) {
   const [menuState, setMenuState] = useState(CARD_NAV_INITIAL_STATE);
   const navRef = useRef(null);
   const triggerRef = useRef(null);
@@ -215,14 +216,14 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
         className={`card-nav${isExpanded ? " card-nav--open" : ""}${
           contentVisible ? " card-nav--content-visible" : ""
         }`}
-        aria-label="Основная навигация"
+        aria-label={ui?.navLabel ?? "Основная навигация"}
       >
         <div className="card-nav__top">
           <button
             ref={triggerRef}
             className={`card-nav__menu-button${isHamburgerOpen ? " card-nav__menu-button--open" : ""}`}
             type="button"
-            aria-label={isExpanded ? "Закрыть меню" : "Открыть меню"}
+            aria-label={isExpanded ? ui?.closeMenu : ui?.openMenu}
             aria-expanded={isExpanded}
             aria-controls="card-navigation-panel"
             onClick={toggleMenu}
@@ -232,29 +233,38 @@ export default function CardNav({ items = [], cta, className = "", ease = cardNa
           </button>
 
           <a
-            className="card-nav__brand"
-            href="#top"
-            aria-label="Геннадий Гужов — к началу страницы"
-            onClick={handleHeaderNavigation}
-          >
-            <img src="/images/gennady-logo.webp" alt="" width="36" height="36" />
-          </a>
-
-          <a
             className="card-nav__cta"
             href={cta?.href}
             target={cta?.target ?? "_blank"}
             rel={cta?.rel ?? "noreferrer"}
+            aria-label={ui?.contactTelegram ?? "Связаться в Telegram"}
             onClick={handleHeaderNavigation}
           >
-            {cta?.label ?? "Решить проблему"}
+            <span className="card-nav__cta-label">
+              {cta?.label ?? "Решить проблему"}
+            </span>
+            <img
+              className="card-nav__cta-icon"
+              src="/icons/telegram-mark-white.svg"
+              alt=""
+              width="24"
+              height="24"
+            />
             <HugeiconsIcon
+              className="card-nav__cta-arrow"
               icon={ArrowUpRight01Icon}
               size={18}
               strokeWidth={1.8}
               aria-hidden="true"
             />
           </a>
+          <div className="card-nav__language">
+            <LanguageSwitcher
+              locale={locale}
+              options={ui?.languageSwitch ?? []}
+              label={ui?.languageSwitchLabel ?? "Язык"}
+            />
+          </div>
         </div>
 
         <div

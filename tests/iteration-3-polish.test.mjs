@@ -14,16 +14,16 @@ const [navCss, navSource, profileCss, sectionsCss, finalContactCss, cardSource, 
     readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
   ]);
 
-test("keeps the closed contact CTA visible and bounded on 375px and 430px", () => {
+test("keeps the closed contact CTA visible and bounded on narrow screens", () => {
   assert.match(navSource, /className="card-nav__cta"/);
   assert.match(navSource, /\{cta\?\.label\s*\?\?\s*"Решить проблему"\}/);
   assert.match(
     navCss,
-    /\.card-nav__cta\s*\{[^}]*min-height:\s*(?:44|48)px[^}]*max-width:\s*100%/s,
+    /\.card-nav__cta\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/s,
   );
   assert.match(
     navCss,
-    /@media \(max-width:\s*559px\)[\s\S]*grid-template-columns:\s*48px\s+minmax\(0,\s*1fr\)\s+48px[\s\S]*\.card-nav__cta\s*\{[^}]*display:\s*inline-flex/s,
+    /@media \(max-width:\s*559px\)[\s\S]*\.card-nav__cta\s*\{[^}]*display:\s*inline-flex/s,
   );
 });
 
@@ -53,20 +53,21 @@ test("uses a taller mobile anchor offset and restores the desktop offset", () =>
   );
 });
 
-test("keeps cover metadata for the full case while marketplace uses centered brand", () => {
+test("keeps cover metadata for the full case while marketplace layers evidence and brand", () => {
   assert.match(contentSource, /slug:\s*"ostrov-zdoroviya"[\s\S]*coverCrop:\s*"browser-chrome"/);
   assert.match(cardSource, /project\.coverCrop/);
   assert.match(cardSource, /project-card--cover-/);
   assert.doesNotMatch(marketplaceCss, /project-visual__product/);
-  assert.match(marketplaceCss, /\.project-visual__logo\s*\{[^}]*top:\s*50%[^}]*left:\s*50%/s);
+  assert.match(marketplaceCss, /\.project-visual__logo-plate/);
+  assert.match(marketplaceCss, /\.project-visual__cover/);
   assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-comet\.webp"/);
 });
 
 test("uses marketplace bottom padding as the only gap before contact", () => {
   assert.match(finalContactCss, /\.marketplace \+ \.final-contact\s*\{[^}]*padding-top:\s*0/s);
-  assert.match(sectionsCss, /\.section\s*\{[^}]*padding:\s*72px 0/s);
+  assert.match(sectionsCss, /\.section\s*\{[^}]*padding:\s*80px 0/s);
   assert.match(
     sectionsCss,
-    /@media \(min-width:\s*1280px\)[\s\S]*\.section\s*\{[^}]*padding:\s*120px 0/s,
+    /@media \(min-width:\s*1280px\)[\s\S]*\.section\s*\{[^}]*padding:\s*112px 0/s,
   );
 });

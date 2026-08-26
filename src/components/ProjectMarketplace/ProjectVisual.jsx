@@ -63,10 +63,21 @@ export default function ProjectVisual({ project, interactive = true }) {
       style={DEFAULT_POINTER}
       ref={visualRef}
     >
+      <img
+        className="project-visual__cover"
+        data-visual-layer="evidence"
+        src={project.cardCover ?? project.cover}
+        alt=""
+        width={project.cardCoverWidth ?? project.coverWidth ?? 1536}
+        height={project.cardCoverHeight ?? project.coverHeight ?? 1024}
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      />
       <span className="project-visual__gradient" data-visual-layer="atmosphere" />
-      <span className="project-visual__orbit" />
 
       {!logoFailed && (
+        <span className="project-visual__logo-plate">
         <img
           className="project-visual__logo"
           data-visual-layer="brand"
@@ -77,6 +88,7 @@ export default function ProjectVisual({ project, interactive = true }) {
           draggable="false"
           onError={() => setLogoFailed(true)}
         />
+        </span>
       )}
       {logoFailed && (
         <span className="project-visual__fallback-title">{project.title}</span>

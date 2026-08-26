@@ -1,11 +1,11 @@
 import ProjectVisual from "../ProjectMarketplace/ProjectVisual";
 
-export default function OtherProjects({ projects, onOpenProject }) {
+export default function OtherProjects({ projects, onOpenProject, ui }) {
   if (!projects.length) return null;
 
   return (
     <section className="project-case__others" aria-labelledby="other-projects-title">
-      <h2 id="other-projects-title">Другие проекты</h2>
+      <h2 id="other-projects-title">{ui.case.other}</h2>
       <div className="project-case__other-grid">
         {projects.map((project) => (
           <button
@@ -16,9 +16,9 @@ export default function OtherProjects({ projects, onOpenProject }) {
           >
             <ProjectVisual project={project} interactive={false} />
             <span className="project-case__other-copy">
-              <small>{project.category}</small>
+              <small>{project.tags.join(" · ")}</small>
               <strong>{project.title}</strong>
-              <span>Открыть кейс</span>
+              <span>{ui.case.open}</span>
             </span>
           </button>
         ))}

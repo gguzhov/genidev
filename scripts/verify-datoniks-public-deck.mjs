@@ -69,23 +69,35 @@ export function sha256File(filePath) {
 export function createDeckManifest({ sourcePath, publicPath, manifestPath }) {
   const source = inspectPublicDeck(sourcePath);
   const published = inspectPublicDeck(publicPath);
-  if (source.pageCount !== 18 || published.pageCount !== 17) {
-    throw new Error(`Expected source/public page counts 18/17, got ${source.pageCount}/${published.pageCount}`);
+  const includedSourcePages = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17,
+  ];
+  const excludedSourcePages = [16, 18];
+  const includedFingerprints = includedSourcePages.map(
+    (pageNumber) => source.pageFingerprints[pageNumber - 1],
+  );
+  const excludedFingerprints = excludedSourcePages.map(
+    (pageNumber) => source.pageFingerprints[pageNumber - 1],
+  );
+  if (source.pageCount !== 18 || published.pageCount !== includedSourcePages.length) {
+    throw new Error(
+      `Expected source/public page counts 18/${includedSourcePages.length}, got ${source.pageCount}/${published.pageCount}`,
+    );
   }
-  if (JSON.stringify(source.pageFingerprints.slice(0, 17)) !== JSON.stringify(published.pageFingerprints)) {
-    throw new Error("Public deck pages do not match source pages 1-17");
+  if (JSON.stringify(includedFingerprints) !== JSON.stringify(published.pageFingerprints)) {
+    throw new Error("Public deck pages do not match the approved source page allowlist");
   }
-  if (published.pageFingerprints.includes(source.pageFingerprints[17])) {
-    throw new Error("Private source slide 18 is present in the public deck");
+  if (excludedFingerprints.some((fingerprint) => published.pageFingerprints.includes(fingerprint))) {
+    throw new Error("A private source slide is present in the public deck");
   }
 
   const manifest = {
     sourceFilename: path.basename(sourcePath),
     sourceSha256: sha256File(sourcePath),
     sourcePageCount: source.pageCount,
-    includedSourcePages: Array.from({ length: 17 }, (_, index) => index + 1),
-    excludedSourcePages: [18],
-    excludedSourcePageFingerprints: [source.pageFingerprints[17]],
+    includedSourcePages,
+    excludedSourcePages,
+    excludedSourcePageFingerprints: excludedFingerprints,
     publicPath,
     publicSha256: sha256File(publicPath),
     publicPageCount: published.pageCount,
@@ -93,6 +105,51 @@ export function createDeckManifest({ sourcePath, publicPath, manifestPath }) {
   };
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   return manifest;
+}
+
+export function updateManifestFromPublishedDeck({ manifestPath, publicPath }) {
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+  const published = inspectPublicDeck(publicPath);
+  const hasCurrentPrivateAllowlist =
+    manifest.excludedSourcePages?.includes(16) &&
+    manifest.excludedSourcePageFingerprints?.length >= 2;
+  const privateTeamFingerprint = hasCurrentPrivateAllowlist
+    ? manifest.excludedSourcePageFingerprints[0]
+    : manifest.publicPageFingerprints?.[15];
+  const privateContactFingerprint = manifest.excludedSourcePageFingerprints?.at(-1);
+  if (!privateTeamFingerprint || !privateContactFingerprint) {
+    throw new Error("Existing manifest does not contain durable private-slide fingerprints");
+  }
+  const includedSourcePages = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17,
+  ];
+  if (published.pageCount !== includedSourcePages.length) {
+    throw new Error(
+      `Expected ${includedSourcePages.length} public pages, got ${published.pageCount}`,
+    );
+  }
+  if (
+    [privateTeamFingerprint, privateContactFingerprint].some((fingerprint) =>
+      published.pageFingerprints.includes(fingerprint),
+    )
+  ) {
+    throw new Error("A private source slide is present in the public deck");
+  }
+  const updated = {
+    ...manifest,
+    includedSourcePages,
+    excludedSourcePages: [16, 18],
+    excludedSourcePageFingerprints: [
+      privateTeamFingerprint,
+      privateContactFingerprint,
+    ],
+    publicPath,
+    publicSha256: sha256File(publicPath),
+    publicPageCount: published.pageCount,
+    publicPageFingerprints: published.pageFingerprints,
+  };
+  writeFileSync(manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
+  return updated;
 }
 
 export function verifyDeckAgainstSource({ manifestPath, sourcePath }) {
@@ -104,18 +161,25 @@ export function verifyDeckAgainstSource({ manifestPath, sourcePath }) {
   if (sha256File(sourcePath) !== manifest.sourceSha256) errors.push("source SHA-256 changed");
   if (sha256File(manifest.publicPath) !== manifest.publicSha256) errors.push("public SHA-256 changed");
   if (source.pageCount !== 18) errors.push(`source page count is ${source.pageCount}, expected 18`);
-  if (published.pageCount !== 17) errors.push(`public page count is ${published.pageCount}, expected 17`);
-  if (JSON.stringify(source.pageFingerprints.slice(0, 17)) !== JSON.stringify(published.pageFingerprints)) {
-    errors.push("public pages do not match source pages 1-17");
+  if (published.pageCount !== manifest.includedSourcePages.length) {
+    errors.push(
+      `public page count is ${published.pageCount}, expected ${manifest.includedSourcePages.length}`,
+    );
   }
-  if (published.pageFingerprints.includes(source.pageFingerprints[17])) {
-    errors.push("private source slide 18 is present in the public deck");
+  const includedFingerprints = manifest.includedSourcePages.map(
+    (pageNumber) => source.pageFingerprints[pageNumber - 1],
+  );
+  const excludedFingerprints = manifest.excludedSourcePages.map(
+    (pageNumber) => source.pageFingerprints[pageNumber - 1],
+  );
+  if (JSON.stringify(includedFingerprints) !== JSON.stringify(published.pageFingerprints)) {
+    errors.push("public pages do not match the approved source page allowlist");
   }
   if (
     JSON.stringify(manifest.excludedSourcePageFingerprints) !==
-    JSON.stringify([source.pageFingerprints[17]])
+    JSON.stringify(excludedFingerprints)
   ) {
-    errors.push("excluded source page fingerprint changed");
+    errors.push("excluded source page fingerprints changed");
   }
   if (
     manifest.excludedSourcePageFingerprints?.some((fingerprint) =>
@@ -143,10 +207,18 @@ if (isCli) {
       console.error(result.errors.join("\n"));
       process.exitCode = 1;
     } else {
-      console.log("DATONIKS public deck matches source pages 1-17; slide 18 excluded.");
+      console.log("DATONIKS public deck matches the approved source page allowlist.");
     }
+  } else if (command === "--update-public-manifest") {
+    updateManifestFromPublishedDeck({
+      manifestPath: sourcePath,
+      publicPath,
+    });
+    console.log(`Updated ${sourcePath}`);
   } else {
-    console.error("Usage: --write-manifest <source.pdf> <public.pdf> <manifest.json>");
+    console.error(
+      "Usage: --write-manifest <source.pdf> <public.pdf> <manifest.json> | --update-public-manifest <manifest.json> <public.pdf>",
+    );
     process.exitCode = 1;
   }
 }

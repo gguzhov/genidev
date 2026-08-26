@@ -35,7 +35,7 @@ test("marketplace motion is progressive enhancement for hover and keyboard focus
   assert.match(marketplaceCssSource, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(
     marketplaceCssSource,
-    /\.project-card:focus-visible \.project-card__media img/,
+    /\.project-card__open:focus-visible/,
   );
   assert.match(marketplaceCssSource, /@media \(prefers-reduced-motion: reduce\)/);
 });
