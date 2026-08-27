@@ -97,7 +97,7 @@ test("uses clean large Ostrov screens and the supplied IlonMask product evidence
   assert.ok(ostrov.gallery.every((image) => image.width === 1920 && image.height === 1080));
 
   assert.deepEqual(
-    ilonmask.gallery.slice(0, 4).map((image) => image.src),
+    ilonmask.gallery.map((image) => image.src),
     [
       "/projects/ilonmask/ilonmask-landing-2026.webp",
       "/projects/ilonmask/ilonmask-dashboard-2026.webp",
@@ -107,7 +107,7 @@ test("uses clean large Ostrov screens and the supplied IlonMask product evidence
   );
   assert.equal(ilonmask.gallery[3].orientation, "portrait");
 
-  for (const image of [...ostrov.gallery, ...ilonmask.gallery.slice(0, 4)]) {
+  for (const image of [...ostrov.gallery, ...ilonmask.gallery]) {
     await access(`public${image.src}`);
   }
 });

@@ -439,20 +439,6 @@ export const projects = [
         height: 1818,
         orientation: "portrait",
       },
-      {
-        src: "/projects/ilonmask/ilonmask-notifications.webp",
-        alt: "Настройка уведомлений IlonMask VPN",
-        caption: "Сервисные уведомления в удобном канале",
-        width: 1600,
-        height: 894,
-      },
-      {
-        src: "/projects/ilonmask/ilonmask-referral.webp",
-        alt: "Реферальная программа IlonMask VPN",
-        caption: "Реферальная программа внутри продукта",
-        width: 1600,
-        height: 894,
-      },
     ],
   },
   {

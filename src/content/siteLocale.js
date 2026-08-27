@@ -166,8 +166,6 @@ export function createEnglishContent(russian) {
       ["IlonMask VPN customer dashboard", "Account, payments, settings and referrals in one place"],
       ["IlonMask VPN balance and tariff screen", "Tariffs, balance, promo codes and top-ups"],
       ["IlonMask VPN Telegram bot", "Profile, tariffs, support and referrals in Telegram"],
-      ["IlonMask VPN notification settings", "Service notifications in the preferred channel"],
-      ["IlonMask VPN referral programme", "Referral mechanics inside the product"],
     ],
     datoniks: [
       ["Deployed modular data centre in Irkutsk", "Deployed project in Irkutsk"],
