@@ -78,3 +78,45 @@ test("limits reactive ice depth to fine hover input and reduced-motion-safe CSS"
   assert.match(css, /--project-pointer-x/);
   assert.doesNotMatch(visual, /requestAnimationFrame|setInterval/);
 });
+
+test("uses clean large Ostrov screens and the supplied IlonMask product evidence", async () => {
+  const ostrov = projects.find((project) => project.slug === "ostrov-zdoroviya");
+  const ilonmask = projects.find((project) => project.slug === "ilonmask-vpn");
+
+  assert.deepEqual(
+    ostrov.gallery.map((image) => image.src),
+    [
+      "/projects/ostrov/ostrov-home-clean.webp",
+      "/projects/ostrov/ostrov-doctors-clean.webp",
+      "/projects/ostrov/ostrov-services-clean.webp",
+      "/projects/ostrov/ostrov-checkups-clean.webp",
+      "/projects/ostrov/ostrov-light-life-clean.webp",
+      "/projects/ostrov/ostrov-infusions-clean.webp",
+    ],
+  );
+  assert.ok(ostrov.gallery.every((image) => image.width === 1920 && image.height === 1080));
+
+  assert.deepEqual(
+    ilonmask.gallery.slice(0, 4).map((image) => image.src),
+    [
+      "/projects/ilonmask/ilonmask-landing-2026.webp",
+      "/projects/ilonmask/ilonmask-dashboard-2026.webp",
+      "/projects/ilonmask/ilonmask-tariffs-2026.webp",
+      "/projects/ilonmask/ilonmask-telegram-bot-2026.webp",
+    ],
+  );
+  assert.equal(ilonmask.gallery[3].orientation, "portrait");
+
+  for (const image of [...ostrov.gallery, ...ilonmask.gallery.slice(0, 4)]) {
+    await access(`public${image.src}`);
+  }
+});
+
+test("keeps wide evidence large and gives portrait product screens their own layout", async () => {
+  const gallery = await readFile("src/components/ProjectCase/ProjectGallery.jsx", "utf8");
+  const css = await readFile("src/components/ProjectCase/ProjectCase.css", "utf8");
+
+  assert.match(gallery, /project-gallery__slide--\$\{image\.orientation\}/);
+  assert.match(css, /project-case__gallery-section[^}]*96rem/s);
+  assert.match(css, /project-gallery__slide--portrait img[^}]*aspect-ratio:\s*auto/s);
+});

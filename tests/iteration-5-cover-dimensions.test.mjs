@@ -19,14 +19,14 @@ test("publishes the real intrinsic dimensions for every project cover", () => {
 
   assert.deepEqual(covers, {
     "ostrov-zdoroviya": {
-      cover: "/projects/ostrov/ostrov-home-comet.webp",
-      coverWidth: 1341,
-      coverHeight: 768,
+      cover: "/projects/ostrov/ostrov-home-clean.webp",
+      coverWidth: 1920,
+      coverHeight: 1080,
     },
     "ilonmask-vpn": {
-      cover: "/projects/ilonmask-product-cover.png",
-      coverWidth: 1200,
-      coverHeight: 630,
+      cover: "/projects/ilonmask/ilonmask-landing-2026.webp",
+      coverWidth: 3448,
+      coverHeight: 1728,
     },
     datoniks: {
       cover: "/projects/datoniks/datoniks-slide-03.webp",

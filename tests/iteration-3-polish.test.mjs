@@ -53,14 +53,13 @@ test("uses a taller mobile anchor offset and restores the desktop offset", () =>
   );
 });
 
-test("keeps cover metadata for the full case while marketplace layers evidence and brand", () => {
-  assert.match(contentSource, /slug:\s*"ostrov-zdoroviya"[\s\S]*coverCrop:\s*"browser-chrome"/);
-  assert.match(cardSource, /project\.coverCrop/);
+test("keeps a clean real cover for the full case while marketplace layers evidence and brand", () => {
+  assert.doesNotMatch(contentSource, /slug:\s*"ostrov-zdoroviya"[\s\S]*coverCrop:\s*"browser-chrome"/);
   assert.match(cardSource, /project-card--cover-/);
   assert.doesNotMatch(marketplaceCss, /project-visual__product/);
   assert.match(marketplaceCss, /\.project-visual__logo-plate/);
   assert.match(marketplaceCss, /\.project-visual__cover/);
-  assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-comet\.webp"/);
+  assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-clean\.webp"/);
 });
 
 test("uses marketplace bottom padding as the only gap before contact", () => {

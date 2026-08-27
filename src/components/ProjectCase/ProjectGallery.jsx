@@ -60,7 +60,7 @@ export default function ProjectGallery({ images, title, ui }) {
       <div className="project-gallery__track" ref={trackRef} onScroll={updateActiveSlide} tabIndex="0">
         {images.map((image, index) => (
           <figure
-            className="project-gallery__slide"
+            className={`project-gallery__slide${image.orientation ? ` project-gallery__slide--${image.orientation}` : ""}`}
             aria-label={`${index + 1}: ${image.caption ?? image.alt}`}
             aria-current={resolvedIndex === index ? "true" : undefined}
             key={image.src}

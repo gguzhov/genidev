@@ -159,14 +159,14 @@ export function createEnglishContent(russian) {
       ["Ostrov Zdoroviya service catalogue", "Service structure and customer journey"],
       ["Ostrov Zdoroviya check-up programmes", "Check-up programmes"],
       ["Light Life programme landing page", "Landing page for the Light Life programme"],
-      ["Asclepius AI assistant interface", "RAG assistant grounded in clinic data"],
+      ["Ostrov Zdoroviya infusion programme catalogue", "Infusion programmes powered by shared CMS data"],
     ],
     "ilonmask-vpn": [
       ["IlonMask VPN subscription landing page", "Landing page and subscription entry point"],
-      ["IlonMask VPN platform selection", "Connection instructions for different devices"],
-      ["IlonMask VPN successful payment screen", "Payment and automatic access activation"],
+      ["IlonMask VPN customer dashboard", "Account, payments, settings and referrals in one place"],
+      ["IlonMask VPN balance and tariff screen", "Tariffs, balance, promo codes and top-ups"],
+      ["IlonMask VPN Telegram bot", "Profile, tariffs, support and referrals in Telegram"],
       ["IlonMask VPN notification settings", "Service notifications in the preferred channel"],
-      ["IlonMask VPN trial screen", "Trial period and the next user step"],
       ["IlonMask VPN referral programme", "Referral mechanics inside the product"],
     ],
     datoniks: [

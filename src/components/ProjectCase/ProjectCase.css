@@ -64,6 +64,10 @@
   margin-inline: auto;
 }
 
+.project-case__gallery-section {
+  width: min(100% - 1rem, 96rem);
+}
+
 .project-case__hero {
   display: grid;
   gap: 2rem;
@@ -331,9 +335,21 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: auto;
   object-fit: contain;
   background: var(--blue-2);
+}
+
+.project-gallery__slide--portrait {
+  background: var(--blue-2);
+}
+
+.project-gallery__slide--portrait img {
+  width: auto;
+  max-width: 100%;
+  max-height: min(76vh, 52rem);
+  margin-inline: auto;
+  aspect-ratio: auto;
 }
 
 .project-gallery__slide figcaption {
@@ -457,6 +473,10 @@
   .project-case__others,
   .project-case__product-link-wrap {
     width: min(100% - 4rem, 80rem);
+  }
+
+  .project-case__gallery-section {
+    width: min(100% - 2rem, 96rem);
   }
 
   .project-case__other-grid {

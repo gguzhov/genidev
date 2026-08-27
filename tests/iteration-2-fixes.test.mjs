@@ -157,9 +157,9 @@ test("makes the closed CardNav surface opaque enough to cover scrolled text", ()
 });
 
 test("uses truthful product-specific covers and readable project labels", async () => {
-  assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-comet\.webp"/);
-  assert.match(contentSource, /cover:\s*"\/projects\/ilonmask-product-cover\.png"/);
-  assert.equal(await exists("public/projects/ilonmask-product-cover.png"), true);
+  assert.match(contentSource, /cover:\s*"\/projects\/ostrov\/ostrov-home-clean\.webp"/);
+  assert.match(contentSource, /cover:\s*"\/projects\/ilonmask\/ilonmask-landing-2026\.webp"/);
+  assert.equal(await exists("public/projects/ilonmask/ilonmask-landing-2026.webp"), true);
   assert.match(marketplaceCss, /\.project-card__tags li\s*\{[^}]*font-size:\s*0\.72rem/s);
   assert.match(marketplaceCss, /\.project-card__summary\s*\{[^}]*font-size:\s*0\.875rem/s);
   assert.match(marketplaceCss, /\.project-card__media,[\s\S]*aspect-ratio:\s*3\s*\/\s*2/s);
