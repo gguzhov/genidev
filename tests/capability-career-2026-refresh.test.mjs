@@ -93,6 +93,8 @@ test("career reflects current verified experience and optional outcomes", () => 
   );
   assert.match(career[3].body, /ОМС/);
   assert.match(career[3].body, /BI/);
+  assert.equal(career[3].title, "Городская клиническая больница №15");
+  assert.equal(career[3].role, "Аналитик");
   assert.doesNotMatch(career[3].body, /Подсвечиваю|сокращаю|разрабатываю|ищу/);
   assert.equal(
     career[3].result,
@@ -126,7 +128,9 @@ test("career renders official logos, a DATONIKS case action and a reduced-motion
   assert.match(component, /item\.logos\?\.map/);
   assert.match(component, /career-timeline__logo career-timeline__logo--/);
   assert.match(component, /onOpenProject\?\.\(item\.action\.projectSlug\)/);
-  assert.match(component, /className="career-timeline__ongoing-signal"/);
+  assert.match(component, /className="career-timeline__ongoing-label"/);
+  assert.match(component, /<OngoingSignal reducedMotion=\{reducedMotion\}>\{item\.year\}<\/OngoingSignal>/);
+  assert.match(component, /item\.role/);
   assert.match(component, /useInView\s*\(/);
   assert.match(component, /reducedMotion\s*\|\|\s*!isInView\s*\?\s*0\s*:\s*Infinity/);
   assert.match(app, /<CareerTimeline[\s\S]*onOpenProject=\{openProject\}/);

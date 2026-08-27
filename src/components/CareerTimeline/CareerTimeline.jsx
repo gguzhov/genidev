@@ -51,7 +51,7 @@ function measureRenderedPathLength(path) {
   return renderedLength;
 }
 
-function OngoingSignal({ reducedMotion }) {
+function OngoingSignal({ children, reducedMotion }) {
   const signalRef = useRef(null);
   const isInView = useInView(signalRef, { amount: "all" });
   const shouldBlink = !reducedMotion && isInView;
@@ -59,16 +59,22 @@ function OngoingSignal({ reducedMotion }) {
   return (
     <motion.span
       ref={signalRef}
-      className="career-timeline__ongoing-signal"
-      aria-hidden="true"
+      className="career-timeline__ongoing-label"
       initial={false}
-      animate={{ opacity: shouldBlink ? [1, 0.24, 1] : 1 }}
+      animate={{
+        filter: shouldBlink
+          ? ["brightness(1)", "brightness(1.6)", "brightness(1)"]
+          : "brightness(1)",
+        opacity: shouldBlink ? [1, 0.62, 1] : 1,
+      }}
       transition={{
-        duration: 1.6,
+        duration: 2.2,
         ease: "easeInOut",
         repeat: reducedMotion || !isInView ? 0 : Infinity,
       }}
-    />
+    >
+      {children}
+    </motion.span>
   );
 }
 
@@ -230,8 +236,9 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
               <article className="career-timeline__entry">
                 <div className="career-timeline__meta">
                   <p className="career-timeline__year">
-                    {item.year}
-                    {item.ongoing ? <OngoingSignal reducedMotion={reducedMotion} /> : null}
+                    {item.ongoing
+                      ? <OngoingSignal reducedMotion={reducedMotion}>{item.year}</OngoingSignal>
+                      : item.year}
                   </p>
                   {item.logos?.length ? (
                     <div className="career-timeline__logos" aria-label={item.title}>
@@ -250,7 +257,10 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
                     </div>
                   ) : null}
                 </div>
-                <h3>{item.title}</h3>
+                <div className="career-timeline__heading">
+                  <h3>{item.title}</h3>
+                  {item.role ? <span className="career-timeline__role">{item.role}</span> : null}
+                </div>
                 <p className="career-timeline__body">{item.body}</p>
                 {item.result || item.action ? (
                   <div className="career-timeline__footer">

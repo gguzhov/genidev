@@ -69,11 +69,11 @@
   --blue-indicator: #152863;
   --blue-track: #152863;
 
-  --gradient-ice-base: #edf4fa;
-  --gradient-ice-light: #fbfdff;
-  --gradient-ice-signal: #81b1ec;
-  --gradient-ice-veil-top: #f4f9fdc4;
-  --gradient-ice-veil-bottom: #eaf3fab0;
+  --gradient-ice-base: #f1f8fc;
+  --gradient-ice-light: #ffffff;
+  --gradient-ice-signal: #8fc7ee;
+  --gradient-ice-veil-top: #f8fcfee0;
+  --gradient-ice-veil-bottom: #eef7fcca;
 }
 
 @supports (color: color(display-p3 1 1 1)) {

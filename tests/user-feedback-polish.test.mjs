@@ -78,3 +78,19 @@ test("result bento never outgrows its section heading", async () => {
   assert.doesNotMatch(css, /project-case__metric--lead strong\s*\{[^}]*3rem/s);
   assert.doesNotMatch(css, /min-height:\s*14rem\s*!important/);
 });
+
+test("section headings use the complete line and career accents are deliberate", async () => {
+  const [sections, career] = await Promise.all([
+    read("src/styles/sections.css"),
+    read("src/components/CareerTimeline/CareerTimeline.css"),
+  ]);
+
+  const headingRule = sections.match(/\.section__heading h2\s*\{(?<body>[^}]*)\}/s)?.groups?.body ?? "";
+  const actionRule = career.match(/\.career-timeline__action\s*\{(?<body>[^}]*)\}/s)?.groups?.body ?? "";
+  assert.match(headingRule, /width:\s*100%/);
+  assert.match(headingRule, /text-wrap:\s*wrap/);
+  assert.doesNotMatch(headingRule, /text-wrap:\s*balance/);
+  assert.match(actionRule, /width:\s*100%/);
+  assert.match(career, /\.career-timeline__role\s*\{[^}]*border-radius:\s*999px/s);
+  assert.match(career, /\.career-timeline__ongoing-label\s*\{[^}]*box-shadow:/s);
+});

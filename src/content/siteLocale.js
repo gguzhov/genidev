@@ -69,7 +69,7 @@ const englishCareer = [
   ["2021–2024", "Trade and logistics from China", "I sold products on Wildberries and Avito, found suppliers and organised sourcing—from trending goods to industrial equipment.", "I can help with logistics from Europe and China"],
   ["2024", "Mobile data centres", "I organised the development of a mobile data centre and held discussions with venture funds. The product is developed and continues to evolve; I am seeking funding to launch serial production."],
   ["2021–2025", "HSE + LSE", "I completed an English-taught dual-degree programme in Enterprise Innovation Management."],
-  ["2025–present", "Moscow City Hospital No. 15 · analyst", "I identified data risks, reduced compulsory-medical-insurance underpayments, built BI reporting and explored safe AI analysis of anonymised medical histories.", "I continually look for growth opportunities and optimise operational processes with AI"],
+  ["2025–present", "Moscow City Hospital No. 15", "I identified data risks, reduced compulsory-medical-insurance underpayments, built BI reporting and explored safe AI analysis of anonymised medical histories.", "I continually look for growth opportunities and optimise operational processes with AI", "Analyst"],
   ["Ongoing", "Consulting", "I develop digital and AI products for businesses in any industry—from framing the problem and calculating economics to development, launch and analytics."],
 ];
 
@@ -143,10 +143,11 @@ export function createEnglishContent(russian) {
     solutions: englishProblemsById[problem.id].solutions.map(([title, project, effect]) => ({ title, project, effect })),
   }));
   const career = russian.career.map((item, index) => {
-    const [year, title, body, result] = englishCareer[index];
+    const [year, title, body, result, role] = englishCareer[index];
     const translated = { ...item, year, title, body };
     if (result) translated.result = result;
     else delete translated.result;
+    if (role) translated.role = role;
     if (translated.action) {
       translated.action = { ...translated.action, label: "View case" };
     }
