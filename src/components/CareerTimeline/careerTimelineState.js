@@ -43,6 +43,20 @@ export function normalizeCareerProgress(progress, startSnap = 0.012, endSnap = 0
   return (clampedProgress - safeStart) / (safeEnd - safeStart);
 }
 
+export function getCareerStrokeState(progress, renderedLength) {
+  const clampedProgress = Math.max(0, Math.min(1, Number.isFinite(progress) ? progress : 0));
+  const safeLength = Math.max(0, Number.isFinite(renderedLength) ? renderedLength : 0);
+  const format = (value) => {
+    const rounded = Math.abs(value) < 0.0005 ? 0 : Number(value.toFixed(3));
+    return `${rounded}px`;
+  };
+
+  return {
+    dasharray: `${format(safeLength)} ${format(safeLength)}`,
+    dashoffset: format(safeLength * (1 - clampedProgress)),
+  };
+}
+
 export function getReachedCareerIndexesByPositions(planeTop, markerTops) {
   if (!Number.isFinite(planeTop)) return [];
   return markerTops.reduce((reached, markerTop, index) => {

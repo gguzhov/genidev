@@ -18,7 +18,7 @@ test("keeps the career route animated once and reduced-motion safe", async () =>
 
   assert.match(component, /career-route__plane/);
   assert.match(component, /useMotionValueEvent\s*\(activeProgress/);
-  assert.match(component, /style=\{\{ pathLength: activeProgress \}\}/);
+  assert.match(component, /road\.style\.strokeDashoffset\s*=\s*stroke\.dashoffset/);
   assert.doesNotMatch(component, /requestAnimationFrame/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(styles, /animation-iteration-count:\s*infinite/);

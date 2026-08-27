@@ -21,13 +21,12 @@ test("career route fill and airplane use the same normalized progress", async ()
   assert.match(jsx, /useScroll\s*\(/);
   assert.match(jsx, /useSpring\s*\(scrollYProgress/);
   assert.match(jsx, /useMotionValueEvent\s*\(activeProgress,\s*"change",\s*syncProgress\)/);
-  assert.match(jsx, /style=\{\{ pathLength: activeProgress \}\}/);
+  assert.match(jsx, /road\.style\.strokeDasharray\s*=\s*stroke\.dasharray/);
+  assert.match(jsx, /road\.style\.strokeDashoffset\s*=\s*stroke\.dashoffset/);
   assert.match(jsx, /style=\{\{ x: planeX, y: planeY, rotate: planeAngle \}\}/);
-  assert.doesNotMatch(jsx, /requestAnimationFrame|stroke-dashoffset/);
-  assert.doesNotMatch(
-    css.match(/\.career-route__road-progress\s*\{(?<body>[^}]*)\}/s)?.groups?.body ?? "",
-    /stroke-dashoffset/,
-  );
+  assert.doesNotMatch(jsx, /requestAnimationFrame/);
+  const progressRules = [...css.matchAll(/(?:^|\n)\.career-route__road-progress\s*\{(?<body>[^}]*)\}/gs)];
+  assert.match(progressRules.at(-1)?.groups?.body ?? "", /stroke-dashoffset/);
 });
 
 test("footer uses the channel name and contains no public-offer disclaimer", async () => {
@@ -65,6 +64,7 @@ test("background uses one restrained iridescent layer with a static reduced-moti
   assert.match(jsx, /amplitude=\{0\.08\}/);
   assert.doesNotMatch(jsx, /gradient-wave__(?:signal|network|orbit)/);
   assert.match(css, /\.gradient-wave__shader\s*\{[^}]*opacity:\s*0\.86/s);
-  assert.match(shader, /for \(float i = 0\.0; i < 8\.0; \+\+i\)/);
+  assert.match(shader, /vec4 blend_colors\(/);
+  assert.match(shader, /float noise_scale = \.0005 \+ \.006 \* u_scale/);
   assert.match(shader, /prefers-reduced-motion:\s*reduce/);
 });

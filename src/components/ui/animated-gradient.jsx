@@ -13,19 +13,19 @@ const DEFAULT_CONFIG = Object.freeze({ preset: "Ice" });
 const presets = {
   Ice: {
     color1: "var(--gradient-ice-base)",
-    color2: "var(--gradient-ice-light)",
-    color3: "var(--gradient-ice-signal)",
-    rotation: -24,
-    proportion: 58,
-    scale: 0.34,
+    color2: "var(--gradient-ice-signal)",
+    color3: "var(--gradient-ice-light)",
+    rotation: -50,
+    proportion: 48,
+    scale: 0.14,
     speed: 7,
-    distortion: 3,
-    swirl: 34,
-    swirlIterations: 5,
-    softness: 42,
-    offset: -180,
-    shape: "Edge",
-    shapeSize: 62,
+    distortion: 1,
+    swirl: 50,
+    swirlIterations: 16,
+    softness: 58,
+    offset: -299,
+    shape: "Checks",
+    shapeSize: 45,
   },
 };
 
@@ -402,6 +402,7 @@ uniform float u_amplitude;
 out vec4 fragColor;
 
 #define TWO_PI 6.28318530718
+#define PI 3.14159265358979323846
 
 vec2 rotate(vec2 uv, float th) {
   return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
@@ -412,84 +413,85 @@ float random(vec2 st) {
 }
 
 float noise(vec2 st) {
-  vec2 cell = floor(st);
-  vec2 local = fract(st);
-  float a = random(cell);
-  float b = random(cell + vec2(1.0, 0.0));
-  float c = random(cell + vec2(0.0, 1.0));
-  float d = random(cell + vec2(1.0, 1.0));
-  vec2 curve = local * local * (3.0 - 2.0 * local);
-  return mix(mix(a, b, curve.x), mix(c, d, curve.x), curve.y);
+  vec2 i = floor(st);
+  vec2 f = fract(st);
+  float a = random(i);
+  float b = random(i + vec2(1.0, 0.0));
+  float c = random(i + vec2(0.0, 1.0));
+  float d = random(i + vec2(1.0, 1.0));
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  float x1 = mix(a, b, u.x);
+  float x2 = mix(c, d, u.x);
+  return mix(x1, x2, u.y);
+}
+
+vec4 blend_colors(vec4 c1, vec4 c2, vec4 c3, float mixer, float edgesWidth, float edge_blur) {
+  vec3 color1 = c1.rgb * c1.a;
+  vec3 color2 = c2.rgb * c2.a;
+  vec3 color3 = c3.rgb * c3.a;
+  float r1 = smoothstep(0.0 + 0.35 * edgesWidth, 0.7 - 0.35 * edgesWidth + 0.5 * edge_blur, mixer);
+  float r2 = smoothstep(0.3 + 0.35 * edgesWidth, 1.0 - 0.35 * edgesWidth + edge_blur, mixer);
+  vec3 blended_color_2 = mix(color1, color2, r1);
+  float blended_opacity_2 = mix(c1.a, c2.a, r1);
+  vec3 c = mix(blended_color_2, color3, r2);
+  float o = mix(blended_opacity_2, c3.a, r2);
+  return vec4(c, o);
 }
 
 void main() {
-  float mr = min(u_resolution.x, u_resolution.y);
-  vec2 uv = (gl_FragCoord.xy / u_resolution.xy * 2.0 - 1.0) * u_resolution.xy / mr;
-  uv = rotate(uv, u_rotation);
+  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+  float t = 0.5 * u_time;
+  float noise_scale = .0005 + .006 * u_scale;
+
+  uv -= 0.5;
+  uv *= noise_scale * u_resolution;
+  uv = rotate(uv, u_rotation * 0.5 * PI);
+  uv /= u_pixelRatio;
+  uv += 0.5;
   uv += (u_mouse - vec2(0.5)) * u_amplitude;
 
-  float t = u_time * 0.5;
-  float noiseScale = 0.72 + u_scale * 1.45;
-  float n1 = noise(uv * noiseScale + t * 0.09);
-  float n2 = noise(uv * (noiseScale * 1.9) - t * 0.07);
-  float noiseAngle = n1 * TWO_PI;
-  uv.x += 0.42 * u_distortion * n2 * cos(noiseAngle);
-  uv.y += 0.42 * u_distortion * n2 * sin(noiseAngle);
+  float n1 = noise(uv * 1.0 + t);
+  float n2 = noise(uv * 2.0 - t);
+  float angle = n1 * TWO_PI;
+  uv.x += 4. * u_distortion * n2 * cos(angle);
+  uv.y += 4. * u_distortion * n2 * sin(angle);
 
-  float iterationsNumber = ceil(clamp(u_swirlIterations, 0.0, 12.0));
-  for (float i = 1.0; i <= 12.0; ++i) {
-    if (i > iterationsNumber) break;
-    uv.x += 0.09 * u_swirl / i * cos(t + i * 1.4 * uv.y);
-    uv.y += 0.09 * u_swirl / i * sin(t * 0.8 + i * 1.15 * uv.x);
+  float iterations_number = ceil(clamp(u_swirlIterations, 1., 30.));
+  for (float i = 1.; i <= iterations_number; i++) {
+    uv.x += clamp(u_swirl, 0., 2.) / i * cos(t + i * 1.5 * uv.y);
+    uv.y += clamp(u_swirl, 0., 2.) / i * cos(t + i * 1.0 * uv.x);
   }
 
-  float d = -t;
-  float a = 0.0;
-  for (float i = 0.0; i < 8.0; ++i) {
-    a += cos(i - d - a * uv.x);
-    d += sin(uv.y * i + a);
-  }
-  d += t;
+  float proportion = clamp(u_proportion, 0.0, 1.0);
+  float shape = 0.0;
+  float mixer = 0.0;
 
-  vec3 field = vec3(
-    cos(uv * vec2(d, a)) * 0.6 + 0.4,
-    cos(a + d) * 0.5 + 0.5
-  );
-  field = cos(field * cos(vec3(d, a, 2.5)) * 0.5 + 0.5) * 0.5 + 0.5;
-
-  float pattern = 0.5;
   if (u_shape < 0.5) {
-    vec2 checksUv = uv * (0.5 + 3.5 * u_shapeScale);
-    pattern = 0.5 + 0.5 * sin(checksUv.x) * cos(checksUv.y);
+    vec2 checks_shape_uv = uv * (0.5 + 3.5 * u_shapeScale);
+    shape = 0.5 + 0.5 * sin(checks_shape_uv.x) * cos(checks_shape_uv.y);
+    mixer = shape + 0.48 * sign(proportion - 0.5) * pow(abs(proportion - 0.5), 0.5);
   } else if (u_shape < 1.5) {
-    vec2 stripesUv = uv * (0.25 + 3.0 * u_shapeScale);
-    float stripe = fract(stripesUv.y);
-    pattern = smoothstep(0.0, 0.55, stripe) * smoothstep(1.0, 0.45, stripe);
+    vec2 stripes_shape_uv = uv * (0.25 + 3.0 * u_shapeScale);
+    float f = fract(stripes_shape_uv.y);
+    shape = smoothstep(0.0, 0.55, f) * smoothstep(1.0, 0.45, f);
+    mixer = shape + 0.48 * sign(proportion - 0.5) * pow(abs(proportion - 0.5), 0.5);
   } else {
-    pattern = 0.5 + 0.5 * sin(
-      uv.x * (0.7 + u_shapeScale) - uv.y * 0.52 + t * 0.08 + n1 * 0.7
-    );
+    float sh = 1.0 - uv.y;
+    sh -= 0.5;
+    sh /= noise_scale * u_resolution.y;
+    sh += 0.5;
+    float shape_scaling = 0.2 * (1.0 - u_shapeScale);
+    shape = smoothstep(0.45 - shape_scaling, 0.55 + shape_scaling, sh + 0.3 * (proportion - 0.5));
+    mixer = shape;
   }
 
-  float edgeWidth = mix(0.035, 0.14, clamp(u_softness, 0.0, 1.0));
-  float fieldWave = 0.5 + 0.5 * sin(
-    uv.x * (0.82 + u_scale) - uv.y * 0.64 + d * 0.16 + sin(a * 0.12) * 0.26
+  vec4 color_mix = blend_colors(
+    u_color1,
+    u_color2,
+    u_color3,
+    mixer,
+    1.0 - clamp(u_softness, 0.0, 1.0),
+    0.01 + 0.01 * u_scale
   );
-  float regionWave = mix(fieldWave, pattern, 0.34);
-  float lightField = regionWave + (field.r - 0.5) * 0.16;
-  float signalField = (1.0 - regionWave) + (field.b - 0.5) * 0.14;
-  float lightMask = smoothstep(
-    u_proportion - edgeWidth,
-    u_proportion + edgeWidth,
-    lightField
-  );
-  float signalMask = smoothstep(
-    0.64 - edgeWidth * 0.2,
-    0.74 + edgeWidth * 0.2,
-    signalField
-  );
-
-  vec3 ice = mix(u_color1.rgb, u_color2.rgb, lightMask);
-  ice = mix(ice, u_color3.rgb, signalMask * 0.82);
-  fragColor = vec4(ice, 1.0);
+  fragColor = vec4(color_mix.rgb, color_mix.a);
 }`;

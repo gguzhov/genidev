@@ -24,16 +24,18 @@
 }
 
 .career-route__road-base {
-  stroke: color-mix(in oklch, var(--color-border-strong) 82%, var(--color-surface));
+  stroke: color-mix(in oklch, var(--color-border-strong) 56%, var(--color-surface));
   stroke-dasharray: 4 7;
   stroke-linecap: round;
-  stroke-width: 2.5;
+  stroke-width: 2;
 }
 
 .career-route__road-progress {
   stroke: var(--color-accent);
+  stroke-dasharray: 0 9999px;
+  stroke-dashoffset: 0;
   stroke-linecap: round;
-  stroke-width: 3;
+  stroke-width: 4;
   filter: drop-shadow(0 5px 9px var(--blue-a4));
 }
 

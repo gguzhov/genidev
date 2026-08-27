@@ -13,9 +13,9 @@ test("uses the supplied iridescence field inside the existing safe WebGL lifecyc
 
   assert.match(shader, /uniform vec2 u_mouse/);
   assert.match(shader, /uniform float u_amplitude/);
-  assert.match(shader, /for \(float i = 0\.0; i < 8\.0; \+\+i\)/);
-  assert.match(shader, /a \+= cos\(i - d - a \* uv\.x\)/);
-  assert.match(shader, /d \+= sin\(uv\.y \* i \+ a\)/);
+  assert.match(shader, /float noise_scale = \.0005 \+ \.006 \* u_scale/);
+  assert.match(shader, /for \(float i = 1\.; i <= iterations_number; i\+\+\)/);
+  assert.match(shader, /vec4 color_mix = blend_colors\(/);
   assert.match(shader, /\(hover: hover\) and \(pointer: fine\)/);
   assert.match(shader, /pointermove/);
   assert.match(shader, /removeEventListener\("pointermove"/);

@@ -85,7 +85,7 @@ test("uses the approved calm motion contract without a hero work sequence", asyn
   assert.match(heroCss, /@keyframes hero-portrait-in/);
   assert.match(heroCss, /prefers-reduced-motion:\s*reduce/);
   assert.match(careerComponent, /useMotionValueEvent\s*\(activeProgress/);
-  assert.match(careerComponent, /style=\{\{ pathLength: activeProgress \}\}/);
+  assert.match(careerComponent, /road\.style\.strokeDashoffset\s*=\s*stroke\.dashoffset/);
   assert.match(careerCss, /prefers-reduced-motion:\s*reduce/);
 });
 

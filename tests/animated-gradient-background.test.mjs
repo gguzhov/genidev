@@ -19,8 +19,8 @@ test("uses the supplied WebGL shader as a full-landing UI component", async () =
   assert.match(component, /Math\.min\(window\.devicePixelRatio\s*\|\|\s*1,\s*1\.5\)/);
   assert.match(component, /const TARGET_FRAME_MS = 1000 \/ 30/);
   assert.match(component, /delta < TARGET_FRAME_MS/);
-  assert.match(component, /rotate\(uv, u_rotation\)/);
-  assert.doesNotMatch(component, /u_rotation \* \.5 \* PI/);
+  assert.match(component, /rotate\(uv, u_rotation \* 0\.5 \* PI\)/);
+  assert.match(component, /vec4 blend_colors\(/);
   assert.match(component, /webglcontextlost/);
   assert.match(component, /webglcontextrestored/);
   assert.match(component, /contextRevision/);

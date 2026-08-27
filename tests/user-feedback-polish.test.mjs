@@ -26,6 +26,7 @@ test("career motion is time-based and checkpoints share the exact path progress"
   assert.equal(typeof careerState.smoothCareerProgressByDelta, "function");
   assert.equal(typeof careerState.getReachedCareerIndexesByProgress, "function");
   assert.equal(typeof careerState.normalizeCareerProgress, "function");
+  assert.equal(typeof careerState.getCareerStrokeState, "function");
   const oneFrame = careerState.smoothCareerProgressByDelta(0, 1, 16, 180);
   const twoFrames = careerState.smoothCareerProgressByDelta(
     careerState.smoothCareerProgressByDelta(0, 1, 8, 180),
@@ -41,6 +42,14 @@ test("career motion is time-based and checkpoints share the exact path progress"
   assert.equal(careerState.normalizeCareerProgress(0.008), 0);
   assert.equal(careerState.normalizeCareerProgress(0.992), 1);
   assert.ok(Math.abs(careerState.normalizeCareerProgress(0.5) - 0.5) < 0.0001);
+  assert.deepEqual(careerState.getCareerStrokeState(0.35, 1200), {
+    dasharray: "1200px 1200px",
+    dashoffset: "780px",
+  });
+  assert.deepEqual(careerState.getCareerStrokeState(1, 1200), {
+    dasharray: "1200px 1200px",
+    dashoffset: "0px",
+  });
 });
 
 test("career renders path checkpoints instead of measuring unrelated card markers", async () => {
@@ -48,6 +57,9 @@ test("career renders path checkpoints instead of measuring unrelated card marker
   assert.match(component, /career-route__checkpoint/);
   assert.match(component, /checkpointProgresses/);
   assert.doesNotMatch(component, /querySelector\("\.career-timeline__marker"\)/);
+  assert.match(component, /road\.style\.strokeDasharray/);
+  assert.match(component, /road\.style\.strokeDashoffset/);
+  assert.doesNotMatch(component, /<motion\.path/);
 });
 
 test("project gallery has no arrow buttons but keeps swipe, dots and keyboard navigation", async () => {

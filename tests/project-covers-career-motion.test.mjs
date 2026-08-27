@@ -46,9 +46,11 @@ test("drives the career route, airplane and checkpoints from one Motion spring",
   assert.match(component, /useScroll\s*\(/);
   assert.match(component, /useSpring\s*\(/);
   assert.match(component, /useMotionValueEvent\s*\(activeProgress,\s*"change"/);
-  assert.match(component, /<motion\.path[\s\S]*style=\{\{\s*pathLength:\s*activeProgress\s*\}\}/);
+  assert.match(component, /road\.style\.strokeDasharray\s*=\s*stroke\.dasharray/);
+  assert.match(component, /road\.style\.strokeDashoffset\s*=\s*stroke\.dashoffset/);
+  assert.doesNotMatch(component, /<motion\.path/);
   assert.match(component, /<motion\.span[\s\S]*style=\{\{\s*x:\s*planeX,\s*y:\s*planeY,\s*rotate:\s*planeAngle\s*\}\}/);
-  assert.doesNotMatch(component, /requestAnimationFrame|stroke-dashoffset/);
+  assert.doesNotMatch(component, /requestAnimationFrame/);
 });
 
 test("shows one reduced-motion-safe page progress line below the header", async () => {
