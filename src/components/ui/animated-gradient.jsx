@@ -401,8 +401,25 @@ uniform vec2 u_mouse;
 uniform float u_amplitude;
 out vec4 fragColor;
 
+#define TWO_PI 6.28318530718
+
 vec2 rotate(vec2 uv, float th) {
   return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
+}
+
+float random(vec2 st) {
+  return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+float noise(vec2 st) {
+  vec2 cell = floor(st);
+  vec2 local = fract(st);
+  float a = random(cell);
+  float b = random(cell + vec2(1.0, 0.0));
+  float c = random(cell + vec2(0.0, 1.0));
+  float d = random(cell + vec2(1.0, 1.0));
+  vec2 curve = local * local * (3.0 - 2.0 * local);
+  return mix(mix(a, b, curve.x), mix(c, d, curve.x), curve.y);
 }
 
 void main() {
@@ -411,13 +428,28 @@ void main() {
   uv = rotate(uv, u_rotation);
   uv += (u_mouse - vec2(0.5)) * u_amplitude;
 
-  float d = -u_time * 0.5;
+  float t = u_time * 0.5;
+  float noiseScale = 0.72 + u_scale * 1.45;
+  float n1 = noise(uv * noiseScale + t * 0.09);
+  float n2 = noise(uv * (noiseScale * 1.9) - t * 0.07);
+  float noiseAngle = n1 * TWO_PI;
+  uv.x += 0.42 * u_distortion * n2 * cos(noiseAngle);
+  uv.y += 0.42 * u_distortion * n2 * sin(noiseAngle);
+
+  float iterationsNumber = ceil(clamp(u_swirlIterations, 0.0, 12.0));
+  for (float i = 1.0; i <= 12.0; ++i) {
+    if (i > iterationsNumber) break;
+    uv.x += 0.09 * u_swirl / i * cos(t + i * 1.4 * uv.y);
+    uv.y += 0.09 * u_swirl / i * sin(t * 0.8 + i * 1.15 * uv.x);
+  }
+
+  float d = -t;
   float a = 0.0;
   for (float i = 0.0; i < 8.0; ++i) {
     a += cos(i - d - a * uv.x);
     d += sin(uv.y * i + a);
   }
-  d += u_time * 0.5;
+  d += t;
 
   vec3 field = vec3(
     cos(uv * vec2(d, a)) * 0.6 + 0.4,
@@ -425,10 +457,25 @@ void main() {
   );
   field = cos(field * cos(vec3(d, a, 2.5)) * 0.5 + 0.5) * 0.5 + 0.5;
 
+  float pattern = 0.5;
+  if (u_shape < 0.5) {
+    vec2 checksUv = uv * (0.5 + 3.5 * u_shapeScale);
+    pattern = 0.5 + 0.5 * sin(checksUv.x) * cos(checksUv.y);
+  } else if (u_shape < 1.5) {
+    vec2 stripesUv = uv * (0.25 + 3.0 * u_shapeScale);
+    float stripe = fract(stripesUv.y);
+    pattern = smoothstep(0.0, 0.55, stripe) * smoothstep(1.0, 0.45, stripe);
+  } else {
+    pattern = 0.5 + 0.5 * sin(
+      uv.x * (0.7 + u_shapeScale) - uv.y * 0.52 + t * 0.08 + n1 * 0.7
+    );
+  }
+
   float edgeWidth = mix(0.035, 0.14, clamp(u_softness, 0.0, 1.0));
-  float regionWave = 0.5 + 0.5 * sin(
+  float fieldWave = 0.5 + 0.5 * sin(
     uv.x * (0.82 + u_scale) - uv.y * 0.64 + d * 0.16 + sin(a * 0.12) * 0.26
   );
+  float regionWave = mix(fieldWave, pattern, 0.34);
   float lightField = regionWave + (field.r - 0.5) * 0.16;
   float signalField = (1.0 - regionWave) + (field.b - 0.5) * 0.14;
   float lightMask = smoothstep(

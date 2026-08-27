@@ -12,11 +12,17 @@ test("separates the animated ice field into light, base and cobalt regions", asy
   ]);
 
   assert.match(shader, /float edgeWidth = mix\(/);
-  assert.match(shader, /float regionWave = 0\.5 \+ 0\.5 \* sin\(/);
+  assert.match(shader, /float fieldWave = 0\.5 \+ 0\.5 \* sin\(/);
+  assert.match(shader, /float regionWave = mix\(fieldWave, pattern, 0\.34\)/);
   assert.match(shader, /float lightMask = smoothstep\(/);
   assert.match(shader, /float signalMask = smoothstep\(/);
   assert.match(shader, /mix\(ice, u_color3\.rgb, signalMask \* 0\.82\)/);
   assert.match(shader, /softness:\s*42/);
+  assert.match(shader, /float random\(vec2 st\)/);
+  assert.match(shader, /float noise\(vec2 st\)/);
+  assert.match(shader, /u_distortion \* n2/);
+  assert.match(shader, /u_swirl \/ i/);
+  assert.match(shader, /u_shape < 0\.5/);
 
   assert.match(waveCss, /\.gradient-wave__shader\s*\{[^}]*opacity:\s*0\.86/s);
   assert.match(waveCss, /filter:\s*saturate\(1\.08\) contrast\(1\.04\)/);

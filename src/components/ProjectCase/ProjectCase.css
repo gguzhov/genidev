@@ -188,6 +188,11 @@
   letter-spacing: -0.035em;
 }
 
+.project-case__gallery-section > h2 {
+  width: min(calc(100% - 1rem), 80rem);
+  margin-inline: auto;
+}
+
 .project-case__prose,
 .project-case__result {
   max-width: 76ch;

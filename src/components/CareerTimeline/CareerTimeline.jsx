@@ -14,9 +14,13 @@ import {
   useInView,
   useScroll,
   useSpring,
+  useTransform,
 } from "motion/react";
 import useReducedMotion from "../../hooks/useReducedMotion";
-import { getReachedCareerIndexesByProgress } from "./careerTimelineState";
+import {
+  getReachedCareerIndexesByProgress,
+  normalizeCareerProgress,
+} from "./careerTimelineState";
 import "./CareerTimeline.css";
 
 const ROAD_PATH = "M50 0 C25 95 75 155 50 245 C25 335 75 405 50 500 C25 595 75 665 50 755 C25 845 75 905 50 1000";
@@ -57,16 +61,17 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
   const completedProgress = useMotionValue(1);
   const { scrollYProgress } = useScroll({
     target: routeRef,
-    offset: ["start 78%", "end 20%"],
+    offset: ["start 76%", "end 56%"],
   });
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 125,
-    damping: 28,
-    mass: 0.32,
-    restDelta: 0.001,
-    restSpeed: 0.001,
+    stiffness: 220,
+    damping: 30,
+    mass: 0.28,
+    restDelta: 0.0005,
+    restSpeed: 0.0005,
   });
-  const activeProgress = reducedMotion ? completedProgress : smoothProgress;
+  const sourceProgress = reducedMotion ? completedProgress : smoothProgress;
+  const activeProgress = useTransform(sourceProgress, normalizeCareerProgress);
   const checkpointProgresses = useMemo(
     () => items.map((_, index) => (items.length > 1 ? index / (items.length - 1) : 0)),
     [items],

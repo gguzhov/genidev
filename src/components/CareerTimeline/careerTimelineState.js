@@ -33,6 +33,16 @@ export function getReachedCareerIndexesByProgress(progress, checkpointProgresses
   }, []);
 }
 
+export function normalizeCareerProgress(progress, startSnap = 0.012, endSnap = 0.988) {
+  const clampedProgress = Math.max(0, Math.min(1, Number.isFinite(progress) ? progress : 0));
+  const safeStart = Math.max(0, Math.min(0.49, startSnap));
+  const safeEnd = Math.max(0.51, Math.min(1, endSnap));
+
+  if (clampedProgress <= safeStart) return 0;
+  if (clampedProgress >= safeEnd) return 1;
+  return (clampedProgress - safeStart) / (safeEnd - safeStart);
+}
+
 export function getReachedCareerIndexesByPositions(planeTop, markerTops) {
   if (!Number.isFinite(planeTop)) return [];
   return markerTops.reduce((reached, markerTop, index) => {

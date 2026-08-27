@@ -25,6 +25,7 @@ test("capabilities present three clear products and render the open solution as 
 test("career motion is time-based and checkpoints share the exact path progress", () => {
   assert.equal(typeof careerState.smoothCareerProgressByDelta, "function");
   assert.equal(typeof careerState.getReachedCareerIndexesByProgress, "function");
+  assert.equal(typeof careerState.normalizeCareerProgress, "function");
   const oneFrame = careerState.smoothCareerProgressByDelta(0, 1, 16, 180);
   const twoFrames = careerState.smoothCareerProgressByDelta(
     careerState.smoothCareerProgressByDelta(0, 1, 8, 180),
@@ -37,6 +38,9 @@ test("career motion is time-based and checkpoints share the exact path progress"
     careerState.getReachedCareerIndexesByProgress(0.5, [0, 0.25, 0.5, 0.75, 1]),
     [0, 1, 2],
   );
+  assert.equal(careerState.normalizeCareerProgress(0.008), 0);
+  assert.equal(careerState.normalizeCareerProgress(0.992), 1);
+  assert.ok(Math.abs(careerState.normalizeCareerProgress(0.5) - 0.5) < 0.0001);
 });
 
 test("career renders path checkpoints instead of measuring unrelated card markers", async () => {
