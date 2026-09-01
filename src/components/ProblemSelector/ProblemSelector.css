@@ -294,61 +294,52 @@
 
 .problem-selector__open-solution {
   position: relative;
+  display: grid;
   width: 100%;
-  margin: clamp(24px, 4vw, 42px) 0 0;
-  padding: 10px 0 22px;
-  isolation: isolate;
+  margin: clamp(22px, 3vw, 34px) 0 0;
+  padding: 6px 0 12px;
+  gap: 8px;
 }
 
 .problem-selector__open-solution-copy {
-  position: relative;
-  z-index: 1;
-  display: grid;
+  display: flex;
   margin: 0;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(10px, 2vw, 18px);
+  align-items: baseline;
+  gap: 9px;
   color: var(--color-text);
-  font-size: clamp(1.2rem, 5.4vw, 2.25rem);
-  font-weight: 760;
-  letter-spacing: -0.035em;
-  line-height: 1.12;
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 680;
+  letter-spacing: -0.022em;
+  line-height: 1.32;
 }
 
 .problem-selector__open-solution-plus {
   color: var(--blue-9);
-  font-size: 1.18em;
-  font-weight: 620;
-  line-height: 0.95;
-  text-shadow: 0 4px 24px var(--blue-a7);
+  font-size: 1.05em;
+  font-weight: 760;
+  line-height: 1;
+  text-shadow: 0 4px 18px var(--blue-a6);
 }
 
 .problem-selector__open-solution-copy > span:last-child {
   min-width: 0;
-  text-wrap: balance;
 }
 
 .problem-selector__open-solution-motion {
-  position: absolute;
-  z-index: 0;
-  right: 0;
-  bottom: -8px;
-  left: 0;
-  height: clamp(64px, 10vw, 96px);
+  position: relative;
+  width: 100%;
+  height: 52px;
   overflow: hidden;
-  opacity: 0.82;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 90%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
 
-.problem-selector__open-solution-static {
-  position: absolute;
-  right: 5%;
-  bottom: 28%;
-  left: 2%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--blue-a6), var(--blue-8), transparent);
+.problem-selector__open-solution-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 .problem-selector__slider-controls button:focus-visible,
@@ -417,7 +408,7 @@
   }
 
   .problem-selector__open-solution {
-    padding-bottom: 28px;
+    padding-bottom: 14px;
   }
 }
 
