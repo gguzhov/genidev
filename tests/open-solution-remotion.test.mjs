@@ -31,13 +31,17 @@ test("runs the sentence animation only in view and honors reduced motion", () =>
   assert.match(accent, /document\.visibilityState/);
 });
 
-test("animates the sentence itself without a separate signal or pattern", () => {
-  assert.match(accent, /from "motion\/react"/);
+test("animates the complete sentence with one seamless text sweep", () => {
+  assert.match(accent, /problem-selector__open-solution-text/);
+  assert.match(accent, /problem-selector__open-solution-text--active/);
   assert.match(accent, /<motion\.span/);
-  assert.match(accent, /problem-selector__open-solution-word/);
-  assert.match(accent, /label\.trim\(\)\.split\(\/\\s\+\//);
-  assert.match(accent, /delay:\s*index\s*\*\s*0\.18/);
+  assert.match(accent, /backgroundPosition:\s*\["170% 50%",\s*"-70% 50%"\]/);
+  assert.match(accent, /ease:\s*"linear"/);
   assert.match(accent, /repeat:\s*Infinity/);
+  assert.doesNotMatch(accent, /label\.trim\(\)\.split|repeatDelay|filter:|\by:\s*\[/);
+  assert.match(styles, /background-clip:\s*text/);
+  assert.doesNotMatch(styles, /@keyframes\s+open-solution-text-sweep|animation:\s*open-solution-text-sweep/);
+  assert.doesNotMatch(styles, /open-solution-word|open-solution[^}]*blur\(|open-solution[^}]*translateY/s);
   assert.doesNotMatch(accent, /<svg|<motion\.g|SIGNAL_NODES|open-solution-node/);
   assert.doesNotMatch(styles, /open-solution-(?:motion|svg|node)/);
 

@@ -300,10 +300,7 @@
 }
 
 .problem-selector__open-solution-copy {
-  display: flex;
   margin: 0;
-  align-items: flex-start;
-  gap: 9px;
   color: var(--color-text);
   font-size: clamp(1rem, 1.8vw, 1.35rem);
   font-weight: 680;
@@ -311,26 +308,28 @@
   line-height: 1.32;
 }
 
-.problem-selector__open-solution-plus {
+.problem-selector__open-solution-text {
   display: inline-block;
-  flex: 0 0 auto;
-  color: var(--blue-9);
-  font-size: 1.05em;
-  font-weight: 760;
-  line-height: 1;
-  text-shadow: 0 4px 18px var(--blue-a6);
+  max-width: 100%;
 }
 
-.problem-selector__open-solution-words {
-  display: flex;
-  min-width: 0;
-  flex-wrap: wrap;
-  column-gap: 0.46em;
-  row-gap: 0.08em;
-}
-
-.problem-selector__open-solution-word {
-  display: inline-block;
+.problem-selector__open-solution-text--active {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-text) 0%,
+    var(--color-text) 36%,
+    var(--blue-9) 45%,
+    var(--gradient-ice-light) 50%,
+    var(--blue-9) 55%,
+    var(--color-text) 64%,
+    var(--color-text) 100%
+  );
+  background-position: 170% 50%;
+  background-size: 260% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .problem-selector__slider-controls button:focus-visible,
@@ -436,11 +435,15 @@
   .problem-selector__tab::after,
   .problem-selector__panel-content,
   .problem-selector__slider-controls button,
-  .problem-selector__open-solution-word,
-  .problem-selector__open-solution-plus {
+  .problem-selector__open-solution-text {
     animation: none;
     transition: none;
-    transform: none;
+  }
+
+  .problem-selector__open-solution-text--active {
+    color: var(--color-text);
+    background: none;
+    -webkit-text-fill-color: currentColor;
   }
 
   .problem-selector__solutions {
