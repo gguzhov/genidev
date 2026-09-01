@@ -24,7 +24,7 @@
   display: grid;
   height: 64px;
   padding: 8px;
-  grid-template-columns: 48px auto minmax(0, 1fr) auto;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 8px;
 }
@@ -59,26 +59,29 @@
 }
 
 .card-nav__cta {
-  display: none;
+  display: grid;
+  width: 48px;
+  height: 48px;
   min-height: 48px;
-  max-width: 100%;
-  min-width: 0;
-  padding-inline: 17px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  padding: 0;
+  place-items: center;
   border-radius: var(--radius-control);
   background: var(--color-accent);
   color: var(--color-on-accent);
-  font-size: 0.82rem;
-  font-weight: 720;
-  white-space: nowrap;
   transition: background var(--motion-fast) var(--motion-ease),
     transform var(--motion-fast) var(--motion-ease);
 }
 
+.card-nav__actions {
+  display: flex;
+  grid-column: 3;
+  align-items: center;
+  justify-self: end;
+  gap: 8px;
+}
+
 .card-nav__language {
-  display: none;
+  display: block;
 }
 
 .card-nav__cta:hover {
@@ -87,7 +90,9 @@
 }
 
 .card-nav__cta-icon {
-  display: none;
+  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 .card-nav__content {
@@ -146,7 +151,7 @@
 
 @media (max-width: 559px) {
   .card-nav__top {
-    grid-template-columns: 44px 44px minmax(0, 1fr) 90px;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
     column-gap: 8px;
   }
 
@@ -157,19 +162,14 @@
   }
 
   .card-nav__cta {
-    display: inline-flex;
     width: 44px;
     height: 44px;
     min-height: 44px;
-    padding: 0;
     border-radius: 14px;
-    grid-column: 2;
   }
 
-  .card-nav__language {
-    display: block;
-    grid-column: 4;
-    justify-self: end;
+  .card-nav__actions {
+    grid-column: 3;
   }
 
   .card-nav__language .language-switcher {
@@ -182,41 +182,11 @@
     min-height: 44px;
   }
 
-  .card-nav__cta-label {
-    display: none;
-  }
-
-  .card-nav__cta-arrow {
-    display: none;
-  }
-
-  .card-nav__cta-icon {
-    display: block;
-    width: 24px;
-    height: 24px;
-  }
 }
 
 @media (min-width: 430px) {
   .card-nav__top {
     padding-inline: 10px;
-  }
-}
-
-@media (min-width: 560px) {
-  .card-nav__top {
-    grid-template-columns: 48px auto minmax(0, 1fr) auto;
-  }
-
-  .card-nav__cta {
-    display: inline-flex;
-    grid-column: 2;
-  }
-
-  .card-nav__language {
-    display: block;
-    grid-column: 4;
-    justify-self: end;
   }
 }
 
@@ -234,9 +204,12 @@
   .card-nav__visual {
     display: block;
     height: 226px;
-    background-image: url("/images/ai-neural-orb-v2.webp");
     background-position: center;
     background-size: cover;
+  }
+
+  .card-nav--content-visible .card-nav__visual {
+    background-image: url("/images/ai-neural-orb-v2.webp");
   }
 }
 

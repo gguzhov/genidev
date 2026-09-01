@@ -126,12 +126,12 @@ test("keeps wide evidence large and gives portrait product screens their own lay
   );
 });
 
-test("uses a brighter evidence veil under project logos", async () => {
+test("uses a restrained veil over the new intrinsically bright covers", async () => {
   const css = await readFile(
     "src/components/ProjectMarketplace/ProjectMarketplace.css",
     "utf8",
   );
 
-  assert.match(css, /project-visual__cover\s*\{[^}]*brightness\(1\.24\)/s);
-  assert.match(css, /project-visual__gradient\s*\{[^}]*color-surface-raised/s);
+  assert.match(css, /project-visual__cover\s*\{[^}]*brightness\(1\.04\)/s);
+  assert.match(css, /project-visual__gradient\s*\{[^}]*opacity:\s*0\.24/s);
 });

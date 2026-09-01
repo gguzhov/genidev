@@ -6,7 +6,7 @@ import { career, contact, navigation, sectionCopy } from "../src/content/siteCon
 
 const read = (path) => readFile(path, "utf8");
 
-test("keeps four compact navigation links, a separate contact CTA and language control", async () => {
+test("keeps four compact navigation links and groups Telegram with language control", async () => {
   const [app, nav] = await Promise.all([
     read("src/App.jsx"),
     read("src/components/CardNav/CardNav.jsx"),
@@ -17,8 +17,9 @@ test("keeps four compact navigation links, a separate contact CTA and language c
   assert.doesNotMatch(nav, /card-nav__label|<span>Геннадий Гужов<\/span>/);
   assert.match(nav, /normalizeNavigationItems/);
   assert.match(nav, /alt=""/);
-  assert.match(app, /navigationCta/);
-  assert.match(app, /label: locale === "en" \? "Contact" : "Связаться"/);
+  assert.doesNotMatch(app, /navigationCta|label: locale === "en" \? "Contact" : "Связаться"/);
+  assert.match(app, /cta=\{hero\.cta\}/);
+  assert.match(nav, /className="card-nav__actions"/);
   assert.match(nav, /<LanguageSwitcher/);
 });
 
@@ -85,7 +86,11 @@ test("loads the new robotic neural-core image only from the 1024px desktop break
   );
   assert.match(
     navCss.slice(desktopVisualMediaIndex),
-    /card-nav__visual\s*\{[^}]*display:\s*block[^}]*height:\s*226px[^}]*background-image:\s*url\("\/images\/ai-neural-orb-v2\.webp"\)/s,
+    /card-nav__visual\s*\{[^}]*display:\s*block[^}]*height:\s*226px/s,
+  );
+  assert.match(
+    navCss.slice(desktopVisualMediaIndex),
+    /card-nav--content-visible \.card-nav__visual\s*\{[^}]*background-image:\s*url\("\/images\/ai-neural-orb-v2\.webp"\)/s,
   );
   assert.match(navCss, /prefers-reduced-motion:\s*reduce/);
 });

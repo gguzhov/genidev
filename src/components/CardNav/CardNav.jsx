@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { gsap } from "gsap";
-import { CustomEase } from "gsap/CustomEase";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import {
@@ -17,8 +15,36 @@ import "./CardNav.css";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-gsap.registerPlugin(CustomEase);
-const cardNavEase = CustomEase.create("card-nav-ease", CARD_NAV_EASE.gsap);
+let animationRuntimePromise;
+
+export function loadCardNavAnimationRuntime() {
+  if (!animationRuntimePromise) {
+    animationRuntimePromise = Promise.all([
+      import("gsap"),
+      import("gsap/CustomEase"),
+    ]).then(([gsapModule, customEaseModule]) => {
+      const gsap = gsapModule.gsap ?? gsapModule.default;
+      const CustomEase = customEaseModule.CustomEase ?? customEaseModule.default;
+      gsap.registerPlugin(CustomEase);
+      return {
+        gsap,
+        ease: CustomEase.create("card-nav-ease", CARD_NAV_EASE.gsap),
+      };
+    });
+  }
+
+  return animationRuntimePromise;
+}
+
+function applyStaticMenuState(nav, cards, state) {
+  nav.style.height = `${state.height}px`;
+  nav.style.overflow = "hidden";
+  for (const card of cards) {
+    if (!card) continue;
+    card.style.transform = `translateY(${state.cardsY}px)`;
+    card.style.opacity = `${state.cardsOpacity}`;
+  }
+}
 
 export const normalizeNavigationItems = (items) =>
   items.flatMap((item) => {
@@ -26,8 +52,9 @@ export const normalizeNavigationItems = (items) =>
     return item?.href ? [item] : [];
   });
 
-export default function CardNav({ items = [], cta, locale = "ru", ui, className = "", ease = cardNavEase }) {
+export default function CardNav({ items = [], cta, locale = "ru", ui, className = "", ease }) {
   const [menuState, setMenuState] = useState(CARD_NAV_INITIAL_STATE);
+  const [animationRuntime, setAnimationRuntime] = useState(null);
   const navRef = useRef(null);
   const triggerRef = useRef(null);
   const cardsRef = useRef([]);
@@ -57,6 +84,14 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
     triggerRef.current?.focus({ preventScroll: true });
   }, []);
 
+  const prepareAnimationRuntime = useCallback(async () => {
+    if (reducedMotion) return null;
+    if (animationRuntime) return animationRuntime;
+    const runtime = await loadCardNavAnimationRuntime();
+    setAnimationRuntime((current) => current ?? runtime);
+    return runtime;
+  }, [animationRuntime, reducedMotion]);
+
   const closeMenu = useCallback(
     ({ restoreFocus = true } = {}) => {
       const nav = navRef.current;
@@ -69,8 +104,16 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
       }
 
       if (reducedMotion || !timelineRef.current) {
-        gsap.set(nav, { height: CLOSED_HEIGHT });
-        gsap.set(cardsRef.current, { y: 32, opacity: 0 });
+        if (animationRuntime) {
+          animationRuntime.gsap.set(nav, { height: CLOSED_HEIGHT });
+          animationRuntime.gsap.set(cardsRef.current, { y: 32, opacity: 0 });
+        } else {
+          applyStaticMenuState(nav, cardsRef.current, {
+            height: CLOSED_HEIGHT,
+            cardsY: 32,
+            cardsOpacity: 0,
+          });
+        }
         transitionMenu("CLOSE_FINISHED");
       } else {
         timelineRef.current.reverse();
@@ -78,12 +121,21 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
 
       if (restoreFocus) returnFocus();
     },
-    [reducedMotion, returnFocus, transitionMenu],
+    [animationRuntime, reducedMotion, returnFocus, transitionMenu],
   );
 
-  const openMenu = useCallback(() => {
+  const openMenu = useCallback(async () => {
     const nav = navRef.current;
     if (!nav || lifecycleStateRef.current.desiredOpen) return;
+
+    const runtime = reducedMotion
+      ? null
+      : animationRuntime ?? await prepareAnimationRuntime();
+    if (!navRef.current || lifecycleStateRef.current.desiredOpen) return;
+
+    if (!reducedMotion && !animationRuntime && runtime) {
+      await new Promise((resolve) => window.requestAnimationFrame(resolve));
+    }
 
     transitionMenu("OPEN");
     openFrameRef.current = window.requestAnimationFrame(() => {
@@ -91,14 +143,22 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
       if (!lifecycleStateRef.current.desiredOpen) return;
 
       if (reducedMotion || !timelineRef.current) {
-        gsap.set(nav, { height: calculateHeight() });
-        gsap.set(cardsRef.current, { y: 0, opacity: 1 });
+        if (runtime) {
+          runtime.gsap.set(nav, { height: calculateHeight() });
+          runtime.gsap.set(cardsRef.current, { y: 0, opacity: 1 });
+        } else {
+          applyStaticMenuState(nav, cardsRef.current, {
+            height: calculateHeight(),
+            cardsY: 0,
+            cardsOpacity: 1,
+          });
+        }
         return;
       }
 
       timelineRef.current.play();
     });
-  }, [calculateHeight, reducedMotion, transitionMenu]);
+  }, [animationRuntime, calculateHeight, prepareAnimationRuntime, reducedMotion, transitionMenu]);
 
   const toggleMenu = () => {
     if (lifecycleStateRef.current.desiredOpen) closeMenu();
@@ -119,26 +179,23 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
       calculateHeight(),
     );
 
-    if (reducedMotion) {
-      gsap.set(nav, { height: recreationState.height, overflow: "hidden" });
-      gsap.set(cardsRef.current, {
-        y: recreationState.cardsY,
-        opacity: recreationState.cardsOpacity,
-      });
+    if (reducedMotion || !animationRuntime) {
+      applyStaticMenuState(nav, cardsRef.current, recreationState);
       timelineRef.current = null;
       return undefined;
     }
 
+    const { gsap } = animationRuntime;
     gsap.set(nav, { height: CLOSED_HEIGHT, overflow: "hidden" });
     gsap.set(cardsRef.current, { y: 32, opacity: 0 });
     const timeline = gsap.timeline({ paused: true });
     timeline.eventCallback("onReverseComplete", () => {
       if (!lifecycleStateRef.current.desiredOpen) transitionMenu("CLOSE_FINISHED");
     });
-    timeline.to(nav, { height: calculateHeight, duration: 0.28, ease });
+    timeline.to(nav, { height: calculateHeight, duration: 0.28, ease: ease ?? animationRuntime.ease });
     timeline.to(
       cardsRef.current,
-      { y: 0, opacity: 1, duration: 0.16, ease, stagger: 0.04 },
+      { y: 0, opacity: 1, duration: 0.16, ease: ease ?? animationRuntime.ease, stagger: 0.04 },
       0,
     );
     if (recreationState.timelineProgress === 1) timeline.progress(1);
@@ -148,7 +205,7 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
       timeline.kill();
       timelineRef.current = null;
     };
-  }, [calculateHeight, ease, items, reducedMotion, transitionMenu]);
+  }, [animationRuntime, calculateHeight, ease, items, reducedMotion, transitionMenu]);
 
   useEffect(
     () => () => {
@@ -160,12 +217,16 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
   useLayoutEffect(() => {
     const handleResize = () => {
       if (!isExpanded || !navRef.current) return;
-      gsap.set(navRef.current, { height: calculateHeight() });
+      if (animationRuntime) {
+        animationRuntime.gsap.set(navRef.current, { height: calculateHeight() });
+      } else {
+        navRef.current.style.height = `${calculateHeight()}px`;
+      }
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [calculateHeight, isExpanded]);
+  }, [animationRuntime, calculateHeight, isExpanded]);
 
   useEffect(() => {
     if (!isExpanded) return undefined;
@@ -226,44 +287,38 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
             aria-label={isExpanded ? ui?.closeMenu : ui?.openMenu}
             aria-expanded={isExpanded}
             aria-controls="card-navigation-panel"
+            onPointerEnter={prepareAnimationRuntime}
+            onFocus={prepareAnimationRuntime}
             onClick={toggleMenu}
           >
             <span />
             <span />
           </button>
 
-          <a
-            className="card-nav__cta"
-            href={cta?.href}
-            target={cta?.target ?? "_blank"}
-            rel={cta?.rel ?? "noreferrer"}
-            aria-label={ui?.contactTelegram ?? "Связаться в Telegram"}
-            onClick={handleHeaderNavigation}
-          >
-            <span className="card-nav__cta-label">
-              {cta?.label ?? "Решить проблему"}
-            </span>
-            <img
-              className="card-nav__cta-icon"
-              src="/icons/telegram-mark-white.svg"
-              alt=""
-              width="24"
-              height="24"
-            />
-            <HugeiconsIcon
-              className="card-nav__cta-arrow"
-              icon={ArrowUpRight01Icon}
-              size={18}
-              strokeWidth={1.8}
-              aria-hidden="true"
-            />
-          </a>
-          <div className="card-nav__language">
-            <LanguageSwitcher
-              locale={locale}
-              options={ui?.languageSwitch ?? []}
-              label={ui?.languageSwitchLabel ?? "Язык"}
-            />
+          <div className="card-nav__actions">
+            <a
+              className="card-nav__cta"
+              href={cta?.href}
+              target={cta?.target ?? "_blank"}
+              rel={cta?.rel ?? "noreferrer"}
+              aria-label={ui?.contactTelegram ?? "Связаться в Telegram"}
+              onClick={handleHeaderNavigation}
+            >
+              <img
+                className="card-nav__cta-icon"
+                src="/icons/telegram-mark-white.svg"
+                alt=""
+                width="24"
+                height="24"
+              />
+            </a>
+            <div className="card-nav__language">
+              <LanguageSwitcher
+                locale={locale}
+                options={ui?.languageSwitch ?? []}
+                label={ui?.languageSwitchLabel ?? "Язык"}
+              />
+            </div>
           </div>
         </div>
 

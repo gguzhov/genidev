@@ -138,10 +138,10 @@ test("career renders official logos, a DATONIKS case action and a reduced-motion
 
 test("each marketplace card uses a dedicated generated 3:2 technology background", () => {
   const expectedCovers = [
-    "/projects/covers/ostrov-xray-dna-v4.webp",
-    "/projects/covers/ilonmask-xray-orbit-v4.webp",
-    "/projects/covers/datoniks-xray-compute-v4.webp",
-    "/projects/covers/wedding-xray-flora-v4.webp",
+    "/projects/covers/ostrov-ice-dna-v5.webp",
+    "/projects/covers/ilonmask-ice-orbit-v5.webp",
+    "/projects/covers/datoniks-ice-compute-v5.webp",
+    "/projects/covers/wedding-ice-flora-v5.webp",
   ];
   assert.deepEqual(projects.map(({ cardCover }) => cardCover), expectedCovers);
   for (const project of projects) {

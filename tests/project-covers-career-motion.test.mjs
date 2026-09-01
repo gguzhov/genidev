@@ -8,10 +8,10 @@ const read = (path) => readFile(new URL(path, projectRoot), "utf8");
 test("uses one thematic 3:2 cover for every project card", async () => {
   const content = await read("src/content/siteContent.js");
   const covers = [
-    "/projects/covers/ostrov-xray-dna-v4.webp",
-    "/projects/covers/ilonmask-xray-orbit-v4.webp",
-    "/projects/covers/datoniks-xray-compute-v4.webp",
-    "/projects/covers/wedding-xray-flora-v4.webp",
+    "/projects/covers/ostrov-ice-dna-v5.webp",
+    "/projects/covers/ilonmask-ice-orbit-v5.webp",
+    "/projects/covers/datoniks-ice-compute-v5.webp",
+    "/projects/covers/wedding-ice-flora-v5.webp",
   ];
 
   for (const cover of covers) {

@@ -288,7 +288,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/ostrov-logo.png",
     },
-    cardCover: "/projects/covers/ostrov-xray-dna-v4.webp",
+    cardCover: "/projects/covers/ostrov-ice-dna-v5.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/ostrov/ostrov-home-clean.webp",
@@ -380,7 +380,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/ilonmask-logo-card.webp",
     },
-    cardCover: "/projects/covers/ilonmask-xray-orbit-v4.webp",
+    cardCover: "/projects/covers/ilonmask-ice-orbit-v5.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/ilonmask/ilonmask-landing-2026.webp",
@@ -459,7 +459,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/datoniks-logo.png",
     },
-    cardCover: "/projects/covers/datoniks-xray-compute-v4.webp",
+    cardCover: "/projects/covers/datoniks-ice-compute-v5.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/datoniks/datoniks-slide-03.webp",
@@ -544,7 +544,7 @@ export const projects = [
     visual: {
       logo: "/projects/brands/wedding-vote-logo.png",
     },
-    cardCover: "/projects/covers/wedding-xray-flora-v4.webp",
+    cardCover: "/projects/covers/wedding-ice-flora-v5.webp",
     cardCoverWidth: 1536,
     cardCoverHeight: 1024,
     cover: "/projects/wedding/wedding-display.png",

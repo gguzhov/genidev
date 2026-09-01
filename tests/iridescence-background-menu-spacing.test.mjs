@@ -29,12 +29,12 @@ test("header controls share one grid and one spacing rhythm", async () => {
   const css = await read("../src/components/CardNav/CardNav.css");
   const topRule = css.match(/\.card-nav__top\s*\{(?<body>[^}]*)\}/s)?.groups?.body ?? "";
   const mobile = css.match(/@media \(max-width: 559px\)\s*\{(?<body>[\s\S]*?)\n\}/)?.groups?.body ?? "";
-  const desktop = css.match(/@media \(min-width: 560px\)\s*\{(?<body>[\s\S]*?)\n\}/)?.groups?.body ?? "";
 
   assert.match(topRule, /display:\s*grid/);
   assert.match(topRule, /column-gap:\s*8px/);
-  assert.match(mobile, /grid-template-columns:\s*44px 44px minmax\(0, 1fr\) 90px/);
-  assert.match(desktop, /grid-template-columns:\s*48px auto minmax\(0, 1fr\) auto/);
+  assert.match(topRule, /grid-template-columns:\s*48px minmax\(0, 1fr\) auto/);
+  assert.match(mobile, /grid-template-columns:\s*44px minmax\(0, 1fr\) auto/);
+  assert.match(mobile, /\.card-nav__actions\s*\{[^}]*grid-column:\s*3/s);
   assert.doesNotMatch(css, /\.card-nav__cta\s*\{[^}]*position:\s*absolute/s);
   assert.doesNotMatch(css, /\.card-nav__language\s*\{[^}]*position:\s*absolute/s);
 });

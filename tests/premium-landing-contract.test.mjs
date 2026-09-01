@@ -104,10 +104,15 @@ test("every CardNav link uses the shared control radius", () => {
 });
 
 test("both CardNav GSAP animations receive the exact shared easing", () => {
+  assert.match(navComponentSource, /import\("gsap"\)/);
+  assert.match(navComponentSource, /import\("gsap\/CustomEase"\)/);
   assert.match(navComponentSource, /gsap\.registerPlugin\(CustomEase\)/);
   assert.match(navComponentSource, /CustomEase\.create\([^,]+,\s*CARD_NAV_EASE\.gsap\)/);
-  assert.match(navComponentSource, /ease\s*=\s*cardNavEase/);
-  assert.match(navComponentSource, /timeline\.to\(nav,\s*\{[^}]*ease\s*\}\)/s);
+  assert.match(navComponentSource, /ease:\s*ease\s*\?\?\s*animationRuntime\.ease/);
+  assert.match(
+    navComponentSource,
+    /timeline\.to\(nav,\s*\{[^}]*ease:\s*ease\s*\?\?\s*animationRuntime\.ease[^}]*\}\)/s,
+  );
   assert.match(
     navComponentSource,
     /timeline\.to\(\s*cardsRef\.current,\s*\{[^}]*ease[^}]*\}/s,

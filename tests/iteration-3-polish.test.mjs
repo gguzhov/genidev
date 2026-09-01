@@ -14,16 +14,18 @@ const [navCss, navSource, profileCss, sectionsCss, finalContactCss, cardSource, 
     readFile("src/components/ProjectMarketplace/ProjectMarketplace.css", "utf8"),
   ]);
 
-test("keeps the closed contact CTA visible and bounded on narrow screens", () => {
+test("keeps one Telegram icon beside the language switcher", () => {
   assert.match(navSource, /className="card-nav__cta"/);
-  assert.match(navSource, /\{cta\?\.label\s*\?\?\s*"Решить проблему"\}/);
+  assert.match(navSource, /className="card-nav__actions"/);
+  assert.match(navSource, /telegram-mark-white\.svg/);
+  assert.doesNotMatch(navSource, /card-nav__cta-label|card-nav__cta-arrow|cta\?\.label/);
   assert.match(
     navCss,
-    /\.card-nav__cta\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/s,
+    /\.card-nav__actions\s*\{[^}]*display:\s*flex[^}]*gap:\s*8px/s,
   );
   assert.match(
     navCss,
-    /@media \(max-width:\s*559px\)[\s\S]*\.card-nav__cta\s*\{[^}]*display:\s*inline-flex/s,
+    /@media \(max-width:\s*559px\)[\s\S]*\.card-nav__cta\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/s,
   );
 });
 

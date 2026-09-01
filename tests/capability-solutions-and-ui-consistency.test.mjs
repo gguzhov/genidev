@@ -98,7 +98,7 @@ test("marketplace cards combine evidence covers with exact logo plates", async (
   assert.match(styles, /\.project-visual__cover/);
 });
 
-test("project resource links and mobile Telegram CTA use one consistent control language", async () => {
+test("project resource links and icon-only header contact use one consistent control language", async () => {
   const projectCase = await read("src/components/ProjectCase/ProjectCase.jsx");
   const projectCaseStyles = await read("src/components/ProjectCase/ProjectCase.css");
   const nav = await read("src/components/CardNav/CardNav.jsx");
@@ -110,8 +110,9 @@ test("project resource links and mobile Telegram CTA use one consistent control 
 
   assert.match(nav, /card-nav__cta-icon/);
   assert.match(nav, /telegram-mark-white\.svg/);
-  assert.match(nav, /card-nav__cta-label/);
+  assert.match(nav, /card-nav__actions/);
+  assert.doesNotMatch(nav, /card-nav__cta-label|card-nav__cta-arrow/);
+  assert.match(navStyles, /\.card-nav__cta\s*\{[^}]*width:\s*48px[^}]*height:\s*48px/s);
   assert.match(navStyles, /@media \(max-width: 559px\)[\s\S]*\.card-nav__cta\s*\{[^}]*width:\s*44px/s);
-  assert.match(navStyles, /@media \(max-width: 559px\)[\s\S]*\.card-nav__cta-label\s*\{[^}]*display:\s*none/s);
 }
 );

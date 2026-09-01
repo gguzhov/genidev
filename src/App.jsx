@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import CardNav from "./components/CardNav/CardNav";
@@ -7,22 +8,22 @@ import GradientWave from "./components/GradientWave/GradientWave";
 import LanguageSwitcher from "./components/LanguageSwitcher/LanguageSwitcher";
 import ProblemSelector from "./components/ProblemSelector/ProblemSelector";
 import ProfileCard from "./components/ProfileCard/ProfileCard";
-import ProjectCase from "./components/ProjectCase/ProjectCase";
 import ProjectMarketplace from "./components/ProjectMarketplace/ProjectMarketplace";
 import SiteFooter from "./components/SiteFooter/SiteFooter";
 import { getSiteContent } from "./content/siteContent";
 import useProjectRoute from "./hooks/useProjectRoute";
 
+const ProjectCase = lazy(() => import("./components/ProjectCase/ProjectCase"));
+
 export function App({ locale = "ru" }) {
   const { career, contact, hero, problems, projects, socialLinks, sectionCopy, navigation, ui } =
     getSiteContent(locale);
-  const navigationCta = { ...hero.cta, label: locale === "en" ? "Contact" : "Связаться" };
   const { activeProject, openProject, closeProject } = useProjectRoute(projects);
 
   return (
     <>
       <GradientWave />
-      <CardNav items={navigation} cta={navigationCta} locale={locale} ui={ui} />
+      <CardNav items={navigation} cta={hero.cta} locale={locale} ui={ui} />
       <main>
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero__inner">
@@ -72,22 +73,24 @@ export function App({ locale = "ru" }) {
       </main>
       <SiteFooter links={socialLinks} ui={ui} />
       {activeProject && (
-        <ProjectCase
-          project={activeProject}
-          projects={projects}
-          onClose={closeProject}
-          onOpenProject={openProject}
-          ui={ui}
-          locale={locale}
-          languageSwitcher={
-            <LanguageSwitcher
-              locale={locale}
-              options={ui.languageSwitch}
-              label={ui.languageSwitchLabel}
-              activeProjectSlug={activeProject.slug}
-            />
-          }
-        />
+        <Suspense fallback={null}>
+          <ProjectCase
+            project={activeProject}
+            projects={projects}
+            onClose={closeProject}
+            onOpenProject={openProject}
+            ui={ui}
+            locale={locale}
+            languageSwitcher={
+              <LanguageSwitcher
+                locale={locale}
+                options={ui.languageSwitch}
+                label={ui.languageSwitchLabel}
+                activeProjectSlug={activeProject.slug}
+              />
+            }
+          />
+        </Suspense>
       )}
     </>
   );
