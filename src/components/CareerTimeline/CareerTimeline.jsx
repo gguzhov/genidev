@@ -25,6 +25,8 @@ import {
 import "./CareerTimeline.css";
 
 const ROAD_PATH = "M50 0 C25 95 75 155 50 245 C25 335 75 405 50 500 C25 595 75 665 50 755 C25 845 75 905 50 1000";
+const ROAD_VIEWBOX_WIDTH = 100;
+const ROAD_VIEWBOX_HEIGHT = 1000;
 const ROAD_PROGRESS_SAMPLES = 120;
 
 function buildCareerProgressPath(path, progress) {

@@ -50,6 +50,8 @@ test("career motion is time-based and checkpoints share the exact path progress"
 
 test("career renders path checkpoints instead of measuring unrelated card markers", async () => {
   const component = await read("src/components/CareerTimeline/CareerTimeline.jsx");
+  assert.match(component, /const ROAD_VIEWBOX_WIDTH = 100;/);
+  assert.match(component, /const ROAD_VIEWBOX_HEIGHT = 1000;/);
   assert.match(component, /career-route__checkpoint/);
   assert.match(component, /checkpointProgresses/);
   assert.doesNotMatch(component, /querySelector\("\.career-timeline__marker"\)/);
