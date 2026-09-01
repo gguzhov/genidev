@@ -119,4 +119,19 @@ test("keeps wide evidence large and gives portrait product screens their own lay
   assert.match(gallery, /project-gallery__slide--\$\{image\.orientation\}/);
   assert.match(css, /project-case__gallery-section[^}]*96rem/s);
   assert.match(css, /project-gallery__slide--portrait img[^}]*aspect-ratio:\s*auto/s);
+  assert.match(css, /project-gallery__track\s*\{[^}]*align-items:\s*flex-start/s);
+  assert.match(
+    css,
+    /@media \(min-width:\s*64rem\)[\s\S]*\.project-gallery__slide img\s*\{[^}]*height:\s*min\(68dvh,\s*45rem\)[^}]*object-fit:\s*contain/s,
+  );
+});
+
+test("uses a brighter evidence veil under project logos", async () => {
+  const css = await readFile(
+    "src/components/ProjectMarketplace/ProjectMarketplace.css",
+    "utf8",
+  );
+
+  assert.match(css, /project-visual__cover\s*\{[^}]*brightness\(1\.24\)/s);
+  assert.match(css, /project-visual__gradient\s*\{[^}]*color-surface-raised/s);
 });

@@ -18,37 +18,26 @@ import {
 } from "motion/react";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import {
-  getCareerStrokeState,
+  getCareerProgressSampleLengths,
   getReachedCareerIndexesByProgress,
   normalizeCareerProgress,
 } from "./careerTimelineState";
 import "./CareerTimeline.css";
 
 const ROAD_PATH = "M50 0 C25 95 75 155 50 245 C25 335 75 405 50 500 C25 595 75 665 50 755 C25 845 75 905 50 1000";
-const ROAD_VIEWBOX_WIDTH = 100;
-const ROAD_VIEWBOX_HEIGHT = 1000;
-const ROAD_LENGTH_SAMPLES = 180;
+const ROAD_PROGRESS_SAMPLES = 120;
 
-function measureRenderedPathLength(path) {
-  const svgBounds = path.ownerSVGElement?.getBoundingClientRect();
+function buildCareerProgressPath(path, progress) {
   const totalLength = path.getTotalLength?.() ?? 0;
-  if (!svgBounds || !totalLength) return 0;
+  if (!totalLength || progress <= 0) return "M50 0 L50 0";
+  if (progress >= 1) return ROAD_PATH;
 
-  const scaleX = svgBounds.width / ROAD_VIEWBOX_WIDTH;
-  const scaleY = svgBounds.height / ROAD_VIEWBOX_HEIGHT;
-  let previous = path.getPointAtLength(0);
-  let renderedLength = 0;
-
-  for (let index = 1; index <= ROAD_LENGTH_SAMPLES; index += 1) {
-    const point = path.getPointAtLength(totalLength * (index / ROAD_LENGTH_SAMPLES));
-    renderedLength += Math.hypot(
-      (point.x - previous.x) * scaleX,
-      (point.y - previous.y) * scaleY,
-    );
-    previous = point;
-  }
-
-  return renderedLength;
+  return getCareerProgressSampleLengths(progress, totalLength, ROAD_PROGRESS_SAMPLES)
+    .map((length, index) => {
+      const point = path.getPointAtLength(length);
+      return `${index === 0 ? "M" : "L"}${point.x.toFixed(3)} ${point.y.toFixed(3)}`;
+    })
+    .join(" ");
 }
 
 function OngoingSignal({ children, reducedMotion }) {
@@ -82,7 +71,7 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
   const reducedMotion = useReducedMotion();
   const routeRef = useRef(null);
   const roadRef = useRef(null);
-  const renderedRoadLengthRef = useRef(0);
+  const progressRoadRef = useRef(null);
   const reachedSignatureRef = useRef("");
   const [reachedItems, setReachedItems] = useState(() => new Set());
   const [checkpointPositions, setCheckpointPositions] = useState([]);
@@ -141,12 +130,10 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
 
   const syncProgress = useCallback((progress) => {
     const road = roadRef.current;
-    if (road) {
-      const renderedLength = renderedRoadLengthRef.current || measureRenderedPathLength(road);
-      renderedRoadLengthRef.current = renderedLength;
-      const stroke = getCareerStrokeState(progress, renderedLength);
-      road.style.strokeDasharray = stroke.dasharray;
-      road.style.strokeDashoffset = stroke.dashoffset;
+    const progressRoad = progressRoadRef.current;
+    if (road && progressRoad) {
+      const progressPath = buildCareerProgressPath(road, progress);
+      progressRoad.setAttribute("d", progressPath);
     }
 
     const geometry = getRouteGeometry(progress);
@@ -170,7 +157,6 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
     if (!route || !road) return undefined;
 
     const updateLayout = () => {
-      renderedRoadLengthRef.current = measureRenderedPathLength(road);
       setCheckpointPositions(checkpointProgresses.map(getRouteGeometry));
       syncProgress(activeProgress.get());
     };
@@ -197,11 +183,11 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
           ref={routeRef}
         >
           <svg className="career-route__road" viewBox="0 0 100 1000" preserveAspectRatio="none" aria-hidden="true">
-            <path className="career-route__road-base" d={ROAD_PATH} />
+            <path className="career-route__road-base" d={ROAD_PATH} ref={roadRef} />
             <path
               className="career-route__road-progress"
-              d={ROAD_PATH}
-              ref={roadRef}
+              d="M50 0 L50 0"
+              ref={progressRoadRef}
             />
           </svg>
           {checkpointProgresses.map((progress, index) => {

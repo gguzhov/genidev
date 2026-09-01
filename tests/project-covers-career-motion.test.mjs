@@ -46,34 +46,21 @@ test("drives the career route, airplane and checkpoints from one Motion spring",
   assert.match(component, /useScroll\s*\(/);
   assert.match(component, /useSpring\s*\(/);
   assert.match(component, /useMotionValueEvent\s*\(activeProgress,\s*"change"/);
-  assert.match(component, /road\.style\.strokeDasharray\s*=\s*stroke\.dasharray/);
-  assert.match(component, /road\.style\.strokeDashoffset\s*=\s*stroke\.dashoffset/);
+  assert.match(component, /progressRoadRef/);
+  assert.match(component, /progressRoad\.setAttribute\("d",\s*progressPath\)/);
   assert.doesNotMatch(component, /<motion\.path/);
   assert.match(component, /<motion\.span[\s\S]*style=\{\{\s*x:\s*planeX,\s*y:\s*planeY,\s*rotate:\s*planeAngle\s*\}\}/);
   assert.doesNotMatch(component, /requestAnimationFrame/);
 });
 
-test("shows one reduced-motion-safe page progress line below the header", async () => {
-  const [progress, navigation, css] = await Promise.all([
-    read("src/components/core/ScrollProgress.jsx"),
+test("keeps the fixed header free from a competing page progress line", async () => {
+  const [navigation, css] = await Promise.all([
     read("src/components/CardNav/CardNav.jsx"),
     read("src/components/CardNav/CardNav.css"),
   ]);
 
-  assert.match(progress, /useScroll\s*\(\)/);
-  assert.match(progress, /useSpring\s*\(scrollYProgress/);
-  assert.match(progress, /reducedMotion\s*\?\s*scrollYProgress\s*:\s*smoothProgress/);
-  assert.match(progress, /style=\{\{ scaleX: activeProgress \}\}/);
-  assert.match(
-    navigation,
-    /<\/nav>\s*<div className="card-nav__scroll-track">\s*<ScrollProgress\s+className="card-nav__scroll-progress"\s*\/>/s,
-  );
-  assert.match(
-    css,
-    /\.card-nav__scroll-track\s*\{[^}]*top:\s*calc\(100% \+ 4px\)[^}]*left:\s*0[^}]*width:\s*100%[^}]*height:\s*3px/s,
-  );
-  assert.match(css, /\.card-nav__scroll-progress\s*\{[^}]*inset:\s*0[^}]*width:\s*100%/s);
-  assert.match(css, /transform-origin:\s*left center/);
+  assert.doesNotMatch(navigation, /ScrollProgress|card-nav__scroll-track/);
+  assert.doesNotMatch(css, /card-nav__scroll-(?:track|progress)/);
 });
 
 test("lets section descriptions use the full content width before wrapping", async () => {

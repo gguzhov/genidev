@@ -5,7 +5,6 @@ import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import useReducedMotion from "../../hooks/useReducedMotion";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
-import ScrollProgress from "../core/ScrollProgress";
 import {
   CARD_NAV_EASE,
   CARD_NAV_INITIAL_STATE,
@@ -309,9 +308,6 @@ export default function CardNav({ items = [], cta, locale = "ru", ui, className 
           />
         </div>
       </nav>
-      <div className="card-nav__scroll-track">
-        <ScrollProgress className="card-nav__scroll-progress" />
-      </div>
     </header>
   );
 }

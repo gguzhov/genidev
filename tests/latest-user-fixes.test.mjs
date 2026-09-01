@@ -21,12 +21,12 @@ test("career route fill and airplane use the same normalized progress", async ()
   assert.match(jsx, /useScroll\s*\(/);
   assert.match(jsx, /useSpring\s*\(scrollYProgress/);
   assert.match(jsx, /useMotionValueEvent\s*\(activeProgress,\s*"change",\s*syncProgress\)/);
-  assert.match(jsx, /road\.style\.strokeDasharray\s*=\s*stroke\.dasharray/);
-  assert.match(jsx, /road\.style\.strokeDashoffset\s*=\s*stroke\.dashoffset/);
+  assert.match(jsx, /progressRoadRef/);
+  assert.match(jsx, /progressRoad\.setAttribute\("d",\s*progressPath\)/);
   assert.match(jsx, /style=\{\{ x: planeX, y: planeY, rotate: planeAngle \}\}/);
   assert.doesNotMatch(jsx, /requestAnimationFrame/);
   const progressRules = [...css.matchAll(/(?:^|\n)\.career-route__road-progress\s*\{(?<body>[^}]*)\}/gs)];
-  assert.match(progressRules.at(-1)?.groups?.body ?? "", /stroke-dashoffset/);
+  assert.doesNotMatch(progressRules.at(-1)?.groups?.body ?? "", /stroke-dash/);
 });
 
 test("footer uses the channel name and contains no public-offer disclaimer", async () => {

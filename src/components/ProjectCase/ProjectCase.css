@@ -309,6 +309,7 @@
   width: 100%;
   overflow-x: auto;
   border-radius: var(--radius-feature);
+  align-items: flex-start;
   gap: 12px;
   overscroll-behavior-inline: contain;
   scroll-snap-type: x mandatory;
@@ -540,6 +541,17 @@
 
   .project-case__video {
     min-height: 360px;
+  }
+
+  .project-gallery__slide img {
+    width: 100%;
+    height: min(68dvh, 45rem);
+    object-fit: contain;
+  }
+
+  .project-gallery__slide--portrait img {
+    width: 100%;
+    max-height: none;
   }
 }
 
