@@ -2,104 +2,8 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import useReducedMotion from "../../hooks/useReducedMotion";
 
-const SIGNAL_NODES = [144, 376, 608, 840, 1072];
-
-function SolutionSignal({ active }) {
-  const travelTransition = {
-    duration: 3.4,
-    ease: [0.45, 0, 0.2, 1],
-    repeat: Infinity,
-    repeatDelay: 0.45,
-  };
-
-  return (
-    <svg
-      className="problem-selector__open-solution-svg"
-      viewBox="0 0 1200 64"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="open-solution-track" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#7baaff" stopOpacity="0" />
-          <stop offset="0.12" stopColor="#315fbd" stopOpacity="0.5" />
-          <stop offset="0.82" stopColor="#315fbd" stopOpacity="0.5" />
-          <stop offset="1" stopColor="#7baaff" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="open-solution-beam" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#f7fbff" stopOpacity="0" />
-          <stop offset="0.42" stopColor="#89bcff" stopOpacity="0.88" />
-          <stop offset="1" stopColor="#174fc3" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id="open-solution-core">
-          <stop offset="0" stopColor="#ffffff" />
-          <stop offset="0.35" stopColor="#8fc5ff" />
-          <stop offset="1" stopColor="#174fc3" />
-        </radialGradient>
-        <filter id="open-solution-glow" x="-180%" y="-400%" width="460%" height="900%">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
-      </defs>
-
-      <path
-        d="M24 32 H1176"
-        fill="none"
-        stroke="url(#open-solution-track)"
-        strokeWidth="1.5"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {SIGNAL_NODES.map((x, index) => (
-        <g className="problem-selector__open-solution-node" key={x}>
-          <motion.circle
-            cx={x}
-            cy="32"
-            fill="#f8fbff"
-            stroke="#245cc8"
-            strokeWidth="1.2"
-            initial={false}
-            animate={
-              active
-                ? { r: [4, 4, 7, 4], opacity: [0.48, 0.48, 1, 0.48] }
-                : { r: 4, opacity: 0.58 }
-            }
-            transition={
-              active
-                ? { ...travelTransition, delay: (index / SIGNAL_NODES.length) * 2.7 }
-                : { duration: 0.2 }
-            }
-          />
-        </g>
-      ))}
-
-      <motion.g
-        initial={false}
-        animate={active ? { x: [0, 1128], opacity: [0, 1, 1, 0] } : { x: 0, opacity: 0 }}
-        transition={active ? travelTransition : { duration: 0.2 }}
-      >
-        <rect
-          x="18"
-          y="27"
-          width="108"
-          height="10"
-          rx="5"
-          fill="url(#open-solution-beam)"
-          filter="url(#open-solution-glow)"
-          opacity="0.9"
-        />
-        <circle
-          cx="24"
-          cy="32"
-          r="8"
-          fill="#4384ee"
-          opacity="0.3"
-          filter="url(#open-solution-glow)"
-        />
-        <circle cx="24" cy="32" r="4.2" fill="url(#open-solution-core)" />
-      </motion.g>
-    </svg>
-  );
-}
+const WORD_DURATION = 3.8;
+const WORD_TIMES = [0, 0.14, 0.32, 1];
 
 export default function OpenSolutionAccent({ label }) {
   const rootRef = useRef(null);
@@ -108,6 +12,7 @@ export default function OpenSolutionAccent({ label }) {
   const [isPageVisible, setIsPageVisible] = useState(() =>
     typeof document === "undefined" ? true : document.visibilityState !== "hidden",
   );
+  const words = label.trim().split(/\s+/);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -136,17 +41,61 @@ export default function OpenSolutionAccent({ label }) {
     return () => document.removeEventListener("visibilitychange", updateVisibility);
   }, []);
 
-  const animateSignal = !reducedMotion && isInView && isPageVisible;
+  const animateSentence = !reducedMotion && isInView && isPageVisible;
 
   return (
     <div className="problem-selector__open-solution" ref={rootRef}>
-      <p className="problem-selector__open-solution-copy">
-        <span className="problem-selector__open-solution-plus" aria-hidden="true">+</span>
-        <span>{label}</span>
+      <p className="problem-selector__open-solution-copy" aria-label={label}>
+        <motion.span
+          className="problem-selector__open-solution-plus"
+          aria-hidden="true"
+          initial={false}
+          animate={
+            animateSentence
+              ? { opacity: [0.76, 1, 0.84], scale: [0.96, 1.06, 1] }
+              : { opacity: 1, scale: 1 }
+          }
+          transition={
+            animateSentence
+              ? { duration: WORD_DURATION, ease: [0.16, 1, 0.3, 1], repeat: Infinity }
+              : { duration: 0.2 }
+          }
+        >
+          +
+        </motion.span>
+        <span className="problem-selector__open-solution-words" aria-hidden="true">
+          {words.map((word, index) => (
+            <motion.span
+              className="problem-selector__open-solution-word"
+              key={`${word}-${index}`}
+              initial={false}
+              animate={
+                animateSentence
+                  ? {
+                      opacity: [0.76, 1, 0.84, 0.84],
+                      y: [2, -2, 0, 0],
+                      filter: ["blur(0.35px)", "blur(0px)", "blur(0px)", "blur(0px)"],
+                    }
+                  : { opacity: 1, y: 0, filter: "blur(0px)" }
+              }
+              transition={
+                animateSentence
+                  ? {
+                      duration: WORD_DURATION,
+                      times: WORD_TIMES,
+                      ease: [0.16, 1, 0.3, 1],
+                      delay: index * 0.18,
+                      repeat: Infinity,
+                      repeatDelay: 0.7,
+                    }
+                  : { duration: 0.2 }
+              }
+            >
+              {word}
+            </motion.span>
+          ))}
+        </span>
       </p>
-      <div className="problem-selector__open-solution-motion" aria-hidden="true">
-        <SolutionSignal active={animateSignal} />
-      </div>
     </div>
   );
 }

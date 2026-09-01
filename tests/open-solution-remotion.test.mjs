@@ -23,7 +23,7 @@ test("renders the open solution as typography rather than a bento card", () => {
   );
 });
 
-test("runs the signal only in view and honors reduced motion", () => {
+test("runs the sentence animation only in view and honors reduced motion", () => {
   assert.match(accent, /IntersectionObserver/);
   assert.match(accent, /rootMargin:\s*"120px"/);
   assert.match(accent, /useReducedMotion/);
@@ -31,13 +31,15 @@ test("runs the signal only in view and honors reduced motion", () => {
   assert.match(accent, /document\.visibilityState/);
 });
 
-test("uses the existing Motion runtime for a visible travelling signal", () => {
+test("animates the sentence itself without a separate signal or pattern", () => {
   assert.match(accent, /from "motion\/react"/);
-  assert.match(accent, /<motion\.g/);
-  assert.match(accent, /x:\s*\[0,\s*1128\]/);
+  assert.match(accent, /<motion\.span/);
+  assert.match(accent, /problem-selector__open-solution-word/);
+  assert.match(accent, /label\.trim\(\)\.split\(\/\\s\+\//);
+  assert.match(accent, /delay:\s*index\s*\*\s*0\.18/);
   assert.match(accent, /repeat:\s*Infinity/);
-  assert.match(accent, /problem-selector__open-solution-node/);
-  assert.doesNotMatch(accent, /OpenSolutionMotion|@remotion\/player|from "remotion"/);
+  assert.doesNotMatch(accent, /<svg|<motion\.g|SIGNAL_NODES|open-solution-node/);
+  assert.doesNotMatch(styles, /open-solution-(?:motion|svg|node)/);
 
   const pkg = JSON.parse(packageSource);
   assert.equal(pkg.dependencies.remotion, undefined);
