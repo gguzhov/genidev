@@ -40,15 +40,11 @@ test("sequences the 500ms signal before nodes with an exact CustomEase", async (
   assert.match(source, /context\.revert\(\)/);
 });
 
-test("keeps capability state motion deliberate and reduced-motion safe", async () => {
+test("keeps capability state motion deliberate without CSS motion loops", async () => {
   const css = await readFile("src/components/ProblemSelector/ProblemSelector.css", "utf8");
   assert.match(css, /animation:\s*capability-panel-enter var\(--motion-state\) var\(--motion-ease\) both/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.deepEqual(css.match(/animation:\s*open-solution-[^;]*\binfinite\b[^;]*/g), [
-    "animation: open-solution-gradient 5.5s ease-in-out infinite alternate",
-    "animation: open-solution-signal 3.6s linear infinite",
-  ]);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.problem-selector__open-solution[\s\S]*animation:\s*none/s);
+  assert.doesNotMatch(css, /animation:\s*open-solution-|@keyframes open-solution-/);
 });
 
 test("pointer lifecycle attaches only while fine-hover motion is allowed", async () => {

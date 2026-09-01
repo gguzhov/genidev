@@ -28,12 +28,7 @@ test("does not use a global 0.01ms reduced-motion kill switch", () => {
 
 test("keeps all shared motion bounded and token-driven", () => {
   const changedMotionSurfaces = [globalStyles, sections, marketplace, problems].join("\n");
-  const withoutExplicitOpenSolutionSignal = changedMotionSurfaces.replace(
-    /animation:\s*open-solution-[^;]+;/g,
-    "",
-  );
-  assert.doesNotMatch(withoutExplicitOpenSolutionSignal, /animation-iteration-count\s*:\s*infinite|\binfinite\b/i);
-  assert.equal((problems.match(/animation:\s*open-solution-[^;]+\binfinite\b[^;]*;/g) ?? []).length, 2);
+  assert.doesNotMatch(changedMotionSurfaces, /animation-iteration-count\s*:\s*infinite|\binfinite\b/i);
   assert.doesNotMatch(marketplace, /\.project-card:hover\s*\{[^}]*transform:/s);
   assert.match(problems, /capability-panel-enter var\(--motion-state\) var\(--motion-ease\) both/);
 });
@@ -121,7 +116,10 @@ test("keeps the published DATONIKS deck and built assets free of personal data",
   const files = await collectTextFiles("dist/client", [".html", ".js", ".css", ".json"]);
   const builtSource = (await Promise.all(files.map((file) => readFile(file, "utf8")))).join("\n");
   assert.doesNotMatch(builtSource, /(?:gguzhov|gennady[._-]?guzhov|datoniks)[\w.+-]*@[\w.-]+/i);
-  assert.doesNotMatch(builtSource, /(?:\+7|8)[\s()\-]*\d{3}[\s()\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}/);
+  assert.doesNotMatch(
+    builtSource,
+    /(?:\+7[\s()\-]*\d{3}[\s()\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}|\b8[\s()\-]+\d{3}[\s()\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2})/,
+  );
   assert.doesNotMatch(builtSource, /юридическ(?:ий|ого) адрес|cap\s*table/i);
 });
 

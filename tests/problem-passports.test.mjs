@@ -36,7 +36,7 @@ test("renders a text rail and semantic capability labels", () => {
   assert.match(componentSource, /<h2 id=\{headingId\}>\{copy\.title\}<\/h2>/);
   assert.doesNotMatch(componentSource, /Беру ответственность/);
   assert.match(componentSource, /featuredSolutions\.map/);
-  assert.match(componentSource, /problem-selector__open-solution/);
+  assert.match(componentSource, /<OpenSolutionAccent label=\{openSolution\.title\}/);
   assert.doesNotMatch(componentSource, /problem-selector__tab-icon/);
   assert.match(componentSource, /problem-selector__tab-title/);
   assert.match(componentSource, /problem-selector__solutions/);
@@ -48,17 +48,12 @@ test("keeps capability decoration simple and motion-accessible", () => {
   assert.doesNotMatch(componentSource, /problem-selector__barcode|problem-selector__scan/);
   assert.match(stylesSource, /@keyframes capability-panel-enter/);
   assert.doesNotMatch(stylesSource, /animation-iteration-count/);
-  assert.match(stylesSource, /@keyframes open-solution-gradient/);
-  assert.match(stylesSource, /@keyframes open-solution-signal/);
+  assert.doesNotMatch(stylesSource, /@keyframes open-solution-|animation:\s*open-solution-/);
   assert.doesNotMatch(componentSource, /setInterval|setTimeout/);
   assert.match(componentSource, /requestAnimationFrame/);
   assert.match(
     stylesSource,
     /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.problem-selector__panel-content[\s\S]*animation:\s*none/s,
-  );
-  assert.match(
-    stylesSource,
-    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.problem-selector__open-solution[\s\S]*animation:\s*none/s,
   );
 });
 

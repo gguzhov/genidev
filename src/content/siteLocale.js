@@ -69,7 +69,7 @@ const englishCareer = [
   ["2021–2024", "Trade and logistics from China", "I sold products on Wildberries and Avito, found suppliers and organised sourcing—from trending goods to industrial equipment.", "I can help with logistics from Europe and China"],
   ["2024", "Mobile data centres", "I organised the development of a mobile data centre and held discussions with venture funds. The product is developed and continues to evolve; I am seeking funding to launch serial production."],
   ["2021–2025", "HSE + LSE", "I completed an English-taught dual-degree programme in Enterprise Innovation Management."],
-  ["2025–present", "Moscow City Hospital No. 15", "I identified data risks, reduced compulsory-medical-insurance underpayments, built BI reporting and explored safe AI analysis of anonymised medical histories.", "I continually look for growth opportunities and optimise operational processes with AI", "Analyst"],
+  ["2025–present", "Moscow City Hospital No. 15", "I identified data risks, reduced compulsory-medical-insurance underpayments and built BI reporting. I designed an architecture for AI analysis of anonymised medical histories against Ministry of Health clinical-guideline criteria, producing a score on a ten-point scale.", "I continually look for growth opportunities and optimise operational processes with AI", "Analyst"],
   ["Ongoing", "Consulting", "I develop digital and AI products for businesses in any industry—from framing the problem and calculating economics to development, launch and analytics."],
 ];
 
@@ -106,7 +106,7 @@ const projectEnglish = {
   },
   datoniks: {
     tags: ["Telecom", "Data centre"],
-    summary: "An investment concept for serial modular data-centre production based on a deployed engineering solution.",
+    summary: "An investment project for serial modular data-centre production based on a deployed 40-foot-container solution: factory readiness, standard logistics and one-day commissioning.",
     deliveredAt: "June 2025",
     challengeLabel: "Business problem",
     challenge: "A conventional data centre requires lengthy design and capital construction. Businesses and public-sector customers need a repeatable format that can be assembled in advance, delivered to site and commissioned faster.",
@@ -116,8 +116,8 @@ const projectEnglish = {
       { label: "Project economics", text: "Built the business plan, financial model and investor pitch for serial production." },
       { label: "Investment readiness", text: "Prepared the negotiation package and continue looking for a partner to launch the series." },
     ],
-    benefit: "The modular format moves most engineering work into production: the customer receives a preassembled facility that is easier to deliver, scale and commission than a capital data centre.",
-    metrics: ["Facility operating in Irkutsk", "40HC · 10 racks × 12 kW", "Business plan, pitch and model ready", "Seeking an investment partner"],
+    benefit: "The 40HC format travels by standard container transport, while factory assembly and systems testing reduce site work, schedule and commissioning risk. Capacity can grow by adding ready-made modules.",
+    metrics: ["Facility operating in Irkutsk", "40HC · 10 racks × 12 kW", "One-day commissioning", "Cooling-system patent"],
   },
   "wedding-vote": {
     tags: ["EventTech", "Web"],

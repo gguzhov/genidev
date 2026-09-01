@@ -18,7 +18,7 @@ test("capabilities present three clear products and render the open solution as 
 
   const component = await read("src/components/ProblemSelector/ProblemSelector.jsx");
   assert.match(component, /featuredSolutions\s*=\s*selected\?\.solutions\.slice\(0,\s*3\)/);
-  assert.match(component, /problem-selector__open-solution/);
+  assert.match(component, /<OpenSolutionAccent label=\{openSolution\.title\}/);
   assert.doesNotMatch(component, /selected\.solutions\.map/);
 });
 

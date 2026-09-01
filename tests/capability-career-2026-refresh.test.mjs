@@ -93,6 +93,9 @@ test("career reflects current verified experience and optional outcomes", () => 
   );
   assert.match(career[3].body, /ОМС/);
   assert.match(career[3].body, /BI/);
+  assert.match(career[3].body, /архитектуру AI-анализа обезличенных историй болезни/);
+  assert.match(career[3].body, /клинических рекомендаций Минздрава/);
+  assert.match(career[3].body, /10-балльной шкале/);
   assert.equal(career[3].title, "Городская клиническая больница №15");
   assert.equal(career[3].role, "Аналитик");
   assert.doesNotMatch(career[3].body, /Подсвечиваю|сокращаю|разрабатываю|ищу/);
@@ -110,6 +113,12 @@ test("career reflects current verified experience and optional outcomes", () => 
   assert.match(career[4].body, /любой отрасли/);
   assert.equal(career[4].ongoing, true);
   assert.equal("result" in career[4], false);
+  assert.deepEqual(career[4].decorativeImage, {
+    src: "/images/career/consulting-system-v1.webp",
+    width: 1200,
+    height: 800,
+  });
+  assert.ok(existsSync(new URL(`../public${career[4].decorativeImage.src}`, import.meta.url)));
 
   for (const item of career.filter(({ logos }) => logos)) {
     for (const logo of item.logos) {
@@ -131,6 +140,8 @@ test("career renders official logos, a DATONIKS case action and a reduced-motion
   assert.match(component, /className="career-timeline__ongoing-label"/);
   assert.match(component, /<OngoingSignal reducedMotion=\{reducedMotion\}>\{item\.year\}<\/OngoingSignal>/);
   assert.match(component, /item\.role/);
+  assert.match(component, /item\.decorativeImage/);
+  assert.match(component, /career-timeline__decorative-image/);
   assert.match(component, /useInView\s*\(/);
   assert.match(component, /reducedMotion\s*\|\|\s*!isInView\s*\?\s*0\s*:\s*Infinity/);
   assert.match(app, /<CareerTimeline[\s\S]*onOpenProject=\{openProject\}/);

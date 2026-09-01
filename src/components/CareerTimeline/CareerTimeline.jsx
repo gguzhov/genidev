@@ -221,7 +221,21 @@ export default function CareerTimeline({ items, copy, onOpenProject }) {
               data-career-index={index}
               key={`${item.year}-${item.title}`}
             >
-              <article className="career-timeline__entry">
+              <article
+                className={`career-timeline__entry${item.decorativeImage ? " career-timeline__entry--illustrated" : ""}`}
+              >
+                {item.decorativeImage ? (
+                  <img
+                    className="career-timeline__decorative-image"
+                    src={item.decorativeImage.src}
+                    alt=""
+                    width={item.decorativeImage.width}
+                    height={item.decorativeImage.height}
+                    loading="lazy"
+                    decoding="async"
+                    aria-hidden="true"
+                  />
+                ) : null}
                 <div className="career-timeline__meta">
                   <p className="career-timeline__year">
                     {item.ongoing

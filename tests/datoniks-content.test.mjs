@@ -7,8 +7,8 @@ import { renderNoscriptFallback } from "../src/content/renderNoscriptFallback.js
 const EXPECTED_METRICS = [
   "Объект работает в Иркутске",
   "40HC · 10 стоек × 12 кВт",
-  "Бизнес-план, питч и финмодель готовы",
-  "Ищу партнёра для запуска серии",
+  "Ввод в эксплуатацию — 1 день",
+  "Патент на систему охлаждения",
 ];
 
 test("publishes DATONIKS as the third investment case with a clear business benefit", () => {
@@ -24,13 +24,18 @@ test("publishes DATONIKS as the third investment case with a clear business bene
   assert.deepEqual(datoniks.tags, ["Телеком", "Дата-центр"]);
   assert.deepEqual(datoniks.metrics, EXPECTED_METRICS);
   assert.equal(datoniks.metrics.length, 4);
+  assert.match(datoniks.summary, /40-футов(?:ом|ого) контейнер/i);
+  assert.match(datoniks.summary, /заводск/i);
+  assert.match(datoniks.summary, /один день/i);
+  assert.doesNotMatch(datoniks.metrics.join(" "), /бизнес-план|питч|финмодел|ищу партн/i);
 
   const solution = datoniks.solution.map(({ label, text }) => `${label} ${text}`).join(" ");
   assert.match(solution, /исследовал спрос.*prefab-ЦОД/i);
   assert.match(solution, /бизнес-план/i);
   assert.match(solution, /финансовую модель/i);
   assert.match(solution, /инвестиционн(?:ый|ого) питч/i);
-  assert.match(datoniks.benefit, /предсобранный объект/i);
+  assert.match(datoniks.benefit, /стандартн.*контейнерн.*транспорт/i);
+  assert.match(datoniks.benefit, /заводск.*сборк/i);
 
   assert.equal(datoniks.modelMetrics, undefined);
   assert.match(datoniks.videoEmbed, /drive\.google\.com.*\/preview/);
@@ -69,7 +74,7 @@ test("includes all four projects and DATONIKS actions in the no-JS fallback", ()
   const html = renderNoscriptFallback();
   assert.equal((html.match(/data-noscript-project/g) ?? []).length, 4);
   assert.match(html, /DATONIKS/);
-  assert.match(html, /Ищу партнёра для запуска серии/);
+  assert.match(html, /Ввод в эксплуатацию — 1 день/);
   assert.match(html, /href="\/documents\/datoniks-pitch-deck-public\.pdf"/);
   assert.match(html, />Питч-дек</);
   assert.match(html, />Бизнес-план</);

@@ -78,7 +78,7 @@ test("capability panel renders one concise project list without duplicated actio
   const styles = await read("src/components/ProblemSelector/ProblemSelector.css");
 
   assert.match(component, /featuredSolutions\.map/);
-  assert.match(component, /problem-selector__open-solution/);
+  assert.match(component, /<OpenSolutionAccent label=\{openSolution\.title\}/);
   assert.doesNotMatch(component, /selected\.solutions\.map/);
   assert.match(component, /problem-selector__solutions/);
   assert.doesNotMatch(component, /Что можно автоматизировать|Что изменится в работе/);

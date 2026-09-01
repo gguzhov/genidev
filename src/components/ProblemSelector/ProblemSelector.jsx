@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import OpenSolutionAccent from "./OpenSolutionAccent";
 import { transitionSelectedIndex } from "./problemSelectionState";
 import "./ProblemSelector.css";
 
@@ -200,9 +201,7 @@ export default function ProblemSelector({ problems, sectionId, copy, ui }) {
                   </button>
                 </div>
                 {openSolution ? (
-                  <p className="problem-selector__open-solution">
-                    <span>{openSolution.title}</span>
-                  </p>
+                  <OpenSolutionAccent label={openSolution.title} />
                 ) : null}
               </div>
             </div>
