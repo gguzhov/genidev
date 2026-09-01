@@ -44,15 +44,21 @@ test("renders a text rail and semantic capability labels", () => {
   assert.doesNotMatch(componentSource, /section__eyebrow/);
 });
 
-test("keeps capability decoration simple and bounded", () => {
+test("keeps capability decoration simple and motion-accessible", () => {
   assert.doesNotMatch(componentSource, /problem-selector__barcode|problem-selector__scan/);
   assert.match(stylesSource, /@keyframes capability-panel-enter/);
-  assert.doesNotMatch(stylesSource, /animation-iteration-count|\binfinite\b/);
+  assert.doesNotMatch(stylesSource, /animation-iteration-count/);
+  assert.match(stylesSource, /@keyframes open-solution-gradient/);
+  assert.match(stylesSource, /@keyframes open-solution-signal/);
   assert.doesNotMatch(componentSource, /setInterval|setTimeout/);
   assert.match(componentSource, /requestAnimationFrame/);
   assert.match(
     stylesSource,
     /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.problem-selector__panel-content[\s\S]*animation:\s*none/s,
+  );
+  assert.match(
+    stylesSource,
+    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.problem-selector__open-solution[\s\S]*animation:\s*none/s,
   );
 });
 

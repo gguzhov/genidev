@@ -33,7 +33,7 @@ test("keeps capability cards concise and outcome-led", () => {
       assert.ok(solution.project.length <= 120, `${solution.title} project copy is too long`);
       assert.ok(solution.effect.length <= 90, `${solution.title} effect copy is too long`);
     }
-    assert.equal(problem.solutions.at(-1).title, "И другое цифровое решение");
+    assert.equal(problem.solutions.at(-1).title, "Любое другое цифровое решение под вашу проблему");
   }
 });
 

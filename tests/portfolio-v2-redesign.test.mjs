@@ -37,7 +37,7 @@ test("capability copy names six concrete business directions", async () => {
     "AI-подбор сотрудников",
     "Локальный AI-контур",
     "Аудит процессов и AI-дорожная карта",
-    "И другое цифровое решение",
+    "Любое другое цифровое решение под вашу проблему",
   ]) {
     assert.match(allCopy, new RegExp(phrase, "i"));
   }
@@ -137,7 +137,7 @@ test("CTA uses a cyborg visual and footer keeps concise verified social copy", a
   assert.match(contactComponent, /gennady-cyborg-v2\.webp/);
   assert.doesNotMatch(contactComponent, /final-contact__orbit/);
   assert.doesNotMatch(footer, /<strong>\{link\.label\}<\/strong>/);
-  assert.match(socialCopy, /Мой репозиторий проектов/);
+  assert.match(socialCopy, /Репозиторий проектов/);
   assert.match(socialCopy, /300 тыс\.\+ просмотров/);
   assert.doesNotMatch(socialCopy, /500 тыс/);
 });

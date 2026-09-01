@@ -13,7 +13,7 @@ test("capabilities present three clear products and render the open solution as 
 
   for (const capability of problems) {
     assert.equal(capability.solutions.length, 4);
-    assert.equal(capability.solutions.at(-1).title, "И другое цифровое решение");
+    assert.equal(capability.solutions.at(-1).title, "Любое другое цифровое решение под вашу проблему");
   }
 
   const component = await read("src/components/ProblemSelector/ProblemSelector.jsx");

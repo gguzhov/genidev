@@ -8,7 +8,7 @@ test("publishes concrete solution projects for every business function", () => {
   for (const problem of problems) {
     assert.equal(problem.solutions.length, 4);
     assert.ok(problem.solutions.slice(0, 3).every(({ project, effect }) => project.length > 7 && effect.length > 7));
-    assert.equal(problem.solutions.at(-1).title, "И другое цифровое решение");
+    assert.equal(problem.solutions.at(-1).title, "Любое другое цифровое решение под вашу проблему");
   }
 });
 
@@ -40,11 +40,15 @@ test("sequences the 500ms signal before nodes with an exact CustomEase", async (
   assert.match(source, /context\.revert\(\)/);
 });
 
-test("keeps capability state motion bounded and reduced-motion safe", async () => {
+test("keeps capability state motion deliberate and reduced-motion safe", async () => {
   const css = await readFile("src/components/ProblemSelector/ProblemSelector.css", "utf8");
   assert.match(css, /animation:\s*capability-panel-enter var\(--motion-state\) var\(--motion-ease\) both/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.doesNotMatch(css, /\binfinite\b/);
+  assert.deepEqual(css.match(/animation:\s*open-solution-[^;]*\binfinite\b[^;]*/g), [
+    "animation: open-solution-gradient 5.5s ease-in-out infinite alternate",
+    "animation: open-solution-signal 3.6s linear infinite",
+  ]);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.problem-selector__open-solution[\s\S]*animation:\s*none/s);
 });
 
 test("pointer lifecycle attaches only while fine-hover motion is allowed", async () => {

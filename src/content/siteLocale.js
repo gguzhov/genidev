@@ -6,7 +6,7 @@ const englishProblems = [
       ["Content factory", "AI turns raw recordings into ready-to-publish short videos: it selects clips, edits, adds captions and motion graphics.", "The team publishes more video without expanding the editing department."],
       ["Virality analytics", "AI analyses X, Instagram and Telegram, finds high-engagement themes and turns them into scripts and posts.", "Content is built around real audience response instead of random ideas."],
       ["Post and carousel design", "The system creates posts, cards and carousels from the brand book and adapts layouts for every platform.", "The visual identity stays consistent while design production gets faster."],
-      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Any other digital solution for your problem", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
@@ -16,7 +16,7 @@ const englishProblems = [
       ["A digital twin of your business", "The system shows the real process, team load, queues and bottlenecks.", "You see where the business loses time and what an improvement will change."],
       ["CRM and ERP for your industry", "One system connects customers, documents, money, inventory and the rules of your business.", "Spreadsheets, chats and manual checks become one process."],
       ["A dashboard for leaders", "The dashboard combines money, deadlines, workload and risks and highlights where a decision is needed.", "Problems appear before they become delays or losses."],
-      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Any other digital solution for your problem", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
@@ -26,7 +26,7 @@ const englishProblems = [
       ["AI-powered cold calls", "A voice AI works through a lead list, presents the service, asks natural questions and hands interested prospects to a salesperson.", "Salespeople join conversations that have already been qualified."],
       ["AI head of sales", "AI reviews calls and chats, evaluates salespeople and creates coaching recommendations from objections and the company knowledge base.", "The manager sees growth opportunities for each person and the whole team."],
       ["A shop in Telegram and MAX", "A chatbot presents products or services, answers from the knowledge base, takes payment and sends the order to CRM.", "Customers buy directly in the messenger without a separate website."],
-      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Any other digital solution for your problem", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
@@ -36,7 +36,7 @@ const englishProblems = [
       ["AI candidate screening", "AI reads CVs, matches experience to the role, ranks applicants and writes the result to CRM or ATS.", "Recruiters spend time on relevant candidates instead of manually scanning every response."],
       ["New-employee onboarding", "An AI mentor answers from the knowledge base, guides the onboarding plan, checks assignments and tracks progress.", "New employees reach productive work faster and interrupt experienced colleagues less often."],
       ["Purchasing and invoices without data entry", "The system requests supplier quotes, compares terms and sends the approved invoice to ERP ready for payment.", "The path from need to invoice runs without copying data, chasing emails or losing documents."],
-      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Any other digital solution for your problem", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
@@ -46,7 +46,7 @@ const englishProblems = [
       ["Private AI environment", "I integrate GPUs and servers into company infrastructure, select Hugging Face models and configure access, data and monitoring.", "AI responds faster while sensitive data stays inside the company."],
       ["Agentic development with AI", "I set up an AI-agent development workflow with Docker, Git, repositories, a task manager, Agile cadence, checks and releases.", "The team ships internal services faster while code and changes remain controlled."],
       ["GPU infrastructure for real workloads", "I size GPUs, servers, networking and storage for model training, inference and concurrent employee use.", "The company gets predictable performance and can expand capacity without rebuilding the environment."],
-      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Any other digital solution for your problem", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
   {
@@ -56,7 +56,7 @@ const englishProblems = [
       ["Process audit and AI roadmap", "I review systems, data and manual operations, calculate the economics and prioritise digital and AI projects.", "The company knows where to start and which outcome to test first."],
       ["A pilot on real company data", "I build a working prototype on company data, connect the required systems and test quality, security and business effect.", "The implementation decision is based on results rather than a presentation."],
       ["Team training and standards", "I train employees on their work, document scenarios, access rules, quality checks and the internal knowledge base.", "The team uses AI safely and consistently instead of depending on one enthusiast."],
-      ["Any other digital solution", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
+      ["Any other digital solution for your problem", "If the problem does not fit a template, I’ll design a focused product around your process, data and economics.", "The software adapts to your business rules—not the other way around."],
     ],
   },
 ];
@@ -220,7 +220,7 @@ export function createEnglishContent(russian) {
     contact: { ...russian.contact, title: "Replace a person with AI?", ctaLabel: "Discuss it on Telegram" },
     socialLinks: russian.socialLinks.map((link) => ({
       ...link,
-      meta: link.id === "github" ? "My project repositories" : link.id === "telegram" ? "My channel — Hunting for Technology" : "AI and technology articles · 300K+ views",
+      meta: link.id === "github" ? "Project repository" : link.id === "telegram" ? "Hunting for Technology channel" : "AI and technology articles · 300K+ views",
     })),
     navigation: [
       { id: "about", label: "About", href: "#career", ariaLabel: "Go to the About section" },

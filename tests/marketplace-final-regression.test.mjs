@@ -28,7 +28,12 @@ test("does not use a global 0.01ms reduced-motion kill switch", () => {
 
 test("keeps all shared motion bounded and token-driven", () => {
   const changedMotionSurfaces = [globalStyles, sections, marketplace, problems].join("\n");
-  assert.doesNotMatch(changedMotionSurfaces, /animation-iteration-count\s*:\s*infinite|\binfinite\b/i);
+  const withoutExplicitOpenSolutionSignal = changedMotionSurfaces.replace(
+    /animation:\s*open-solution-[^;]+;/g,
+    "",
+  );
+  assert.doesNotMatch(withoutExplicitOpenSolutionSignal, /animation-iteration-count\s*:\s*infinite|\binfinite\b/i);
+  assert.equal((problems.match(/animation:\s*open-solution-[^;]+\binfinite\b[^;]*;/g) ?? []).length, 2);
   assert.doesNotMatch(marketplace, /\.project-card:hover\s*\{[^}]*transform:/s);
   assert.match(problems, /capability-panel-enter var\(--motion-state\) var\(--motion-ease\) both/);
 });

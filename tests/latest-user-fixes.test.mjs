@@ -35,8 +35,8 @@ test("footer uses the channel name and contains no public-offer disclaimer", asy
   const footer = await read("../src/components/SiteFooter/SiteFooter.jsx");
   const noscript = await read("../src/content/renderNoscriptFallback.js");
 
-  assert.match(ru, /Мой канал — Охота за технологиями/);
-  assert.match(en, /My channel — Hunting for Technology/);
+  assert.match(ru, /Канал «Охота за технологиями»/);
+  assert.match(en, /Hunting for Technology channel/);
   assert.doesNotMatch(`${ru}\n${en}\n${footer}\n${noscript}`, /публичной оферт|public offer|ui\.legal/i);
 });
 

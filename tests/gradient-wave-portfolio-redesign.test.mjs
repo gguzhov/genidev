@@ -75,7 +75,7 @@ test("контакт и социальные ссылки не дублирую�
   assert.equal(contact.title, "Заменим человека на AI?");
   assert.deepEqual(socialLinks.map(({ id }) => id), ["github", "telegram", "habr"]);
   const habr = socialLinks.find(({ id }) => id === "habr");
-  assert.equal(habr.meta, "Статьи про AI и технологии · 300 тыс.+ просмотров");
+  assert.equal(habr.meta, "Статьи об AI и технологиях · 300 тыс.+ просмотров");
   assert.equal(habr.source, "https://habr.com/ru/users/gguzhov/articles/");
 });
 

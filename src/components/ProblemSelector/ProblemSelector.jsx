@@ -200,7 +200,9 @@ export default function ProblemSelector({ problems, sectionId, copy, ui }) {
                   </button>
                 </div>
                 {openSolution ? (
-                  <p className="problem-selector__open-solution">{openSolution.title}</p>
+                  <p className="problem-selector__open-solution">
+                    <span>{openSolution.title}</span>
+                  </p>
                 ) : null}
               </div>
             </div>

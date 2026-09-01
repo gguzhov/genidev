@@ -13,7 +13,7 @@ const read = (path) => readFile(path, "utf8");
 test("capabilities are three concise products plus an open digital solution", async () => {
   for (const capability of problems) {
     assert.equal(capability.solutions.length, 4);
-    assert.equal(capability.solutions.at(-1).title, "И другое цифровое решение");
+    assert.equal(capability.solutions.at(-1).title, "Любое другое цифровое решение под вашу проблему");
     for (const solution of capability.solutions.slice(0, 3)) {
       assert.ok(solution.project.length <= 150, `${capability.id}/${solution.title}: concise project`);
       assert.ok(solution.effect.length <= 115, `${capability.id}/${solution.title}: concise effect`);
@@ -43,7 +43,7 @@ test("career uses the thorny-path heading and scroll progress drives milestones 
 test("footer publishes the technology channel and uses the supplied brand assets", async () => {
   const telegram = socialLinks.find(({ id }) => id === "telegram");
   assert.equal(telegram.href, "https://t.me/oxotatech");
-  assert.equal(telegram.meta, "Мой канал — Охота за технологиями");
+  assert.equal(telegram.meta, "Канал «Охота за технологиями»");
   assert.equal(telegram.icon, "/icons/oxotatech.svg");
 
   const footer = await read("src/components/SiteFooter/SiteFooter.jsx");
@@ -52,6 +52,11 @@ test("footer publishes the technology channel and uses the supplied brand assets
 
   const { ruUi } = await import("../src/content/siteContent.js");
   assert.equal(ruUi.footerIdentity, "Геннадий\nГужов");
+
+  const css = await read("src/components/SiteFooter/SiteFooter.css");
+  assert.match(css, /repeat\(auto-fit,\s*minmax\(min\(100%,\s*260px\),\s*1fr\)\)/);
+  assert.match(css, /@media \(min-width:\s*1200px\)/);
+  assert.doesNotMatch(css, /@media \(min-width:\s*768px\)[\s\S]*grid-template-columns:\s*minmax\(210px/);
 });
 
 test("hero scroll affordance is unboxed and marketplace cards no longer move", async () => {
