@@ -26,20 +26,12 @@
   object-position: 52% 36%;
 }
 
-.site-footer__identity p,
-.site-footer__identity span {
-  margin: 0;
-}
-
 .site-footer__identity p {
-  font-size: 0.9rem;
+  margin: 0;
+  font-size: 1rem;
   font-weight: 720;
-}
-
-.site-footer__identity span {
-  color: var(--blue-5);
-  font-size: 0.74rem;
-  line-height: 1.5;
+  line-height: 1.15;
+  white-space: pre-line;
 }
 
 .site-footer__social {

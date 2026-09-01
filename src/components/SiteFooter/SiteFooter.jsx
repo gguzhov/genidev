@@ -14,10 +14,7 @@ export default function SiteFooter({ links, ui }) {
             height="72"
             aria-hidden="true"
           />
-          <div>
-            <p>{ui.footerIdentity}</p>
-            <span>{ui.footerPerson}</span>
-          </div>
+          <p>{ui.footerIdentity}</p>
         </div>
 
         <nav className="site-footer__social" aria-label={ui.footerNav}>

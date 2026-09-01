@@ -48,6 +48,10 @@ test("footer publishes the technology channel and uses the supplied brand assets
 
   const footer = await read("src/components/SiteFooter/SiteFooter.jsx");
   assert.match(footer, /genidev-avatar\.webp/);
+  assert.doesNotMatch(footer, /footerPerson/);
+
+  const { ruUi } = await import("../src/content/siteContent.js");
+  assert.equal(ruUi.footerIdentity, "Геннадий\nГужов");
 });
 
 test("hero scroll affordance is unboxed and marketplace cards no longer move", async () => {
